@@ -1,6 +1,7 @@
 {
-  "name": "vite-vue-typescript-starter",
-  "private": true,
+  "name": "@lucentis/headless-ui",
+  "description": "Headless Vue 3 components",
+  "private": false,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -8,6 +9,23 @@
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lucentis/headless-ui"
+  },
+  "main": "./dist/headless-ui.cjs.js",
+  "module": "./dist/headless-ui.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/headless-ui.es.js",
+      "require": "./dist/headless-ui.cjs.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "vue": "^3.5.32"
   },
