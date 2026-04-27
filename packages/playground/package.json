@@ -9,5 +9,8 @@
     },
     "dependencies": {
       "@lucentis/headless-ui-core": "*"
+    },
+    "devDependencies": {
+      "@vitejs/plugin-vue": "^6.0.6"
     }
   }
