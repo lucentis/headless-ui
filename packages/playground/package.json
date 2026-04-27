@@ -1,5 +1,5 @@
 {
-    "name": "@lucentis/playground",
+    "name": "@lucentis/headless-ui-playground",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -8,6 +8,6 @@
       "build": "vite build"
     },
     "dependencies": {
-      "@lucentis/core": "*"
+      "@lucentis/headless-ui-core": "*"
     }
   }
