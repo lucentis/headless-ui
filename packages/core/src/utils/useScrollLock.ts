@@ -2,42 +2,42 @@ import { onUnmounted } from 'vue'
 import { useConfig } from '../config'
 
 export function useScrollLock() {
-  const config = useConfig()
-  let originalPaddingRight = ''
-  let originalOverflow = ''
-  let locked = false
+    const config = useConfig()
+    let originalPaddingRight = ''
+    let originalOverflow = ''
+    let locked = false
 
-  function lock(): void {
-    if (locked) return
+    function lock(): void {
+        if (locked) return
 
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
 
-    originalOverflow = document.body.style.overflow
-    originalPaddingRight = document.body.style.paddingRight
+        originalOverflow = document.body.style.overflow
+        originalPaddingRight = document.body.style.paddingRight
 
-    document.body.style.overflow = 'hidden'
+        document.body.style.overflow = 'hidden'
 
-    if (config.scrollLock === 'padding' && scrollbarWidth > 0) {
-      const currentPadding = parseInt(window.getComputedStyle(document.body).paddingRight, 10)
-      document.body.style.paddingRight = `${currentPadding + scrollbarWidth}px`
+        if (config.scrollLock === 'padding' && scrollbarWidth > 0) {
+        const currentPadding = parseInt(window.getComputedStyle(document.body).paddingRight, 10)
+        document.body.style.paddingRight = `${currentPadding + scrollbarWidth}px`
+        }
+
+        if (config.scrollLock === 'margin' && scrollbarWidth > 0) {
+        const currentMargin = parseInt(window.getComputedStyle(document.body).marginRight, 10)
+        document.body.style.marginRight = `${currentMargin + scrollbarWidth}px`
+        }
+
+        locked = true
     }
 
-    if (config.scrollLock === 'margin' && scrollbarWidth > 0) {
-      const currentMargin = parseInt(window.getComputedStyle(document.body).marginRight, 10)
-      document.body.style.marginRight = `${currentMargin + scrollbarWidth}px`
+    function unlock(): void {
+        if (!locked) return
+        document.body.style.overflow = originalOverflow
+        document.body.style.paddingRight = originalPaddingRight
+        locked = false
     }
 
-    locked = true
-  }
+    onUnmounted(unlock)
 
-  function unlock(): void {
-    if (!locked) return
-    document.body.style.overflow = originalOverflow
-    document.body.style.paddingRight = originalPaddingRight
-    locked = false
-  }
-
-  onUnmounted(unlock)
-
-  return { lock, unlock }
+    return { lock, unlock }
 }

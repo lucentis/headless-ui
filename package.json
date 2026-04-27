@@ -8,14 +8,18 @@
   ],
   "scripts": {
     "build": "npm run build --workspace=packages/core && npm run build --workspace=packages/components",
-    "typecheck": "npm run typecheck --workspace=packages/core && npm run typecheck --workspace=packages/components"
+    "typecheck": "npm run typecheck --workspace=packages/core && npm run typecheck --workspace=packages/components",
+    "test": "vitest"
   },
   "devDependencies": {
     "@types/node": "^24.12.2",
     "@vitejs/plugin-vue": "^6.0.5",
+    "@vue/test-utils": "^2.4.8",
     "@vue/tsconfig": "^0.9.1",
+    "happy-dom": "^20.9.0",
     "typescript": "~6.0.2",
     "vite": "^8.0.8",
+    "vitest": "^4.1.5",
     "vue": "^3.5.32",
     "vue-tsc": "^3.2.6"
   }
