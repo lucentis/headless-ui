@@ -165,28 +165,48 @@ onCheckedChange?: (value: boolean) => void
 - Always reactive — drives the template.
 - IDs live in state, not element props — consumers need them for custom ARIA wiring outside the component tree.
 - Booleans always use `isX` prefix.
+- Every component with open/close behavior exposes both `isOpen` and `isPresent`.
+
+### isPresent
+
+`isPresent` stays true during exit animations, giving elements time to animate
+out before unmounting. Driven by `animationDuration` in global config.
+
+If `animationDuration` is 0 (default), `isPresent` mirrors `isOpen` exactly —
+zero cost for consumers who do not animate.
+
+```ts
+// consumer uses isPresent for rendering, isOpen for animation state
+```
+
+```vue
+<div
+  v-if="state.isPresent"
+  :data-state="state.isOpen ? 'open' : 'closed'"
+  v-bind="props.panel"
+>
+  Content
+</div>
+```
 
 ### Shape
 
 ```ts
 interface CollapsibleState {
-  // ids — for ARIA wiring
+  isOpen: boolean
+  isPresent: boolean
+  isDisabled: boolean
   triggerId: string
   contentId: string
-
-  // booleans — always isX
-  isOpen: boolean
-  isDisabled: boolean
 }
 
 interface ListboxState<TValue> {
-  triggerId: string
-  listboxId: string
-
   isOpen: boolean
+  isPresent: boolean
   isDisabled: boolean
   isEmpty: boolean
-
+  triggerId: string
+  listboxId: string
   selectedValue: TValue | null
   activeValue: TValue | null
 }
@@ -232,25 +252,23 @@ interface ListboxActions<TValue> {
 - One object per element, containing both DOM attributes and event handlers merged.
 - Consumer does one spread per element — nothing more.
 - No styles, no classes. All necessary DOM attributes allowed — ARIA, `id`, `tabindex`, `role`, `data-*`.
+- `data-state` flows through element props automatically — never added manually by consumer.
 - Static elements — plain object, spread once.
 - Dynamic per-item elements — getter function prefixed with `get`.
 
-### What goes inside each element props object
+### data-state values
 
-```ts
-// aria attributes
-'aria-expanded': boolean
-'aria-controls': string
-role: 'dialog'
-
-// dom attributes
-id: string
-tabindex: '-1'
-
-// event handlers — camelCase, on prefix
-onClick: (event: MouseEvent) => void
-onKeydown: (event: KeyboardEvent) => void
-```
+| State | Value |
+|---|---|
+| Open | `open` |
+| Closed | `closed` |
+| Active | `active` |
+| Inactive | `inactive` |
+| Selected | `selected` |
+| Checked | `checked` |
+| Unchecked | `unchecked` |
+| Disabled | `disabled` |
+| Loading | `loading` |
 
 ### Shape
 
@@ -260,6 +278,7 @@ interface CollapsibleElementProps {
     id: string
     'aria-expanded': boolean
     'aria-controls': string
+    'data-state': 'open' | 'closed'
     onClick: (event: MouseEvent) => void
     onKeydown: (event: KeyboardEvent) => void
   }
@@ -267,6 +286,7 @@ interface CollapsibleElementProps {
     id: string
     role: 'region'
     'aria-labelledby': string
+    'data-state': 'open' | 'closed'
   }
 }
 
@@ -276,6 +296,7 @@ interface ListboxElementProps {
     'aria-haspopup': 'listbox'
     'aria-expanded': boolean
     'aria-controls': string
+    'data-state': 'open' | 'closed'
     onClick: (event: MouseEvent) => void
     onKeydown: (event: KeyboardEvent) => void
   }
@@ -286,12 +307,12 @@ interface ListboxElementProps {
     tabindex: '-1'
     onKeydown: (event: KeyboardEvent) => void
   }
-  // getter for dynamic per-item props
   getOptionProps: (value: unknown) => {
     id: string
     role: 'option'
     'aria-selected': boolean
     'aria-disabled': boolean
+    'data-state': 'active' | 'inactive'
     onClick: (event: MouseEvent) => void
     onMouseenter: (event: MouseEvent) => void
   }
@@ -321,18 +342,12 @@ interface ListboxElementProps {
 When the consumer spreads our element props and adds their own handlers,
 both must run. Internal handler fires first, consumer handler fires second.
 
-```vue
-<button v-bind="props.trigger" @click="customHandler" />
-```
-
-Vue's `v-bind` + `@event` merge naturally when using the same event name —
-both handlers run. Our `composeEventHandlers` utility handles the cases where
-we need explicit composition internally:
+Vue's `v-bind` + `@event` merge naturally — both handlers run.
+`composeEventHandlers` is used internally for explicit composition:
 
 ```ts
-// core/src/utils/composeEventHandlers.ts — internal, not exported
-
-export function composeEventHandlers<E extends Event>(
+// internal only, never exported
+function composeEventHandlers<E extends Event>(
   internal: (event: E) => void,
   external?: (event: E) => void,
 ) {
@@ -343,14 +358,9 @@ export function composeEventHandlers<E extends Event>(
 }
 ```
 
-Used internally when building element props. Never exposed to the consumer.
-
 ---
 
 ## ARIA types
-
-Shared ARIA types used across all element props interfaces.
-Typed strictly — no raw strings for roles or states internally.
 
 ```ts
 // core/src/types/aria.ts
@@ -396,19 +406,18 @@ type AriaLive = 'off' | 'polite' | 'assertive'
 - Roles — always set, never optional.
 - Relationships — `aria-controls`, `aria-labelledby`, `aria-describedby`, `aria-activedescendant`. Always wired via the ID system.
 - States — `aria-expanded`, `aria-selected`, `aria-checked`, `aria-disabled`. Always reactive, always in sync with component state.
-- Live regions — dynamic announcements for Toast, loading states.
+- Live regions — dynamic announcements for Toast, loading states. `announce()` is public.
 - Focus management — where focus goes on open, where it returns on close.
 - Keyboard interactions — every APG keyboard pattern implemented completely.
+- `aria-hidden` on background elements when a modal trap is active — handled automatically.
 
 ### Consumer is responsible for
 
-- Meaningful labels — `aria-label` on triggers. The library cannot know the semantic context.
-- Descriptions — `aria-describedby` pointing to their own content when needed.
+- Meaningful labels — `aria-label` on triggers.
+- Descriptions — `aria-describedby` pointing to their own content.
 - Landmark roles — `main`, `nav`, `aside` on their page structure.
 
 ### APG pattern mapping
-
-Every component maps to exactly one APG pattern.
 
 ```
 Collapsible      → APG Disclosure pattern
@@ -425,8 +434,7 @@ Popover          → APG Dialog pattern (non-modal)
 
 ### Per-component ARIA checklist
 
-Every component has this checklist as a comment block at the top of its
-composable file — serves as both documentation and implementation guide.
+Lives as a comment block at the top of every composable file.
 
 ```
 ARIA checklist — [Component] ([APG pattern URL])
@@ -454,14 +462,164 @@ Keyboard
 
 ---
 
-## Live regions
+## Keyboard navigation
 
-Singleton live region created once at plugin install. All dynamic announcements
-go through it. Consumer never touches it directly.
+### Keys constant
+
+One place, all key values. Never raw strings in component code.
 
 ```ts
-announce('Item saved', 'polite')     // waits for user to finish
-announce('Error occurred', 'assertive')  // interrupts immediately, errors only
+// core/src/utils/keyboard.ts — created when first needed
+
+export const Keys = {
+  ArrowUp: 'ArrowUp',
+  ArrowDown: 'ArrowDown',
+  ArrowLeft: 'ArrowLeft',
+  ArrowRight: 'ArrowRight',
+  Home: 'Home',
+  End: 'End',
+  Enter: 'Enter',
+  Space: ' ',
+  Escape: 'Escape',
+  Tab: 'Tab',
+  Backspace: 'Backspace',
+  Delete: 'Delete',
+  PageUp: 'PageUp',
+  PageDown: 'PageDown',
+} as const
+
+export type Key = typeof Keys[keyof typeof Keys]
+```
+
+### Navigation utilities
+
+Created when first needed by a component, not upfront.
+
+| Utility | Pattern | Used by |
+|---|---|---|
+| `useArrowNavigation` | Moves through flat list | Listbox, Menu, Select |
+| `useRovingFocus` | One tab stop in a group | Tabs, Toolbar, RadioGroup |
+| `useTypeahead` | Jump to match by typing | Listbox, Menu, Select |
+
+All three are public — consumers building custom compound components may need them.
+
+### Which pattern to use
+
+`useRovingFocus` — component is always visible, part of page flow. Tabs, RadioGroup.
+
+`useArrowNavigation` — component opens on demand as overlay. Listbox, Menu.
+
+### Event handling rules
+
+```ts
+case Keys.ArrowDown:
+  event.preventDefault()  // always preventDefault on handled keys
+  navigate('next')
+  break
+```
+
+`stopPropagation` — never, unless there is a documented specific reason with a comment explaining why.
+
+---
+
+## Focus management
+
+Three concerns, each handled separately.
+
+### Initial focus
+
+Priority order on open:
+
+```
+1. initialFocus prop if provided
+2. first element with data-autofocus attribute
+3. first focusable element in the container
+4. the container itself via tabindex="-1"
+```
+
+Both `initialFocus` prop and `data-autofocus` are supported — they solve different situations.
+
+### Return focus
+
+Captured at open, restored at close with a guard for removed elements.
+
+```ts
+target.focus({ preventScroll: true })
+```
+
+`preventScroll: true` prevents page jumping to the trigger on close.
+
+### Focus trap
+
+Tab and Shift+Tab cycle only within the container when trap is active.
+`aria-hidden="true"` applied automatically to all `body` children except the portal container when trap is active.
+
+```ts
+interface UseFocusTrapOptions {
+  container: Ref<HTMLElement | null>
+  active: Ref<boolean>
+  trap?: Ref<boolean>  // default true for Dialog, false for Popover
+}
+```
+
+`useFocusTrap` is public.
+
+---
+
+## Portal
+
+### Rules
+
+- Per-instance containers — each overlay creates and owns its container.
+- Container marked with `data-headless-portal` — used by focus trap aria-hidden logic.
+- z-index owned entirely by consumer via CSS targeting `data-headless-portal`.
+- `usePortal` is public.
+
+### Target resolution
+
+```ts
+interface UsePortalOptions {
+  target?: MaybeRef<string | HTMLElement | null>
+  // null uses global config portalTarget
+}
+```
+
+### DOM output
+
+```html
+<body>
+  <div id="app">...</div>
+  <div data-headless-portal><!-- Dialog --></div>
+  <div data-headless-portal><!-- Tooltip --></div>
+</body>
+```
+
+---
+
+## Animation
+
+Zero shipped animation. Two mechanisms exposed.
+
+### data-state
+
+Flows through element props automatically. Consumer targets via CSS.
+
+```css
+[data-state="open"] { animation: fadeIn 150ms ease; }
+[data-state="closed"] { animation: fadeOut 150ms ease; }
+```
+
+### isPresent
+
+Stays true during exit animation window. Driven by `animationDuration` config.
+Default 0 — no cost for consumers who do not animate.
+
+```vue
+<div
+  v-if="state.isPresent"
+  :data-state="state.isOpen ? 'open' : 'closed'"
+  v-bind="props.panel"
+/>
 ```
 
 ---
@@ -471,10 +629,10 @@ announce('Error occurred', 'assertive')  // interrupts immediately, errors only
 ### Rules
 
 - Every compound component family gets exactly two functions.
-- Context carries the full `XApi` object — nothing more, nothing less.
-- `useXContext` always throws a descriptive error if called outside its provider.
-- No safe mode / nullable variant.
-- InjectionKey Symbol label is the context name — readable for DevTools.
+- Context carries the full `XApi` — nothing more, nothing less.
+- `useXContext` always throws if called outside its provider.
+- No nullable variant.
+- Symbol label is the context name — readable for DevTools.
 
 ### Shape
 
@@ -499,13 +657,8 @@ export function useCollapsibleContext(): CollapsibleApi {
 ## Public exports per component family
 
 ```ts
-// composable
 export { useCollapsible }
-
-// context
 export { provideCollapsibleContext, useCollapsibleContext }
-
-// types
 export type {
   UseCollapsibleProps,
   CollapsibleApi,
@@ -530,32 +683,24 @@ const { state, actions, props } = useCollapsible({
 
 ```vue
 <button v-bind="props.trigger">Toggle</button>
-<div v-if="state.isOpen" v-bind="props.content">Content</div>
+<div v-if="state.isPresent" v-bind="props.content">Content</div>
 ```
 
-### Pattern 2 — building custom compound components using core
-
-Root component:
+### Pattern 2 — custom compound components using core
 
 ```ts
 // MyCollapsible.vue
-import { useCollapsible, provideCollapsibleContext } from '@lucentis/headless-ui/core'
-
 const componentProps = defineProps<UseCollapsibleProps>()
 const api = useCollapsible(componentProps)
 provideCollapsibleContext(api)
 ```
 
-Child component:
-
 ```ts
 // MyCollapsibleTrigger.vue
-import { useCollapsibleContext } from '@lucentis/headless-ui/core'
-
 const { state, actions, props } = useCollapsibleContext()
 ```
 
-### Pattern 3 — using shipped components
+### Pattern 3 — shipped components
 
 ```vue
 <Collapsible v-model:open="isOpen">
@@ -564,15 +709,13 @@ const { state, actions, props } = useCollapsibleContext()
 </Collapsible>
 ```
 
-### Pattern 4 — using shipped components with slot props
+### Pattern 4 — shipped components with slot props
 
 ```vue
 <Collapsible v-model:open="isOpen">
-  <template #default="{ state, actions }">
+  <template #default="{ state }">
     <Transition name="fade">
-      <CollapsibleContent v-if="state.isOpen">
-        Content
-      </CollapsibleContent>
+      <CollapsibleContent v-if="state.isOpen">Content</CollapsibleContent>
     </Transition>
   </template>
 </Collapsible>
@@ -582,57 +725,87 @@ const { state, actions, props } = useCollapsibleContext()
 
 ## Slot props
 
-Slot props are the composable return re-exposed to the consumer's template.
-The component calls the composable internally and passes the result through the slot.
-Same `{ state, actions, props }` shape — nothing new invented.
+Same `{ state, actions, props }` shape as the composable return. Nothing new.
 
 ```vue
-<!-- inside Collapsible.vue -->
 <slot :state="state" :actions="actions" :props="props" />
 ```
 
 ---
 
-## Shared utilities
+## Utilities
 
-These live in `core/src/utils/`. Not all are public.
+Utilities are created when a component first needs them — not upfront.
+Each utility has a concrete use case driving its design.
 
-| Utility | Purpose | Public |
+| Utility | Created when | Public |
 |---|---|---|
-| `useId` | Stable unique ID generation | yes |
-| `useScrollLock` | Body scroll locking with scrollbar compensation | yes |
-| `useOutsideClick` | Pointer event detection outside a target element | yes |
-| `useEscape` | Escape key handler with active guard | yes |
-| `useFocusTrap` | Focus containment within an element | yes |
-| `composeEventHandlers` | Merges internal and consumer event handlers | no |
+| `useId` | First component needing stable IDs | yes |
+| `useScrollLock` | Dialog | yes |
+| `useOutsideClick` | Dialog, Popover | yes |
+| `useEscape` | Dialog, Popover, Tooltip | yes |
+| `useFocusTrap` | Dialog | yes |
+| `usePortal` | Dialog | yes |
+| `useArrowNavigation` | Listbox | yes |
+| `useRovingFocus` | Tabs | yes |
+| `useTypeahead` | Listbox | yes |
+| `composeEventHandlers` | First component needing handler merge | no |
+| `announce` | Toast | yes |
+| `Keys` | First component needing keyboard handling | yes |
 
 ---
 
-## File structure per component family
+## Build output
 
-```
-core/src/
-  collapsible/
-    useCollapsible.ts        ← composable (public)
-    CollapsibleContext.ts    ← provide/inject (public)
-    types.ts                 ← all types for this family (public)
-    useCollapsible.test.ts   ← colocated tests
-    index.ts                 ← barrel, public exports only
+- ESM only. No CJS.
+- No minification — consumer's bundler handles it.
+- Source maps and declaration maps enabled.
+- Only `dist` published.
+- Vue always external.
+- Semver strictly — any change to `ComponentApi` base is a major version bump.
 
-components/src/
-  collapsible/
-    Collapsible.vue
-    CollapsibleTrigger.vue
-    CollapsibleContent.vue
-    index.ts
-```
+---
+
+## Build order
+
+### Phase 1 — stateless primitives
+`Button`, `Badge`, `Alert`, `Separator`, `VisuallyHidden`
+
+Validates the base contract with minimal complexity.
+
+### Phase 2 — single state components
+`Collapsible`, `Switch`, `Checkbox`
+
+Controlled/uncontrolled pattern. No children communication.
+
+### Phase 3 — compound components, no overlay
+`Accordion`, `Tabs`, `RadioGroup`
+
+Context pattern. Multiple children. No portal or focus trap.
+
+### Phase 4 — overlays
+`Dialog`, `AlertDialog`, `Popover`, `Tooltip`
+
+Full stack — portal, focus trap, scroll lock, outside click, escape.
+
+### Phase 5 — menus
+`DropdownMenu`, `ContextMenu`, `NavigationMenu`
+
+### Phase 6 — complex form controls
+`Listbox`, `Combobox`, `Select`
+
+### Phase 7 — feedback
+`Toast`, `Progress`
+
+### Phase 8 — remaining form controls
+`Input`, `Textarea`, `NumberInput`, `DatePicker`
 
 ---
 
 ## Testing conventions
 
-- Tests are colocated next to the file they test.
-- Composables that use lifecycle hooks must be tested inside a mounted component.
-- `beforeEach` resets any DOM side effects between tests.
-- Module-level state (like ID counters) cannot be reset — test relative behavior, not exact values.
+- Tests colocated next to the file they test.
+- Composables using lifecycle hooks tested inside a mounted component.
+- `beforeEach` resets DOM side effects between tests.
+- Module-level state cannot be reset — test relative behavior, not exact values.
 - Test environment: `happy-dom`.
