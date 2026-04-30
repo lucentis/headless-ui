@@ -14,7 +14,7 @@ function createHost(props: Parameters<typeof useButton>[0] = {}) {
     })
 
     mount(Host)
-    return { get state() { return exposed.state }, get props() { return exposed.props } }
+    return { get state() { return exposed.state }, get bindings() { return exposed.bindings } }
 }
 
 describe('useButton', () => {
@@ -40,47 +40,47 @@ describe('useButton', () => {
         })
     })
 
-    describe('props.button', () => {
+    describe('bindings.button', () => {
         it('disabled is undefined when not disabled', () => {
-            const { props } = createHost()
-            expect(props.button.disabled).toBeUndefined()
+            const { bindings } = createHost()
+            expect(bindings.button.disabled).toBeUndefined()
         })
 
         it('disabled is true when disabled', () => {
-            const { props } = createHost({ disabled: true })
-            expect(props.button.disabled).toBe(true)
+            const { bindings } = createHost({ disabled: true })
+            expect(bindings.button.disabled).toBe(true)
         })
 
         it('aria-disabled is undefined when not disabled', () => {
-            const { props } = createHost()
-            expect(props.button['aria-disabled']).toBeUndefined()
+            const { bindings } = createHost()
+            expect(bindings.button['aria-disabled']).toBeUndefined()
         })
 
         it('aria-disabled is true when disabled', () => {
-            const { props } = createHost({ disabled: true })
-            expect(props.button['aria-disabled']).toBe(true)
+            const { bindings } = createHost({ disabled: true })
+            expect(bindings.button['aria-disabled']).toBe(true)
         })
 
         it('data-disabled is undefined when not disabled', () => {
-            const { props } = createHost()
-            expect(props.button['data-disabled']).toBeUndefined()
+            const { bindings } = createHost()
+            expect(bindings.button['data-disabled']).toBeUndefined()
         })
 
         it('data-disabled is empty string when disabled', () => {
-            const { props } = createHost({ disabled: true })
-            expect(props.button['data-disabled']).toBe('')
+            const { bindings } = createHost({ disabled: true })
+            expect(bindings.button['data-disabled']).toBe('')
         })
 
         it('all disabled attributes react when a ref changes', async () => {
             const disabled = ref(false)
-            const { props } = createHost({ disabled })
+            const { bindings } = createHost({ disabled })
 
-            expect(props.button.disabled).toBeUndefined()
+            expect(bindings.button.disabled).toBeUndefined()
             disabled.value = true
             await nextTick()
-            expect(props.button.disabled).toBe(true)
-            expect(props.button['aria-disabled']).toBe(true)
-            expect(props.button['data-disabled']).toBe('')
+            expect(bindings.button.disabled).toBe(true)
+            expect(bindings.button['aria-disabled']).toBe(true)
+            expect(bindings.button['data-disabled']).toBe('')
         })
     })
 })

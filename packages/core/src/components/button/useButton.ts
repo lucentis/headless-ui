@@ -8,7 +8,7 @@ export function useButton(props: UseButtonProps = {}): ButtonApi {
         get isDisabled() { return isDisabled.value },
     }))
 
-    const elementProps = readonly(reactive({
+    const bindings = readonly(reactive({
         get button() {
             return {
                 disabled: isDisabled.value ? (true as const) : undefined,
@@ -21,6 +21,6 @@ export function useButton(props: UseButtonProps = {}): ButtonApi {
     return {
         state: state as ButtonApi['state'],
         actions: {},
-        props: elementProps as ButtonApi['props'],
+        bindings: bindings as ButtonApi['bindings'],
     }
 }

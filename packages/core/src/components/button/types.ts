@@ -11,7 +11,7 @@ export interface ButtonState {
 
 export type ButtonActions = Record<never, never>
 
-export interface ButtonElementProps {
+export interface ButtonBindings {
     button: {
         disabled: true | undefined
         'aria-disabled': true | undefined
@@ -19,4 +19,4 @@ export interface ButtonElementProps {
     }
 }
 
-export interface ButtonApi extends ComponentApi<ButtonState, ButtonActions, ButtonElementProps> {}
+export interface ButtonApi extends ComponentApi<ButtonState, ButtonActions, ButtonBindings> {}

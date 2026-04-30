@@ -1,5 +1,5 @@
-export interface ComponentApi<TState, TActions, TElementProps> {
+export interface ComponentApi<TState, TActions, TBindings> {
     state: Readonly<TState>
     actions: TActions
-    props: TElementProps
+    bindings: TBindings
 }

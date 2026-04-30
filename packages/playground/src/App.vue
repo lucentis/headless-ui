@@ -3,12 +3,12 @@ import { useButton } from '@lucentis/headless-ui-core'
 import { ref } from 'vue';
 
 const isLoading = ref(true)
-const { props } = useButton({ disabled: isLoading })
+const { bindings } = useButton({ disabled: isLoading })
 
-console.log(props);
+console.log(bindings);
 
 </script>
 
 <template>
-  <button v-bind="props.button">Submit</button>
+  <button v-bind="bindings.button">Submit</button>
 </template>
