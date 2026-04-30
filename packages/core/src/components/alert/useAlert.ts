@@ -1,36 +1,32 @@
-import { computed, readonly, reactive, toValue } from 'vue'
+import { computed, reactive, toValue } from 'vue'
 import type { UseAlertProps, AlertApi } from './types'
 
 export function useAlert(props: UseAlertProps = {}): AlertApi {
-    // controlled mode when open prop is provided, uncontrolled otherwise
-    const isControlled = computed(() => props.open !== undefined)
-    const internalOpen = reactive({ value: props.defaultOpen ?? true })
+    // controlled mode is fixed at creation — open prop should not switch between defined/undefined
+    const isControlled = props.open !== undefined
+    const internalOpen = reactive({ value: props.defaultOpen ?? false })
 
-    const isOpen = computed(() => {
-        return isControlled.value ? toValue(props.open)! : internalOpen.value
-    })
+    const isOpen = computed(() => isControlled ? toValue(props.open)! : internalOpen.value)
 
     function setOpen(value: boolean): void {
-        if (!isControlled.value) {
-            internalOpen.value = value
-        }
+        if (!isControlled) internalOpen.value = value
         props.onOpenChange?.(value)
     }
 
     const role = computed(() => toValue(props.role) ?? 'status')
 
-    const state = readonly(reactive({
+    const state: AlertApi['state'] = {
         get isOpen() { return isOpen.value },
         // isPresent mirrors isOpen — will diverge when animationDuration is supported
         get isPresent() { return isOpen.value },
-    }))
+    }
 
     const actions: AlertApi['actions'] = {
         open: () => setOpen(true),
         close: () => setOpen(false),
     }
 
-    const bindings = readonly(reactive({
+    const bindings: AlertApi['bindings'] = {
         get root() {
             return {
                 role: role.value,
@@ -39,11 +35,7 @@ export function useAlert(props: UseAlertProps = {}): AlertApi {
                 'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
             }
         },
-    }))
-
-    return {
-        state: state as AlertApi['state'],
-        actions,
-        bindings: bindings as AlertApi['bindings'],
     }
+
+    return { state, actions, bindings }
 }

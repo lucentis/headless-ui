@@ -23,9 +23,9 @@ function createHost(props: Parameters<typeof useAlert>[0] = {}) {
 
 describe('useAlert', () => {
     describe('state', () => {
-        it('isOpen defaults to true', () => {
+        it('isOpen defaults to false', () => {
             const { state } = createHost()
-            expect(state.isOpen).toBe(true)
+            expect(state.isOpen).toBe(false)
         })
 
         it('isOpen respects defaultOpen', () => {
@@ -118,9 +118,9 @@ describe('useAlert', () => {
             expect(bindings.root['aria-atomic']).toBe(true)
         })
 
-        it('data-state is open by default', () => {
+        it('data-state is closed by default', () => {
             const { bindings } = createHost()
-            expect(bindings.root['data-state']).toBe('open')
+            expect(bindings.root['data-state']).toBe('closed')
         })
 
         it('data-state is closed when defaultOpen is false', () => {

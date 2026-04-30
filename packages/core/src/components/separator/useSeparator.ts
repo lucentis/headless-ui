@@ -1,16 +1,16 @@
-import { computed, readonly, reactive, toValue } from 'vue'
+import { computed, toValue } from 'vue'
 import type { UseSeparatorProps, SeparatorApi } from './types'
 
 export function useSeparator(props: UseSeparatorProps = {}): SeparatorApi {
     const orientation = computed(() => toValue(props.orientation) ?? 'horizontal')
     const isDecorative = computed(() => toValue(props.decorative) ?? false)
 
-    const state = readonly(reactive({
+    const state: SeparatorApi['state'] = {
         get orientation() { return orientation.value },
         get isDecorative() { return isDecorative.value },
-    }))
+    }
 
-    const bindings = readonly(reactive({
+    const bindings: SeparatorApi['bindings'] = {
         get root() {
             return {
                 role: isDecorative.value ? ('none' as const) : ('separator' as const),
@@ -22,11 +22,7 @@ export function useSeparator(props: UseSeparatorProps = {}): SeparatorApi {
                 'data-orientation': orientation.value,
             }
         },
-    }))
-
-    return {
-        state: state as SeparatorApi['state'],
-        actions: {},
-        bindings: bindings as SeparatorApi['bindings'],
     }
+
+    return { state, actions: {}, bindings }
 }

@@ -1,14 +1,14 @@
-import { computed, readonly, reactive, toValue } from 'vue'
+import { computed, toValue } from 'vue'
 import type { UseButtonProps, ButtonApi } from './types'
 
 export function useButton(props: UseButtonProps = {}): ButtonApi {
     const isDisabled = computed(() => toValue(props.disabled) ?? false)
 
-    const state = readonly(reactive({
+    const state: ButtonApi['state'] = {
         get isDisabled() { return isDisabled.value },
-    }))
+    }
 
-    const bindings = readonly(reactive({
+    const bindings: ButtonApi['bindings'] = {
         get button() {
             return {
                 disabled: isDisabled.value ? (true as const) : undefined,
@@ -16,11 +16,7 @@ export function useButton(props: UseButtonProps = {}): ButtonApi {
                 'data-disabled': isDisabled.value ? ('' as const) : undefined,
             }
         },
-    }))
-
-    return {
-        state: state as ButtonApi['state'],
-        actions: {},
-        bindings: bindings as ButtonApi['bindings'],
     }
+
+    return { state, actions: {}, bindings }
 }

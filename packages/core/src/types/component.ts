@@ -1,5 +1,5 @@
 export interface ComponentApi<TState, TActions, TBindings> {
-    state: Readonly<TState>
+    state: TState
     actions: TActions
     bindings: TBindings
 }
