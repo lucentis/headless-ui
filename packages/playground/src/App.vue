@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel } from '@lucentis/headless-ui-core'
+import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, use } from '@lucentis/headless-ui-core'
 import { ref } from 'vue';
 
 const isLoading = ref(false)
@@ -21,6 +21,9 @@ const panel1 = useTabsPanel({ value: 'tab-1' }, tabs)
 const panel2 = useTabsPanel({ value: 'tab-2' }, tabs)
 const panel3 = useTabsPanel({ value: 'tab-3' }, tabs)
 
+const dialog = useDialog()
+const contentEl = ref<HTMLElement | null>(null)
+dialog.contentRef.value = contentEl.value
 
 </script>
 
@@ -86,7 +89,7 @@ const panel3 = useTabsPanel({ value: 'tab-3' }, tabs)
         <div v-if="panel1.state.isSelected" v-bind="panel1.bindings.panel">
             Content 1
         </div>
-        
+
         <div v-if="panel2.state.isSelected" v-bind="panel2.bindings.panel">
             Content 2
         </div>
@@ -94,5 +97,32 @@ const panel3 = useTabsPanel({ value: 'tab-3' }, tabs)
         <div v-if="panel3.state.isSelected" v-bind="panel3.bindings.panel">
             Content 3
         </div>
+    </div>
+
+    <!-- dialog -->
+    <div class="">
+        <button @click="dialog.actions.open">Open Dialog</button>
+
+        <Teleport to="body">
+            <template v-if="dialog.state.isPresent">
+            <!-- overlay -->
+                <div
+                    v-bind="dialog.bindings.overlay"
+                    style="position:fixed;inset:0;background:rgba(0,0,0,0.5)"
+                />
+
+                <!-- content -->
+                <div
+                    ref="contentEl"
+                    v-bind="dialog.bindings.content"
+                    style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:24px"
+                >
+                    <h2 v-bind="dialog.bindings.title">Dialog Title</h2>
+                    <p v-bind="dialog.bindings.description">Dialog description for screen readers.</p>
+                    <p>Dialog content goes here.</p>
+                    <button @click="dialog.actions.close">Close</button>
+                </div>
+            </template>
+        </Teleport>
     </div>
 </template>

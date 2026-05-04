@@ -1,2 +1,6 @@
 export { useId } from './useId'
 export { useScrollLock } from './useScrollLock'
+export { useFocusTrap } from './useFocusTrap'
+export { useEscape } from './useEscape'
+export type { UseFocusTrapOptions } from './useFocusTrap'
+export type { UseEscapeOptions } from './useEscape'
