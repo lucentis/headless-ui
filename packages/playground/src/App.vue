@@ -9,6 +9,10 @@ const alert = useAlert()
 
 console.log(bindings);
 
+
+import { useCollapsible } from '@lucentis/headless-ui-core'
+
+const collapsible = useCollapsible({ defaultOpen: false })
 </script>
 
 <template>
@@ -18,5 +22,16 @@ console.log(bindings);
     <p>alert</p>
 
     <button @click="alert.actions.close">Close</button>
+  </div>
+
+
+  <div>
+    <button v-bind="collapsible.bindings.trigger">
+      {{ collapsible.state.isOpen ? 'Close' : 'Open' }} section
+    </button>
+
+    <div v-if="collapsible.state.isPresent" v-bind="collapsible.bindings.content">
+      <p>This is the collapsible content.</p>
+    </div>
   </div>
 </template>

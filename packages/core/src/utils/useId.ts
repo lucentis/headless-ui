@@ -6,6 +6,5 @@ let count = 0
 
 export function useId(prefix?: string): Readonly<Ref<string>> {
     const config = useConfig()
-    const id = ref(`${prefix ?? config.idPrefix}-${++count}`)
-    return readonly(id)
+    return `${prefix ?? config.idPrefix}-${++count}`
 }
