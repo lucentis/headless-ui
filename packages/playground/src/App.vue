@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, use } from '@lucentis/headless-ui-core'
+import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog } from '@lucentis/headless-ui-core'
 import { ref } from 'vue';
 
 const isLoading = ref(false)
@@ -125,4 +125,11 @@ dialog.contentRef.value = contentEl.value
             </template>
         </Teleport>
     </div>
+
 </template>
+
+<style scoped>
+div {
+    padding: 5px 10px
+}
+</style>

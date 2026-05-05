@@ -3,7 +3,7 @@ import { defineComponent, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useAccordion } from './useAccordion'
 import { useAccordionItem } from './useAccordionItem'
-import { provideAccordionContext, useAccordionContext } from './AccordionContext'
+import { useAccordionContext } from './AccordionContext'
 
 function createAccordionHost(props: Parameters<typeof useAccordion>[0] = {}) {
     let exposed: ReturnType<typeof useAccordion>
@@ -98,7 +98,7 @@ describe('useAccordion', () => {
         })
 
         it('expand opens an item', async () => {
-            const { state, actions } = createAccordionHost()
+            const { actions } = createAccordionHost()
             actions.expand('item-1')
             await nextTick()
             expect(actions.isExpanded('item-1')).toBe(true)
