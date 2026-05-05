@@ -6,6 +6,7 @@ const isLoading = ref(false)
 const { bindings } = useButton({ disabled: isLoading })
 
 const alert = useAlert()
+
 const collapsible = useCollapsible({ defaultOpen: false })
 
 const accordion = useAccordion({ type: 'multiple' })
@@ -47,7 +48,7 @@ popover.contentRef.value = contentEl.value
 
     <!-- collapsible -->
     <div>
-        <button v-bind="collapsible.bindings.trigger">
+        <button v-bind="collapsible.bindings.trigger" @click="() => console.log('collapsible trigger clicked in app')">
         {{ collapsible.state.isOpen ? 'Close' : 'Open' }} section
         </button>
 
@@ -153,7 +154,7 @@ popover.contentRef.value = contentEl.value
 
     <div class="relative" style="position: relative;">
         <button
-            ref="triggerEl"
+            :ref="el => { popover.triggerRef.value = el as HTMLElement }"
             v-bind="popover.bindings.trigger"
         >
             Open Popover

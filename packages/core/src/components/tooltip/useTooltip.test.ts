@@ -8,16 +8,25 @@ function createHost(props: Parameters<typeof useTooltip>[0] = {}) {
     let exposed: ReturnType<typeof useTooltip>
 
     const Host = defineComponent({
-        setup() { exposed = useTooltip(props) },
+        setup() {
+            exposed = useTooltip(props)
+        },
         template: '<div />',
     })
 
     const wrapper = mount(Host, { attachTo: document.body })
+
     return {
         wrapper,
-        get state() { return exposed.state },
-        get actions() { return exposed.actions },
-        get bindings() { return exposed.bindings },
+        get state() {
+            return exposed.state
+        },
+        get actions() {
+            return exposed.actions
+        },
+        get bindings() {
+            return exposed.bindings
+        },
     }
 }
 
@@ -60,10 +69,14 @@ describe('useTooltip', () => {
         it('reacts when disabled ref changes', async () => {
             const disabled = ref(false)
             const { state, wrapper } = createHost({ disabled })
+
             expect(state.isDisabled).toBe(false)
+
             disabled.value = true
             await nextTick()
+
             expect(state.isDisabled).toBe(true)
+
             wrapper.unmount()
         })
     })
@@ -97,43 +110,59 @@ describe('useTooltip', () => {
     })
 
     describe('delay', () => {
-        it('opens after default delay on mouseenter', async () => {
+        it('opens after default delay on pointerenter', async () => {
             const { state, bindings, wrapper } = createHost()
-            bindings.trigger.onMouseenter()
+
+            bindings.trigger.onPointerenter()
+
             expect(state.isOpen).toBe(false)
+
             vi.advanceTimersByTime(700)
             await nextTick()
+
             expect(state.isOpen).toBe(true)
+
             wrapper.unmount()
         })
 
         it('opens immediately with delayDuration 0', async () => {
             const { state, bindings, wrapper } = createHost({ delayDuration: 0 })
-            bindings.trigger.onMouseenter()
+
+            bindings.trigger.onPointerenter()
             await nextTick()
+
             expect(state.isOpen).toBe(true)
+
             wrapper.unmount()
         })
 
-        it('cancels delay on mouseleave', async () => {
+        it('cancels delay on pointerleave', async () => {
             const { state, bindings, wrapper } = createHost()
-            bindings.trigger.onMouseenter()
-            bindings.trigger.onMouseleave()
+
+            bindings.trigger.onPointerenter()
+            bindings.trigger.onPointerleave()
+
             vi.advanceTimersByTime(700)
             await nextTick()
+
             expect(state.isOpen).toBe(false)
+
             wrapper.unmount()
         })
 
         it('respects custom delayDuration', async () => {
             const { state, bindings, wrapper } = createHost({ delayDuration: 300 })
-            bindings.trigger.onMouseenter()
+
+            bindings.trigger.onPointerenter()
+
             vi.advanceTimersByTime(299)
             await nextTick()
             expect(state.isOpen).toBe(false)
+
             vi.advanceTimersByTime(1)
             await nextTick()
             expect(state.isOpen).toBe(true)
+
             wrapper.unmount()
         })
     })
@@ -141,35 +170,61 @@ describe('useTooltip', () => {
     describe('bindings.trigger', () => {
         it('aria-describedby matches contentId', () => {
             const { state, bindings, wrapper } = createHost()
+
             expect(bindings.trigger['aria-describedby']).toBe(state.contentId)
+
             wrapper.unmount()
         })
 
         it('onFocus opens immediately', async () => {
             const { state, bindings, wrapper } = createHost()
+
             bindings.trigger.onFocus()
+            
+            expect(state.isOpen).toBe(false)
+
+            vi.advanceTimersByTime(700)
+
             await nextTick()
+
             expect(state.isOpen).toBe(true)
+
             wrapper.unmount()
         })
 
         it('onBlur closes immediately', async () => {
             const { state, bindings, wrapper } = createHost()
+
             bindings.trigger.onFocus()
             await nextTick()
+
             bindings.trigger.onBlur()
             await nextTick()
+
             expect(state.isOpen).toBe(false)
+
             wrapper.unmount()
         })
 
-        it('onMouseleave closes', async () => {
-            const { state, actions, bindings, wrapper } = createHost({ delayDuration: 0 })
-            actions.open()
+        it('onPointerleave closes via delay', async () => {
+            const { state, bindings, wrapper } = createHost()
+
+            bindings.trigger.onPointerenter()
+
+            vi.advanceTimersByTime(700)
             await nextTick()
-            bindings.trigger.onMouseleave()
+
+            expect(state.isOpen).toBe(true)
+
+            bindings.trigger.onPointerleave()
+
+            expect(state.isOpen).toBe(true)
+
+            vi.advanceTimersByTime(100)
             await nextTick()
+
             expect(state.isOpen).toBe(false)
+
             wrapper.unmount()
         })
     })
@@ -183,10 +238,14 @@ describe('useTooltip', () => {
 
         it('data-state reflects isOpen', async () => {
             const { bindings, actions, wrapper } = createHost()
+
             expect(bindings.content['data-state']).toBe('closed')
+
             actions.open()
             await nextTick()
+
             expect(bindings.content['data-state']).toBe('open')
+
             wrapper.unmount()
         })
 
@@ -200,11 +259,18 @@ describe('useTooltip', () => {
     describe('escape', () => {
         it('closes on Escape key', async () => {
             const { state, actions, wrapper } = createHost()
+
             actions.open()
             await nextTick()
-            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+
+            document.dispatchEvent(
+                new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
+            )
+
             await nextTick()
+
             expect(state.isOpen).toBe(false)
+
             wrapper.unmount()
         })
     })
@@ -212,17 +278,24 @@ describe('useTooltip', () => {
     describe('context', () => {
         it('useTooltipContext throws outside provider', () => {
             const Host = defineComponent({
-                setup() { useTooltipContext() },
+                setup() {
+                    useTooltipContext()
+                },
                 template: '<div />',
             })
-            expect(() => mount(Host)).toThrow('[headless-ui] useTooltipContext must be used within a Tooltip')
+
+            expect(() => mount(Host)).toThrow(
+                '[headless-ui] useTooltipContext must be used within a Tooltip',
+            )
         })
 
         it('useTooltipContext returns api inside provider', () => {
             let innerApi: ReturnType<typeof useTooltipContext> | undefined
 
             const Child = defineComponent({
-                setup() { innerApi = useTooltipContext() },
+                setup() {
+                    innerApi = useTooltipContext()
+                },
                 template: '<div />',
             })
 
@@ -236,6 +309,7 @@ describe('useTooltip', () => {
             })
 
             mount(Parent, { attachTo: document.body })
+
             expect(innerApi).toBeDefined()
             expect(typeof innerApi!.state.isOpen).toBe('boolean')
         })
