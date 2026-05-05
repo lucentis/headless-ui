@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog } from '@lucentis/headless-ui-core'
+import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover } from '@lucentis/headless-ui-core'
 import { ref } from 'vue';
 
 const isLoading = ref(false)
@@ -25,6 +25,14 @@ const dialog = useDialog()
 const contentEl = ref<HTMLElement | null>(null)
 dialog.contentRef.value = contentEl.value
 
+
+const tooltip = useTooltip({ delayDuration: 500 })
+
+const popover = usePopover()
+const triggerEl = ref<HTMLElement | null>(null)
+const contentElPopover = ref<HTMLElement | null>(null)
+popover.triggerRef.value = triggerEl.value
+popover.contentRef.value = contentEl.value
 </script>
 
 <template>
@@ -124,6 +132,42 @@ dialog.contentRef.value = contentEl.value
                 </div>
             </template>
         </Teleport>
+    </div>
+
+    <!-- tooltip -->
+    <div style="position: relative; display: inline-block">
+        <button v-bind="tooltip.bindings.trigger">
+        Hover me
+        </button>
+
+        <div
+            v-if="tooltip.state.isPresent"
+            v-bind="tooltip.bindings.content"
+            style="position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:4px 8px;border-radius:4px;white-space:nowrap"
+        >
+            This is a tooltip
+        </div>
+    </div>
+
+    <!-- popover -->
+
+    <div class="relative" style="position: relative;">
+        <button
+            ref="triggerEl"
+            v-bind="popover.bindings.trigger"
+        >
+            Open Popover
+        </button>
+
+        <div
+            v-if="popover.state.isPresent"
+            ref="contentElPopover"
+            v-bind="popover.bindings.content"
+            style="position:absolute;left:50%;bottom:100%;background:white;border:1px solid #ccc;padding:16px;border-radius:8px"
+        >
+            <p>Popover content</p>
+            <button @click="popover.actions.close">Close</button>
+        </div>
     </div>
 
 </template>
