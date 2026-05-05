@@ -1,17 +1,15 @@
-import { computed, ref, toValue } from 'vue'
+import { computed, toValue } from 'vue'
+import { useControllableState } from '../../utils/useControllableState'
 import type { UseAlertProps, AlertApi } from './types'
 
 export function useAlert(props: UseAlertProps = {}): AlertApi {
-    const isControlled = props.open !== undefined
-    const internalOpen = ref(props.defaultOpen ?? false)
+    const { value: isOpen, setValue: setOpen } = useControllableState({
+        value: props.open,
+        defaultValue: props.defaultOpen ?? false,
+        onChange: props.onOpenChange,
+    })
 
-    const isOpen = computed(() => isControlled ? toValue(props.open) as boolean : internalOpen.value)
     const role = computed(() => toValue(props.role) ?? 'status')
-
-    function setOpen(value: boolean): void {
-        if (!isControlled) internalOpen.value = value
-        props.onOpenChange?.(value)
-    }
 
     const state: AlertApi['state'] = {
         get isOpen() { return isOpen.value },

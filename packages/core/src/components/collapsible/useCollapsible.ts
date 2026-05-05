@@ -1,21 +1,18 @@
 import { computed, ref, toValue } from 'vue'
 import { useId } from '../../utils/useId'
+import { useControllableState } from '../../utils/useControllableState'
 import type { UseCollapsibleProps, CollapsibleApi } from './types'
 
 export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi {
-    const isControlled = props.open !== undefined
-    const internalOpen = ref(props.defaultOpen ?? false)
+    const { value: isOpen, setValue: setOpen } = useControllableState({
+        value: props.open,
+        defaultValue: props.defaultOpen ?? false,
+        onChange: props.onOpenChange,
+    })
 
-    const isOpen = computed(() => isControlled ? toValue(props.open) as boolean : internalOpen.value)
     const isDisabled = computed(() => toValue(props.disabled) ?? false)
-
     const triggerId = useId('collapsible-trigger')
     const contentId = useId('collapsible-content')
-
-    function setOpen(value: boolean): void {
-        if (!isControlled) internalOpen.value = value
-        props.onOpenChange?.(value)
-    }
 
     const state: CollapsibleApi['state'] = {
         get isOpen() { return isOpen.value },

@@ -1,5 +1,6 @@
 import { computed, ref, toValue, watch } from 'vue'
 import { useId } from '../../utils/useId'
+import { useControllableState } from '../../utils/useControllableState'
 import { useScrollLock } from '../../utils/useScrollLock'
 import { useFocusTrap } from '../../utils/useFocusTrap'
 import { useEscape } from '../../utils/useEscape'
@@ -8,10 +9,13 @@ import type { UseDialogProps, DialogApi } from './types'
 
 export function useDialog(props: UseDialogProps = {}): DialogApi {
     const config = useConfig()
-    const isControlled = props.open !== undefined
-    const internalOpen = ref(props.defaultOpen ?? false)
 
-    const isOpen = computed(() => isControlled ? toValue(props.open) as boolean : internalOpen.value)
+    const { value: isOpen, setValue: setOpen } = useControllableState({
+        value: props.open,
+        defaultValue: props.defaultOpen ?? false,
+        onChange: props.onOpenChange,
+    })
+
     const isModal = computed(() => toValue(props.modal) ?? true)
 
     const titleId = useId('dialog-title')
@@ -19,17 +23,11 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
 
     const contentRef = ref<HTMLElement | null>(null)
 
-    function setOpen(value: boolean): void {
-        if (!isControlled) internalOpen.value = value
-        props.onOpenChange?.(value)
-    }
-
     const actions: DialogApi['actions'] = {
         open: () => setOpen(true),
         close: () => setOpen(false),
     }
 
-    // scroll lock — only when modal and config allows it
     const { lock, unlock } = useScrollLock()
     watch(
         () => isOpen.value && isModal.value && config.scrollLock !== 'none',
@@ -37,13 +35,11 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
         { immediate: true }
     )
 
-    // focus trap — only when modal
     useFocusTrap({
         container: contentRef,
         active: computed(() => isOpen.value && isModal.value),
     })
 
-    // escape to close — respects global config
     useEscape({
         active: isOpen,
         onEscape: () => {
@@ -74,7 +70,6 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
         'aria-describedby': descriptionId,
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
         onKeydown: (event: KeyboardEvent) => {
-            // prevent keydown events from bubbling outside the dialog
             event.stopPropagation()
         },
     }))

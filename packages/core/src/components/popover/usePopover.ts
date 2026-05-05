@@ -1,5 +1,6 @@
-import { computed, ref, toValue } from 'vue'
+import { computed, ref } from 'vue'
 import { useId } from '../../utils/useId'
+import { useControllableState } from '../../utils/useControllableState'
 import { useEscape } from '../../utils/useEscape'
 import { useOutsideClick } from '../../utils/useOutsideClick'
 import { useConfig } from '../../config'
@@ -7,21 +8,18 @@ import type { UsePopoverProps, PopoverApi } from './types'
 
 export function usePopover(props: UsePopoverProps = {}): PopoverApi {
     const config = useConfig()
-    const isControlled = props.open !== undefined
-    const internalOpen = ref(props.defaultOpen ?? false)
 
-    const isOpen = computed(() => isControlled ? toValue(props.open) as boolean : internalOpen.value)
+    const { value: isOpen, setValue: setOpen } = useControllableState({
+        value: props.open,
+        defaultValue: props.defaultOpen ?? false,
+        onChange: props.onOpenChange,
+    })
 
     const triggerId = useId('popover-trigger')
     const contentId = useId('popover-content')
 
     const triggerRef = ref<HTMLElement | null>(null)
     const contentRef = ref<HTMLElement | null>(null)
-
-    function setOpen(value: boolean): void {
-        if (!isControlled) internalOpen.value = value
-        props.onOpenChange?.(value)
-    }
 
     const actions: PopoverApi['actions'] = {
         open: () => setOpen(true),

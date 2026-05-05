@@ -1,23 +1,21 @@
 import { computed, ref, toValue } from 'vue'
 import { useId } from '../../utils/useId'
+import { useControllableState } from '../../utils/useControllableState'
 import type { UseTabsProps, TabsApi } from './types'
 
 export function useTabs(props: UseTabsProps = {}): TabsApi {
-    const isControlled = props.value !== undefined
-    const internalValue = ref(props.defaultValue ?? '')
-    const focusedValue = ref('')
+    const { value, setValue } = useControllableState({
+        value: props.value,
+        defaultValue: props.defaultValue ?? '',
+        onChange: props.onValueChange,
+    })
 
-    const value = computed(() => isControlled ? toValue(props.value) as string : internalValue.value)
+    const focusedValue = ref('')
     const orientation = computed(() => toValue(props.orientation) ?? 'horizontal')
     const activation = computed(() => toValue(props.activation) ?? 'automatic')
     const isDisabled = computed(() => toValue(props.disabled) ?? false)
 
     const listId = useId('tabs-list')
-
-    function setValue(next: string): void {
-        if (!isControlled) internalValue.value = next
-        props.onValueChange?.(next)
-    }
 
     const state: TabsApi['state'] = {
         get value() { return value.value },

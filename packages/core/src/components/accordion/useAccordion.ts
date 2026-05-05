@@ -1,20 +1,18 @@
-import { computed, ref, toValue } from 'vue'
+import { computed, toValue } from 'vue'
+import { useControllableState } from '../../utils/useControllableState'
 import type { UseAccordionProps, AccordionApi } from './types'
 
 export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
     const type = computed(() => props.type ?? 'single')
     const isDisabled = computed(() => toValue(props.disabled) ?? false)
-    const isControlled = props.value !== undefined
 
     const defaultValue = props.defaultValue ?? (type.value === 'multiple' ? [] : '')
-    const internalValue = ref<string | string[]>(defaultValue)
 
-    const value = computed(() => isControlled ? toValue(props.value)! : internalValue.value)
-
-    function setValue(next: string | string[]): void {
-        if (!isControlled) internalValue.value = next
-        props.onValueChange?.(next)
-    }
+    const { value, setValue } = useControllableState<string | string[]>({
+        value: props.value,
+        defaultValue,
+        onChange: props.onValueChange,
+    })
 
     const state: AccordionApi['state'] = {
         get value() { return value.value },
