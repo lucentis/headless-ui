@@ -2,6 +2,9 @@ import type { MaybeRef } from 'vue'
 import type { ComponentApi } from '../../types'
 
 export interface UseTooltipProps {
+    open?: MaybeRef<boolean>
+    defaultOpen?: boolean
+    onOpenChange?: (value: boolean) => void
     delayDuration?: number
     disabled?: MaybeRef<boolean>
 }
@@ -21,8 +24,8 @@ export interface TooltipActions {
 export interface TooltipBindings {
     trigger: {
         'aria-describedby': string
-        onMouseenter: () => void
-        onMouseleave: () => void
+        onPointerenter: () => void
+        onPointerleave: () => void
         onFocus: () => void
         onBlur: () => void
     }

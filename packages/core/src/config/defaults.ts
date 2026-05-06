@@ -5,7 +5,7 @@ export const defaults: Required<HeadlessUIConfig> = {
     scrollLock: 'padding',
     closeOnOutsideClick: true,
     closeOnEscape: true,
-    animationDuration: 1000,
+    animationDuration: 0,
     dir: 'ltr',
     idPrefix: 'headless',
 }

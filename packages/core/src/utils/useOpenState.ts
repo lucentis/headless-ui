@@ -11,7 +11,7 @@ export interface UseOpenStateOptions {
 
 export interface OpenState {
     isOpen: ComputedRef<boolean>
-    isPresent: ComputedRef<boolean>
+    isPresent: Ref<boolean>
     open: () => void
     close: () => void
     toggle: () => void
@@ -32,7 +32,7 @@ export function useOpenState(options: UseOpenStateOptions = {}): OpenState {
         isPresent,
         open: () => setOpen(true),
         close: () => setOpen(false),
-        toggle: () => setOpen(!value.value),
+        toggle: () => setOpen(!isOpen.value),
         setOpen,
     }
 }

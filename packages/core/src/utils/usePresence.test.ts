@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { defineComponent, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { usePresence } from './usePresence'
+import { provideConfig } from '../config'
 
 function createHost(initialOpen: boolean, animationDuration = 0) {
     const isOpen = ref(initialOpen)
@@ -31,12 +32,9 @@ function createHostWithDuration(initialOpen: boolean, duration: number) {
     const isOpen = ref(initialOpen)
     let exposed: ReturnType<typeof usePresence>
 
-    const { provideConfig } = await import('../config')
-
     const Host = defineComponent({
         setup() {
-            provideConfig({ animationDuration: duration })
-            exposed = usePresence(isOpen)
+            exposed = usePresence(isOpen, duration)
         },
         template: '<div />',
     })
@@ -82,9 +80,7 @@ describe('usePresence', () => {
 
             const Host = defineComponent({
                 setup() {
-                    const { provideConfig } = require('../config')
-                    provideConfig({ animationDuration: 300 })
-                    exposed = usePresence(isOpen)
+                    exposed = usePresence(isOpen, 300)
                 },
                 template: '<div />',
             })
@@ -102,9 +98,7 @@ describe('usePresence', () => {
 
             const Host = defineComponent({
                 setup() {
-                    const { provideConfig } = require('../config')
-                    provideConfig({ animationDuration: 300 })
-                    exposed = usePresence(isOpen)
+                    exposed = usePresence(isOpen, 300)
                 },
                 template: '<div />',
             })
@@ -122,13 +116,11 @@ describe('usePresence', () => {
 
             const Host = defineComponent({
                 setup() {
-                    const { provideConfig } = require('../config')
-                    provideConfig({ animationDuration: 300 })
-                    exposed = usePresence(isOpen)
+                    exposed = usePresence(isOpen, 200)
                 },
                 template: '<div />',
             })
-
+            
             const wrapper = mount(Host)
             isOpen.value = false
             await nextTick()
@@ -146,9 +138,7 @@ describe('usePresence', () => {
 
             const Host = defineComponent({
                 setup() {
-                    const { provideConfig } = require('../config')
-                    provideConfig({ animationDuration: 300 })
-                    exposed = usePresence(isOpen)
+                    exposed = usePresence(isOpen, 300)
                 },
                 template: '<div />',
             })

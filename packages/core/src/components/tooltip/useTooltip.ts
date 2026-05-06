@@ -1,6 +1,7 @@
-import { computed, toValue, onUnmounted } from 'vue'
+import { computed, onUnmounted } from 'vue'
 import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
+import { useDisabled } from '../../utils/useDisabled'
 import { useEscape } from '../../utils/useEscape'
 import type { UseTooltipProps, TooltipApi } from './types'
 
@@ -8,9 +9,13 @@ const DEFAULT_DELAY = 700
 const CLOSE_DELAY = 100
 
 export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
-    const isDisabled = computed(() => toValue(props.disabled) ?? false)
+    const isDisabled = useDisabled(props.disabled)
 
-    const { isOpen, isPresent, open: openState, close: closeState } = useOpenState()
+    const { isOpen, isPresent, open: openState, close: closeState } = useOpenState({
+        open: props.open,
+        defaultOpen: props.defaultOpen,
+        onOpenChange: props.onOpenChange,
+    })
 
     const contentId = useId('tooltip-content')
 

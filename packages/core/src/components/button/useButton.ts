@@ -1,8 +1,8 @@
-import { computed, toValue } from 'vue'
+import { useDisabled } from '../../utils/useDisabled'
 import type { UseButtonProps, ButtonApi } from './types'
 
 export function useButton(props: UseButtonProps = {}): ButtonApi {
-    const isDisabled = computed(() => toValue(props.disabled) ?? false)
+    const isDisabled = useDisabled(props.disabled)
 
     const state: ButtonApi['state'] = {
         get isDisabled() { return isDisabled.value },

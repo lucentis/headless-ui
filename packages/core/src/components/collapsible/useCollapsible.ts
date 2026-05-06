@@ -1,6 +1,7 @@
-import { computed, toValue } from 'vue'
+import { computed } from 'vue'
 import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
+import { useDisabled } from '../../utils/useDisabled'
 import type { UseCollapsibleProps, CollapsibleApi } from './types'
 
 export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi {
@@ -10,7 +11,7 @@ export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi 
         onOpenChange: props.onOpenChange,
     })
 
-    const isDisabled = computed(() => toValue(props.disabled) ?? false)
+    const isDisabled = useDisabled(props.disabled)
 
     const triggerId = useId('collapsible-trigger')
     const contentId = useId('collapsible-content')

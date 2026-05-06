@@ -98,6 +98,75 @@ interface CollapsibleApi extends ComponentApi<
 
 ---
 
+## State primitives
+
+These utilities handle the cross-cutting state patterns shared by all components.
+They are layered — each builds on the one below.
+
+### `useControllableState<T>`
+
+The foundation. Encapsulates the controlled/uncontrolled pattern that every
+stateful composable needs. Consumers do not care which mode they are in —
+`setValue` behaves correctly in both.
+
+```ts
+interface UseControllableStateOptions<T> {
+  value?: MaybeRef<T>      // controlled — consumer owns state
+  defaultValue: T          // uncontrolled — library owns state after mount
+  onChange?: (value: T) => void
+}
+
+const { value, setValue } = useControllableState({ value: props.open, defaultValue: false, onChange: props.onOpenChange })
+```
+
+Rules:
+- `isControlled` is determined once at setup time — do not switch modes at runtime
+- `setValue` bails out early if the new value equals the current value — no unnecessary updates or callbacks
+- Generic `T` handles `boolean`, `string`, and `string[]` without separate implementations
+
+### `useOpenState`
+
+Wraps `useControllableState<boolean>` for the common open/close pattern.
+Provides `isOpen`, `isPresent`, and the three actions.
+
+```ts
+const { isOpen, isPresent, open, close, toggle, setOpen } = useOpenState({
+  open: props.open,
+  defaultOpen: props.defaultOpen,
+  onOpenChange: props.onOpenChange,
+})
+```
+
+Used by: `useCollapsible`, `useDialog`, `usePopover`, `useAlert`, `useTooltip`.
+
+### `usePresence`
+
+Drives `isPresent`. When `isOpen` goes `false`, `isPresent` stays `true` for
+`animationDuration` milliseconds (from global config), then goes `false`.
+This keeps the element in the DOM long enough for exit animations to complete.
+
+```ts
+const isPresent = usePresence(isOpen) // Ref<boolean>
+```
+
+Rules:
+- `isOpen → true`: `isPresent` immediately `true`
+- `isOpen → false`: timer starts, `isPresent` goes `false` after `animationDuration`
+- If `isOpen` goes `true` again before the timer fires, the timer is cancelled
+- `animationDuration === 0` (default): no timer, `isPresent` mirrors `isOpen` exactly — zero cost
+
+The layering:
+
+```
+useControllableState<boolean>
+        ↓
+   useOpenState  →  usePresence (reads animationDuration from config)
+        ↓
+useCollapsible / useDialog / usePopover / useAlert / useTooltip
+```
+
+---
+
 ## Props (composable input)
 
 ### Input shape
@@ -170,14 +239,10 @@ onCheckedChange?: (value: boolean) => void
 ### isPresent
 
 `isPresent` stays true during exit animations, giving elements time to animate
-out before unmounting. Driven by `animationDuration` in global config.
+out before unmounting. Driven by `animationDuration` in global config via `usePresence`.
 
 If `animationDuration` is 0 (default), `isPresent` mirrors `isOpen` exactly —
 zero cost for consumers who do not animate.
-
-```ts
-// consumer uses isPresent for rendering, isOpen for animation state
-```
 
 ```vue
 <div
@@ -611,7 +676,8 @@ Flows through element props automatically. Consumer targets via CSS.
 
 ### isPresent
 
-Stays true during exit animation window. Driven by `animationDuration` config.
+Stays true during exit animation window. Driven by `animationDuration` config
+via `usePresence`, which is wired automatically through `useOpenState`.
 Default 0 — no cost for consumers who do not animate.
 
 ```vue
@@ -740,6 +806,9 @@ Each utility has a concrete use case driving its design.
 
 | Utility | Created when | Public |
 |---|---|---|
+| `useControllableState` | First component needing controlled/uncontrolled state | yes |
+| `useOpenState` | First component needing open/close boolean state | yes |
+| `usePresence` | First component needing exit animation support | yes |
 | `useId` | First component needing stable IDs | yes |
 | `useScrollLock` | Dialog | yes |
 | `useOutsideClick` | Dialog, Popover | yes |
@@ -768,25 +837,17 @@ Each utility has a concrete use case driving its design.
 
 ## Build order
 
-### Phase 1 — stateless primitives
+### Phase 1 — stateless primitives ✓
 `Button`, `Badge`, `Alert`, `Separator`, `VisuallyHidden`
 
-Validates the base contract with minimal complexity.
-
-### Phase 2 — single state components
+### Phase 2 — single state components ✓
 `Collapsible`, `Switch`, `Checkbox`
 
-Controlled/uncontrolled pattern. No children communication.
-
-### Phase 3 — compound components, no overlay
+### Phase 3 — compound components, no overlay ✓
 `Accordion`, `Tabs`, `RadioGroup`
 
-Context pattern. Multiple children. No portal or focus trap.
-
-### Phase 4 — overlays
-`Dialog`, `AlertDialog`, `Popover`, `Tooltip`
-
-Full stack — portal, focus trap, scroll lock, outside click, escape.
+### Phase 4 — overlays ✓
+`Dialog`, `Popover`, `Tooltip`
 
 ### Phase 5 — menus
 `DropdownMenu`, `ContextMenu`, `NavigationMenu`

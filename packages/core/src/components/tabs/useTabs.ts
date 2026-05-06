@@ -1,6 +1,7 @@
 import { computed, ref, toValue } from 'vue'
 import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
+import { useDisabled } from '../../utils/useDisabled'
 import type { UseTabsProps, TabsApi } from './types'
 
 export function useTabs(props: UseTabsProps = {}): TabsApi {
@@ -13,7 +14,7 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     const focusedValue = ref('')
     const orientation = computed(() => toValue(props.orientation) ?? 'horizontal')
     const activation = computed(() => toValue(props.activation) ?? 'automatic')
-    const isDisabled = computed(() => toValue(props.disabled) ?? false)
+    const isDisabled = useDisabled(props.disabled)
 
     const listId = useId('tabs-list')
 

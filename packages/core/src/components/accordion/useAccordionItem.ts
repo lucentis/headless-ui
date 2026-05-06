@@ -1,14 +1,14 @@
-import { computed, toValue } from 'vue'
+import { computed } from 'vue'
 import { useId } from '../../utils/useId'
+import { useDisabled } from '../../utils/useDisabled'
 import { useAccordionContext } from './AccordionContext'
 import type { UseAccordionItemProps, AccordionItemApi, AccordionApi } from './types'
 
 export function useAccordionItem(props: UseAccordionItemProps, accordion?: AccordionApi): AccordionItemApi {
     const accordionApi = accordion ?? useAccordionContext()
 
-    const isDisabled = computed(() =>
-        accordionApi.state.isDisabled || (toValue(props.disabled) ?? false)
-    )
+    const ownDisabled = useDisabled(props.disabled)
+    const isDisabled = computed(() => accordionApi.state.isDisabled || ownDisabled.value)
     const isExpanded = computed(() => accordionApi.actions.isExpanded(props.value))
 
     const triggerId = useId('accordion-trigger')
