@@ -66,9 +66,6 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
         'aria-labelledby': titleId,
         'aria-describedby': descriptionId,
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
-        onKeydown: (event: KeyboardEvent) => {
-            event.stopPropagation()
-        },
     }))
 
     const bindings: DialogApi['bindings'] = {

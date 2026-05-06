@@ -97,7 +97,9 @@ export function useFocusTrap(options: UseFocusTrapOptions): void {
     watch(active, (isActive) => {
         if (isActive) activate()
         else deactivate()
-    }, { immediate: true })
+
+        console.log(active.value)
+    }, { immediate: true,  flush: 'post' })
 
     onUnmounted(deactivate)
 }

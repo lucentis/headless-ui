@@ -23,17 +23,10 @@ const panel2 = useTabsPanel({ value: 'tab-2' }, tabs)
 const panel3 = useTabsPanel({ value: 'tab-3' }, tabs)
 
 const dialog = useDialog()
-const contentEl = ref<HTMLElement | null>(null)
-dialog.contentRef.value = contentEl.value
-
 
 const tooltip = useTooltip({ delayDuration: 500 })
 
 const popover = usePopover()
-const triggerEl = ref<HTMLElement | null>(null)
-const contentElPopover = ref<HTMLElement | null>(null)
-popover.triggerRef.value = triggerEl.value
-popover.contentRef.value = contentEl.value
 </script>
 
 <template>
@@ -114,7 +107,7 @@ popover.contentRef.value = contentEl.value
 
         <Teleport to="body">
             <template v-if="dialog.state.isPresent">
-            <!-- overlay -->
+                <!-- overlay -->
                 <div
                     v-bind="dialog.bindings.overlay"
                     style="position:fixed;inset:0;background:rgba(0,0,0,0.5)"
@@ -122,13 +115,16 @@ popover.contentRef.value = contentEl.value
 
                 <!-- content -->
                 <div
-                    ref="contentEl"
+                    :ref="el => { dialog.contentRef.value = el as HTMLElement | null }"
                     v-bind="dialog.bindings.content"
                     style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:24px"
                 >
                     <h2 v-bind="dialog.bindings.title">Dialog Title</h2>
                     <p v-bind="dialog.bindings.description">Dialog description for screen readers.</p>
                     <p>Dialog content goes here.</p>
+                    <button @click="dialog.actions.close">Close</button>
+                    <button @click="dialog.actions.close">Close</button>
+                    <button @click="dialog.actions.close">Close</button>
                     <button @click="dialog.actions.close">Close</button>
                 </div>
             </template>

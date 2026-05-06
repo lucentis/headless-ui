@@ -2,11 +2,10 @@ import { ref, watch, onUnmounted } from 'vue'
 import type { ComputedRef, Ref } from 'vue'
 import { useConfig } from '../config'
 
-export function usePresence(isOpen: ComputedRef<boolean> | Ref<boolean>, animationDuration: number): Ref<boolean> {
+export function usePresence(isOpen: ComputedRef<boolean> | Ref<boolean>, animationDuration?: number): Ref<boolean> {
     const config = useConfig()
     const isPresent = ref(isOpen.value)
 
-    console.log(config)
     let timer: ReturnType<typeof setTimeout> | null = null
 
     watch(isOpen, (open) => {
@@ -20,10 +19,9 @@ export function usePresence(isOpen: ComputedRef<boolean> | Ref<boolean>, animati
             isPresent.value = true
             return
         }
-        isPresent.value = true
 
         // exit — stay present for the animation window, then unmount
-        const duration = animationDuration || config.animationDuration
+        const duration = animationDuration ?? config.animationDuration
         if (duration === 0) {
             isPresent.value = false
             return
