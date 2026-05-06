@@ -1,5 +1,6 @@
-import { computed, ref, toValue, onUnmounted } from 'vue'
+import { computed, toValue, onUnmounted } from 'vue'
 import { useId } from '../../utils/useId'
+import { useOpenState } from '../../utils/useOpenState'
 import { useEscape } from '../../utils/useEscape'
 import type { UseTooltipProps, TooltipApi } from './types'
 
@@ -8,7 +9,8 @@ const CLOSE_DELAY = 100
 
 export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
     const isDisabled = computed(() => toValue(props.disabled) ?? false)
-    const isOpen = ref(false)
+
+    const { isOpen, isPresent, open: openState, close: closeState } = useOpenState()
 
     const contentId = useId('tooltip-content')
 
@@ -26,38 +28,30 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
         open() {
             if (isDisabled.value) return
             clearTimers()
-            isOpen.value = true
+            openState()
         },
-
         close() {
             clearTimers()
-            isOpen.value = false
+            closeState()
         },
     }
 
     function openWithDelay() {
         if (isDisabled.value) return
-
         clearTimers()
 
         const delay = props.delayDuration ?? DEFAULT_DELAY
-
         if (delay === 0) {
             actions.open()
             return
         }
 
-        openTimer = setTimeout(() => {
-            actions.open()
-        }, delay)
+        openTimer = setTimeout(actions.open, delay)
     }
 
     function closeWithDelay() {
         clearTimers()
-
-        closeTimer = setTimeout(() => {
-            actions.close()
-        }, CLOSE_DELAY)
+        closeTimer = setTimeout(actions.close, CLOSE_DELAY)
     }
 
     useEscape({
@@ -68,26 +62,16 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
     onUnmounted(clearTimers)
 
     const state: TooltipApi['state'] = {
-        get isOpen() {
-            return isOpen.value
-        },
-        get isPresent() {
-            return isOpen.value
-        },
-        get isDisabled() {
-            return isDisabled.value
-        },
-        get contentId() {
-            return contentId
-        },
+        get isOpen() { return isOpen.value },
+        get isPresent() { return isPresent.value },
+        get isDisabled() { return isDisabled.value },
+        get contentId() { return contentId },
     }
 
     const triggerBindings = computed(() => ({
         'aria-describedby': contentId,
-
         onPointerenter: openWithDelay,
         onPointerleave: closeWithDelay,
-
         onFocus: openWithDelay,
         onBlur: closeWithDelay,
     }))
@@ -95,19 +79,13 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
     const contentBindings = computed(() => ({
         id: contentId,
         role: 'tooltip' as const,
-        'data-state': isOpen.value ? 'open' : 'closed',
+        'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
     }))
 
-    return {
-        state,
-        actions,
-        bindings: {
-            get trigger() {
-                return triggerBindings.value
-            },
-            get content() {
-                return contentBindings.value
-            },
-        },
+    const bindings: TooltipApi['bindings'] = {
+        get trigger() { return triggerBindings.value },
+        get content() { return contentBindings.value },
     }
+
+    return { state, actions, bindings }
 }

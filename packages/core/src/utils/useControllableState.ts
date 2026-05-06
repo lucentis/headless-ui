@@ -14,13 +14,14 @@ export interface ControllableState<T> {
 
 export function useControllableState<T>(options: UseControllableStateOptions<T>): ControllableState<T> {
     const isControlled = options.value !== undefined
-    const internal = ref(options.defaultValue) as ReturnType<typeof ref<T>>
+    const internal = ref<T>(options.defaultValue)
 
     const value = computed<T>(() =>
         isControlled ? toValue(options.value) as T : internal.value as T
     )
 
     function setValue(next: T): void {
+        if (next === value.value) return
         if (!isControlled) internal.value = next as typeof internal.value
         options.onChange?.(next)
     }

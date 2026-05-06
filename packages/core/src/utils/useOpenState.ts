@@ -1,6 +1,7 @@
 import { computed } from 'vue'
 import type { ComputedRef, MaybeRef } from 'vue'
 import { useControllableState } from './useControllableState'
+import { usePresence } from './usePresence'
 
 export interface UseOpenStateOptions {
     open?: MaybeRef<boolean>
@@ -18,17 +19,13 @@ export interface OpenState {
 }
 
 export function useOpenState(options: UseOpenStateOptions = {}): OpenState {
-    const { value, setValue: setOpen } = useControllableState({
+    const { value: isOpen, setValue: setOpen } = useControllableState({
         value: options.open,
         defaultValue: options.defaultOpen ?? false,
         onChange: options.onOpenChange,
     })
 
-    const isOpen = computed(() => value.value)
-
-    // isPresent will be replaced by usePresence once built —
-    // for now mirrors isOpen since animationDuration defaults to 0
-    const isPresent = computed(() => value.value)
+    const isPresent = usePresence(isOpen)
 
     return {
         isOpen,
