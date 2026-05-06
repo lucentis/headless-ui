@@ -1,25 +1,22 @@
 import { computed, toValue } from 'vue'
-import { useControllableState } from '../../utils/useControllableState'
+import { useOpenState } from '../../utils/useOpenState'
 import type { UseAlertProps, AlertApi } from './types'
 
 export function useAlert(props: UseAlertProps = {}): AlertApi {
-    const { value: isOpen, setValue: setOpen } = useControllableState({
-        value: props.open,
-        defaultValue: props.defaultOpen ?? false,
-        onChange: props.onOpenChange,
+    const { isOpen, isPresent, open, close } = useOpenState({
+        open: props.open,
+        defaultOpen: props.defaultOpen,
+        onOpenChange: props.onOpenChange,
     })
 
     const role = computed(() => toValue(props.role) ?? 'status')
 
     const state: AlertApi['state'] = {
         get isOpen() { return isOpen.value },
-        get isPresent() { return isOpen.value },
+        get isPresent() { return isPresent.value },
     }
 
-    const actions: AlertApi['actions'] = {
-        open: () => setOpen(true),
-        close: () => setOpen(false),
-    }
+    const actions: AlertApi['actions'] = { open, close }
 
     const rootBindings = computed(() => ({
         role: role.value,

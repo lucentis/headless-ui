@@ -1,6 +1,6 @@
 import { computed, ref, toValue, watch } from 'vue'
 import { useId } from '../../utils/useId'
-import { useControllableState } from '../../utils/useControllableState'
+import { useOpenState } from '../../utils/useOpenState'
 import { useScrollLock } from '../../utils/useScrollLock'
 import { useFocusTrap } from '../../utils/useFocusTrap'
 import { useEscape } from '../../utils/useEscape'
@@ -10,10 +10,10 @@ import type { UseDialogProps, DialogApi } from './types'
 export function useDialog(props: UseDialogProps = {}): DialogApi {
     const config = useConfig()
 
-    const { value: isOpen, setValue: setOpen } = useControllableState({
-        value: props.open,
-        defaultValue: props.defaultOpen ?? false,
-        onChange: props.onOpenChange,
+    const { isOpen, isPresent, open, close } = useOpenState({
+        open: props.open,
+        defaultOpen: props.defaultOpen,
+        onOpenChange: props.onOpenChange,
     })
 
     const isModal = computed(() => toValue(props.modal) ?? true)
@@ -23,10 +23,7 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
 
     const contentRef = ref<HTMLElement | null>(null)
 
-    const actions: DialogApi['actions'] = {
-        open: () => setOpen(true),
-        close: () => setOpen(false),
-    }
+    const actions: DialogApi['actions'] = { open, close }
 
     const { lock, unlock } = useScrollLock()
     watch(
@@ -49,7 +46,7 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
 
     const state: DialogApi['state'] = {
         get isOpen() { return isOpen.value },
-        get isPresent() { return isOpen.value },
+        get isPresent() { return isPresent.value },
         get isModal() { return isModal.value },
         get titleId() { return titleId },
         get descriptionId() { return descriptionId },

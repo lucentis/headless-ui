@@ -1,32 +1,29 @@
-import { computed, ref, toValue } from 'vue'
+import { computed, toValue } from 'vue'
 import { useId } from '../../utils/useId'
-import { useControllableState } from '../../utils/useControllableState'
+import { useOpenState } from '../../utils/useOpenState'
 import type { UseCollapsibleProps, CollapsibleApi } from './types'
 
 export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi {
-    const { value: isOpen, setValue: setOpen } = useControllableState({
-        value: props.open,
-        defaultValue: props.defaultOpen ?? false,
-        onChange: props.onOpenChange,
+    const { isOpen, isPresent, open, close, toggle } = useOpenState({
+        open: props.open,
+        defaultOpen: props.defaultOpen,
+        onOpenChange: props.onOpenChange,
     })
 
     const isDisabled = computed(() => toValue(props.disabled) ?? false)
+
     const triggerId = useId('collapsible-trigger')
     const contentId = useId('collapsible-content')
 
     const state: CollapsibleApi['state'] = {
         get isOpen() { return isOpen.value },
-        get isPresent() { return isOpen.value },
+        get isPresent() { return isPresent.value },
         get isDisabled() { return isDisabled.value },
         get triggerId() { return triggerId },
         get contentId() { return contentId },
     }
 
-    const actions: CollapsibleApi['actions'] = {
-        open: () => setOpen(true),
-        close: () => setOpen(false),
-        toggle: () => setOpen(!isOpen.value),
-    }
+    const actions: CollapsibleApi['actions'] = { open, close, toggle }
 
     const triggerBindings = computed(() => ({
         id: triggerId,
@@ -36,7 +33,7 @@ export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi 
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
         onClick: () => {
-            if (!isDisabled.value) actions.toggle()
+            if (!isDisabled.value) toggle()
         },
     }))
 

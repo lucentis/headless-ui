@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 import { useId } from '../../utils/useId'
-import { useControllableState } from '../../utils/useControllableState'
+import { useOpenState } from '../../utils/useOpenState'
 import { useEscape } from '../../utils/useEscape'
 import { useOutsideClick } from '../../utils/useOutsideClick'
 import { useConfig } from '../../config'
@@ -9,10 +9,10 @@ import type { UsePopoverProps, PopoverApi } from './types'
 export function usePopover(props: UsePopoverProps = {}): PopoverApi {
     const config = useConfig()
 
-    const { value: isOpen, setValue: setOpen } = useControllableState({
-        value: props.open,
-        defaultValue: props.defaultOpen ?? false,
-        onChange: props.onOpenChange,
+    const { isOpen, isPresent, open, close, toggle } = useOpenState({
+        open: props.open,
+        defaultOpen: props.defaultOpen,
+        onOpenChange: props.onOpenChange,
     })
 
     const triggerId = useId('popover-trigger')
@@ -21,11 +21,7 @@ export function usePopover(props: UsePopoverProps = {}): PopoverApi {
     const triggerRef = ref<HTMLElement | null>(null)
     const contentRef = ref<HTMLElement | null>(null)
 
-    const actions: PopoverApi['actions'] = {
-        open: () => setOpen(true),
-        close: () => setOpen(false),
-        toggle: () => setOpen(!isOpen.value),
-    }
+    const actions: PopoverApi['actions'] = { open, close, toggle }
 
     useEscape({
         active: isOpen,
@@ -44,7 +40,7 @@ export function usePopover(props: UsePopoverProps = {}): PopoverApi {
 
     const state: PopoverApi['state'] = {
         get isOpen() { return isOpen.value },
-        get isPresent() { return isOpen.value },
+        get isPresent() { return isPresent.value },
         get triggerId() { return triggerId },
         get contentId() { return contentId },
     }
