@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover } from '@lucentis/headless-ui-core'
+import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover, useMenu } from '@lucentis/headless-ui-core'
 import { ref } from 'vue';
 
 const isLoading = ref(false)
@@ -27,6 +27,8 @@ const dialog = useDialog()
 const tooltip = useTooltip({ delayDuration: 500 })
 
 const popover = usePopover()
+
+const menu = useMenu()
 </script>
 
 <template>
@@ -166,6 +168,38 @@ const popover = usePopover()
             <button @click="popover.actions.close">Close</button>
         </div>
     </div>
+
+
+    <!-- dropdown menu -->
+    <div class="" style="position: relative;display:inline-block">
+        <button
+            :ref="el => { menu.triggerRef.value = el as HTMLElement }"
+            v-bind="menu.bindings.trigger"
+        >
+            Options
+        </button>
+
+        <div
+            v-if="menu.state.isPresent"
+                :ref="el => { menu.contentRef.value = el as HTMLElement }"
+                v-bind="menu.bindings.content"
+                style="position:absolute;left:0;top: 20px;background:white;border:1px solid #ccc;padding:16px;border-radius:8px"
+            >
+            <div v-bind="menu.bindings.getItemProps('edit', { onClick: () => console.log('edit') })"
+                style="padding:8px 16px;cursor:pointer">
+                Edit
+            </div>
+            <div v-bind="menu.bindings.getItemProps('delete', { onClick: () => console.log('delete') })"
+                style="padding:8px 16px;cursor:pointer">
+                Delete
+            </div>
+            <div v-bind="menu.bindings.getItemProps('disabled-item', { disabled: true })"
+                style="padding:8px 16px;opacity:0.5">
+                Disabled
+            </div>
+        </div>
+    </div>
+
 
 </template>
 
