@@ -5,7 +5,7 @@ import type { UseAlertProps, AlertApi } from './types'
 export function useAlert(props: UseAlertProps = {}): AlertApi {
     const { isOpen, isPresent, open, close } = useOpenState({
         open: props.open,
-        defaultOpen: props.defaultOpen,
+        defaultOpen: props.defaultOpen ?? true,
         onOpenChange: props.onOpenChange,
     })
 

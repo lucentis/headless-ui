@@ -26,5 +26,7 @@ export function useControllableState<T>(options: UseControllableStateOptions<T>)
         options.onChange?.(next)
     }
 
+    console.log('controlled', value.value);
+    
     return { value, setValue }
 }
