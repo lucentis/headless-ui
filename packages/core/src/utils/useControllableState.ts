@@ -25,8 +25,6 @@ export function useControllableState<T>(options: UseControllableStateOptions<T>)
         if (!isControlled) internal.value = next as typeof internal.value
         options.onChange?.(next)
     }
-
-    console.log('controlled', value.value);
     
     return { value, setValue }
 }

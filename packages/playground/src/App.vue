@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover, useMenu } from '@lucentis/headless-ui-core'
+import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover, useMenu, useListbox } from '@lucentis/headless-ui-core'
 import { ref } from 'vue';
 
 const isLoading = ref(false)
@@ -29,6 +29,8 @@ const tooltip = useTooltip({ delayDuration: 500 })
 const popover = usePopover()
 
 const menu = useMenu()
+
+const listbox = useListbox({ defaultValue: 'option-1' })
 </script>
 
 <template>
@@ -170,7 +172,7 @@ const menu = useMenu()
     </div>
 
 
-    <!-- dropdown menu -->
+    <!-- menu -->
     <div class="" style="position: relative;display:inline-block">
         <button
             :ref="el => { menu.triggerRef.value = el as HTMLElement }"
@@ -200,6 +202,22 @@ const menu = useMenu()
         </div>
     </div>
 
+    <!-- listbox -->
+    <div 
+        v-bind="listbox.bindings.root" 
+        style="border:1px solid #ccc;width:200px"
+        :ref="el => { listbox.rootRef.value = el as HTMLElement }"
+    >
+        <div
+        v-for="option in ['option-1', 'option-2', 'option-3']"
+        :key="option"
+        v-bind="listbox.bindings.getOptionProps(option)"
+        style="padding:8px 16px;cursor:pointer"
+        :style="listbox.actions.isSelected(option) ? { background: '#e0e7ff' } : {}"
+        >
+        {{ option }}
+        </div>
+    </div>
 
 </template>
 
