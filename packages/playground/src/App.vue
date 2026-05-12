@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover, useMenu, useListbox } from '@lucentis/headless-ui-core'
+import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover, useMenu, useListbox, useListboxOption } from '@lucentis/headless-ui-core'
 import { ref } from 'vue';
 
 const isLoading = ref(false)
@@ -31,6 +31,10 @@ const popover = usePopover()
 const menu = useMenu()
 
 const listbox = useListbox({ defaultValue: 'option-1' })
+
+const option1 = useListboxOption({ value: 'option-1' }, listbox)
+const option2 = useListboxOption({ value: 'option-2' }, listbox)
+const option3 = useListboxOption({ value: 'option-3' }, listbox)
 </script>
 
 <template>
@@ -203,20 +207,14 @@ const listbox = useListbox({ defaultValue: 'option-1' })
     </div>
 
     <!-- listbox -->
-    <div 
-        v-bind="listbox.bindings.root" 
-        style="border:1px solid #ccc;width:200px"
+    <div
         :ref="el => { listbox.rootRef.value = el as HTMLElement }"
+        v-bind="listbox.bindings.root"
+        style="border:1px solid #ccc;width:200px"
     >
-        <div
-        v-for="option in ['option-1', 'option-2', 'option-3']"
-        :key="option"
-        v-bind="listbox.bindings.getOptionProps(option)"
-        style="padding:8px 16px;cursor:pointer"
-        :style="listbox.actions.isSelected(option) ? { background: '#e0e7ff' } : {}"
-        >
-        {{ option }}
-        </div>
+        <div v-bind="option1.bindings" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-1') ? { background: '#e0e7ff' } : {}">Option 1</div>
+        <div v-bind="option2.bindings" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-2') ? { background: '#e0e7ff' } : {}">Option 2</div>
+        <div v-bind="option3.bindings" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-3') ? { background: '#e0e7ff' } : {}">Option 3</div>
     </div>
 
 </template>
@@ -224,5 +222,9 @@ const listbox = useListbox({ defaultValue: 'option-1' })
 <style scoped>
 div {
     padding: 5px 10px
+}
+
+#listbox:focus {
+    border: 2px solid red
 }
 </style>

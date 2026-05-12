@@ -163,14 +163,15 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
                 'data-disabled': isOptionDisabled ? ('' as const) : undefined,
                 'data-active': isActive ? ('' as const) : undefined,
                 'data-selected': isSelected ? ('' as const) : undefined,
-                // focus listbox root on mousedown so keyboard navigation works immediately
-                onMousedown: (event: MouseEvent) => {
-                    event.preventDefault()
-                    rootRef.value?.focus()
-                },
+                onMousedown: (event: MouseEvent) => event.preventDefault(),
                 onClick: composeHandlers(
                     isOptionDisabled ? undefined : userProps?.onClick,
-                    () => { if (!isOptionDisabled && !isDisabled.value) actions.toggle(optionValue) }
+                    () => {
+                        if (!isOptionDisabled && !isDisabled.value) {
+                            rootRef.value?.focus()
+                            actions.toggle(optionValue)
+                        }
+                    }
                 ),
                 onMouseenter: () => {
                     if (!isOptionDisabled && !isDisabled.value) actions.activate(optionValue)

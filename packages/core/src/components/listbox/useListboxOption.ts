@@ -1,5 +1,4 @@
 import { computed, onMounted, onUnmounted, toValue } from 'vue'
-import { useId } from '../../utils/useId'
 import { useListboxContext } from './ListboxContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import type { UseListboxOptionProps, ListboxOptionApi, ListboxApi } from './types'
@@ -13,7 +12,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
     const isSelected = computed(() => listboxApi.actions.isSelected(props.value))
     const isActive = computed(() => listboxApi.actions.isActive(props.value))
 
-    const optionId = useId('listbox-option')
+    const optionId = `${listboxApi.state.listboxId}-option-${props.value}`
 
     // register on mount, unregister on unmount — maintains DOM order in registry
     onMounted(() => listboxApi.registerOption(props.value))
@@ -34,11 +33,15 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-active': isActive.value ? ('' as const) : undefined,
         'data-selected': isSelected.value ? ('' as const) : undefined,
-        // prevent focus from leaving the listbox root on click
         onMousedown: (event: MouseEvent) => event.preventDefault(),
         onClick: composeHandlers(
             undefined,
-            () => { if (!isDisabled.value) listboxApi.actions.toggle(props.value) }
+            () => {
+                if (!isDisabled.value) {
+                    listboxApi.rootRef.value?.focus()
+                    listboxApi.actions.toggle(props.value)
+                }
+            }
         ),
         onMouseenter: () => {
             if (!isDisabled.value) listboxApi.actions.activate(props.value)

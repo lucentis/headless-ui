@@ -427,9 +427,9 @@ describe('useListboxOption', () => {
             expect(state.isDisabled).toBe(true)
         })
 
-        it('optionId is a stable string', () => {
-            const { state } = createOptionHost({}, { value: 'option-1' })
-            expect(typeof state.optionId).toBe('string')
+        it('optionId matches listbox aria-activedescendant format', () => {
+            const { state, listbox } = createOptionHost({}, { value: 'option-1' })
+            expect(state.optionId).toBe(`${listbox.state.listboxId}-option-option-1`)
         })
     })
 
