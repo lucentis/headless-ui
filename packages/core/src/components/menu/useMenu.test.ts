@@ -43,9 +43,9 @@ describe('useMenu', () => {
             wrapper.unmount()
         })
 
-        it('activeValue defaults to null', () => {
+        it('highlightValue defaults to null', () => {
             const { state, wrapper } = createHost()
-            expect(state.activeValue).toBeNull()
+            expect(state.highlightValue).toBeNull()
             wrapper.unmount()
         })
 
@@ -95,14 +95,14 @@ describe('useMenu', () => {
             wrapper.unmount()
         })
 
-        it('close resets activeValue to null', async () => {
+        it('close resets highlightValue to null', async () => {
             const { state, actions, wrapper } = createHost({ defaultOpen: true })
-            actions.activate('item-1')
+            actions.highlight('item-1')
             await nextTick()
-            expect(state.activeValue).toBe('item-1')
+            expect(state.highlightValue).toBe('item-1')
             actions.close()
             await nextTick()
-            expect(state.activeValue).toBeNull()
+            expect(state.highlightValue).toBeNull()
             wrapper.unmount()
         })
 
@@ -125,108 +125,108 @@ describe('useMenu', () => {
     })
 
     describe('actions — navigation', () => {
-        it('activate sets activeValue', async () => {
+        it('highlight sets highlightValue', async () => {
             const { state, actions, wrapper } = createHost()
-            actions.activate('item-1')
+            actions.highlight('item-1')
             await nextTick()
-            expect(state.activeValue).toBe('item-1')
+            expect(state.highlightValue).toBe('item-1')
             wrapper.unmount()
         })
 
         it('isActive returns true for active item', async () => {
             const { actions, wrapper } = createHost()
-            actions.activate('item-1')
+            actions.highlight('item-1')
             await nextTick()
             expect(actions.isActive('item-1')).toBe(true)
             expect(actions.isActive('item-2')).toBe(false)
             wrapper.unmount()
         })
 
-        it('activateFirst activates first registered item', async () => {
+        it('highlightFirst highlights first registered item', async () => {
             const { state, actions, registerItem, wrapper } = createHost()
             registerItem('item-1')
             registerItem('item-2')
             registerItem('item-3')
-            actions.activateFirst()
+            actions.highlightFirst()
             await nextTick()
-            expect(state.activeValue).toBe('item-1')
+            expect(state.highlightValue).toBe('item-1')
             wrapper.unmount()
         })
 
-        it('activateLast activates last registered item', async () => {
+        it('highlightLast highlights last registered item', async () => {
             const { state, actions, registerItem, wrapper } = createHost()
             registerItem('item-1')
             registerItem('item-2')
             registerItem('item-3')
-            actions.activateLast()
+            actions.highlightLast()
             await nextTick()
-            expect(state.activeValue).toBe('item-3')
+            expect(state.highlightValue).toBe('item-3')
             wrapper.unmount()
         })
 
-        it('activateNext moves to next item', async () => {
+        it('highlightNext moves to next item', async () => {
             const { state, actions, registerItem, wrapper } = createHost()
             registerItem('item-1')
             registerItem('item-2')
             registerItem('item-3')
-            actions.activate('item-1')
-            actions.activateNext()
+            actions.highlight('item-1')
+            actions.highlightNext()
             await nextTick()
-            expect(state.activeValue).toBe('item-2')
+            expect(state.highlightValue).toBe('item-2')
             wrapper.unmount()
         })
 
-        it('activateNext does not go past last item', async () => {
+        it('highlightNext does not go past last item', async () => {
             const { state, actions, registerItem, wrapper } = createHost()
             registerItem('item-1')
             registerItem('item-2')
-            actions.activate('item-2')
-            actions.activateNext()
+            actions.highlight('item-2')
+            actions.highlightNext()
             await nextTick()
-            expect(state.activeValue).toBe('item-2')
+            expect(state.highlightValue).toBe('item-2')
             wrapper.unmount()
         })
 
-        it('activatePrev moves to previous item', async () => {
+        it('highlightPrev moves to previous item', async () => {
             const { state, actions, registerItem, wrapper } = createHost()
             registerItem('item-1')
             registerItem('item-2')
             registerItem('item-3')
-            actions.activate('item-3')
-            actions.activatePrev()
+            actions.highlight('item-3')
+            actions.highlightPrev()
             await nextTick()
-            expect(state.activeValue).toBe('item-2')
+            expect(state.highlightValue).toBe('item-2')
             wrapper.unmount()
         })
 
-        it('activatePrev does not go past first item', async () => {
+        it('highlightPrev does not go past first item', async () => {
             const { state, actions, registerItem, wrapper } = createHost()
             registerItem('item-1')
             registerItem('item-2')
-            actions.activate('item-1')
-            actions.activatePrev()
+            actions.highlight('item-1')
+            actions.highlightPrev()
             await nextTick()
-            expect(state.activeValue).toBe('item-1')
+            expect(state.highlightValue).toBe('item-1')
             wrapper.unmount()
         })
 
-        it('activateNext from null activates first item', async () => {
+        it('highlightNext from null highlights first item', async () => {
             const { state, actions, registerItem, wrapper } = createHost()
             registerItem('item-1')
             registerItem('item-2')
-            actions.activateNext()
+            actions.highlightNext()
             await nextTick()
-            expect(state.activeValue).toBe('item-1')
+            expect(state.highlightValue).toBe('item-1')
             wrapper.unmount()
         })
 
-        it('activatePrev from null activates last item', async () => {
+        it('highlightPrev from null highlights last item', async () => {
             const { state, actions, registerItem, wrapper } = createHost()
             registerItem('item-1')
             registerItem('item-2')
-            actions.activatePrev()
+            actions.highlightPrev()
             await nextTick()
-            expect(state.activeValue).toBe('item-2')
+            expect(state.highlightValue).toBe('item-2')
             wrapper.unmount()
         })
     })
@@ -236,7 +236,7 @@ describe('useMenu', () => {
             const { actions, registerItem, wrapper } = createHost()
             registerItem('item-1')
             registerItem('item-2')
-            actions.activateFirst()
+            actions.highlightFirst()
             await nextTick()
             expect(actions.isActive('item-1')).toBe(true)
             wrapper.unmount()
@@ -247,7 +247,7 @@ describe('useMenu', () => {
             registerItem('item-1')
             registerItem('item-2')
             unregisterItem('item-1')
-            actions.activateFirst()
+            actions.highlightFirst()
             await nextTick()
             expect(actions.isActive('item-2')).toBe(true)
             wrapper.unmount()
@@ -257,7 +257,7 @@ describe('useMenu', () => {
             const { actions, registerItem, wrapper } = createHost()
             registerItem('item-1')
             registerItem('item-1')
-            actions.activateFirst()
+            actions.highlightFirst()
             await nextTick()
             expect(actions.isActive('item-1')).toBe(true)
             wrapper.unmount()
@@ -311,56 +311,56 @@ describe('useMenu', () => {
             wrapper.unmount()
         })
 
-        it('aria-activedescendant reflects activeValue', async () => {
+        it('aria-activedescendant reflects highlightValue', async () => {
             const { bindings, actions, state, wrapper } = createHost()
             expect(bindings.content['aria-activedescendant']).toBeUndefined()
-            actions.activate('item-1')
+            actions.highlight('item-1')
             await nextTick()
             expect(bindings.content['aria-activedescendant']).toBe(`${state.contentId}-item-item-1`)
             wrapper.unmount()
         })
 
-        it('ArrowDown activates next item', async () => {
+        it('ArrowDown highlights next item', async () => {
             const { state, bindings, registerItem, wrapper } = createHost({ defaultOpen: true })
             registerItem('item-1')
             registerItem('item-2')
             bindings.content.onKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown' }))
             await nextTick()
-            expect(state.activeValue).toBe('item-1')
+            expect(state.highlightValue).toBe('item-1')
             wrapper.unmount()
         })
 
-        it('ArrowUp activates prev item', async () => {
+        it('ArrowUp highlights prev item', async () => {
             const { state, actions, bindings, registerItem, wrapper } = createHost({ defaultOpen: true })
             registerItem('item-1')
             registerItem('item-2')
-            actions.activate('item-2')
+            actions.highlight('item-2')
             bindings.content.onKeydown(new KeyboardEvent('keydown', { key: 'ArrowUp' }))
             await nextTick()
-            expect(state.activeValue).toBe('item-1')
+            expect(state.highlightValue).toBe('item-1')
             wrapper.unmount()
         })
 
-        it('Home activates first item', async () => {
+        it('Home highlights first item', async () => {
             const { state, actions, bindings, registerItem, wrapper } = createHost({ defaultOpen: true })
             registerItem('item-1')
             registerItem('item-2')
             registerItem('item-3')
-            actions.activate('item-3')
+            actions.highlight('item-3')
             bindings.content.onKeydown(new KeyboardEvent('keydown', { key: 'Home' }))
             await nextTick()
-            expect(state.activeValue).toBe('item-1')
+            expect(state.highlightValue).toBe('item-1')
             wrapper.unmount()
         })
 
-        it('End activates last item', async () => {
+        it('End highlights last item', async () => {
             const { state, bindings, registerItem, wrapper } = createHost({ defaultOpen: true })
             registerItem('item-1')
             registerItem('item-2')
             registerItem('item-3')
             bindings.content.onKeydown(new KeyboardEvent('keydown', { key: 'End' }))
             await nextTick()
-            expect(state.activeValue).toBe('item-3')
+            expect(state.highlightValue).toBe('item-3')
             wrapper.unmount()
         })
 
@@ -385,7 +385,7 @@ describe('useMenu', () => {
 
         it('data-highlight is set when item is active', async () => {
             const { bindings, actions, wrapper } = createHost()
-            actions.activate('edit')
+            actions.highlight('edit')
             await nextTick()
             const itemProps = bindings.getItemProps('edit')
             expect(itemProps['data-highlight']).toBe('')
@@ -432,12 +432,12 @@ describe('useMenu', () => {
             wrapper.unmount()
         })
 
-        it('onMouseenter activates item', async () => {
+        it('onMouseenter highlights item', async () => {
             const { state, bindings, wrapper } = createHost()
             const itemProps = bindings.getItemProps('edit')
             itemProps.onMouseenter()
             await nextTick()
-            expect(state.activeValue).toBe('edit')
+            expect(state.highlightValue).toBe('edit')
             wrapper.unmount()
         })
 
@@ -446,7 +446,7 @@ describe('useMenu', () => {
             const itemProps = bindings.getItemProps('edit', { disabled: true })
             itemProps.onMouseenter()
             await nextTick()
-            expect(state.activeValue).toBeNull()
+            expect(state.highlightValue).toBeNull()
             wrapper.unmount()
         })
     })

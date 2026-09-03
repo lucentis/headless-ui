@@ -73,9 +73,9 @@ describe('useListbox', () => {
             expect(state.value).toBe('option-2')
         })
 
-        it('activeValue defaults to null', () => {
+        it('highlightValue defaults to null', () => {
             const { state } = createListboxHost()
-            expect(state.activeValue).toBeNull()
+            expect(state.highlightValue).toBeNull()
         })
 
         it('isDisabled defaults to false', () => {
@@ -189,50 +189,50 @@ describe('useListbox', () => {
     })
 
     describe('actions — navigation', () => {
-        it('activate sets activeValue', async () => {
+        it('highlight sets highlightValue', async () => {
             const { state, actions } = createListboxHost()
-            actions.activate('option-1')
+            actions.highlight('option-1')
             await nextTick()
-            expect(state.activeValue).toBe('option-1')
+            expect(state.highlightValue).toBe('option-1')
         })
 
-        it('activateFirst activates first registered option', async () => {
+        it('highlightFirst highlights first registered option', async () => {
             const { state, actions, registerOption } = createListboxHost()
             registerOption('option-1')
             registerOption('option-2')
-            actions.activateFirst()
+            actions.highlightFirst()
             await nextTick()
-            expect(state.activeValue).toBe('option-1')
+            expect(state.highlightValue).toBe('option-1')
         })
 
-        it('activateLast activates last registered option', async () => {
+        it('highlightLast highlights last registered option', async () => {
             const { state, actions, registerOption } = createListboxHost()
             registerOption('option-1')
             registerOption('option-2')
             registerOption('option-3')
-            actions.activateLast()
+            actions.highlightLast()
             await nextTick()
-            expect(state.activeValue).toBe('option-3')
+            expect(state.highlightValue).toBe('option-3')
         })
 
-        it('activateNext moves to next option', async () => {
+        it('highlightNext moves to next option', async () => {
             const { state, actions, registerOption } = createListboxHost()
             registerOption('option-1')
             registerOption('option-2')
-            actions.activate('option-1')
-            actions.activateNext()
+            actions.highlight('option-1')
+            actions.highlightNext()
             await nextTick()
-            expect(state.activeValue).toBe('option-2')
+            expect(state.highlightValue).toBe('option-2')
         })
 
-        it('activatePrev moves to previous option', async () => {
+        it('highlightPrev moves to previous option', async () => {
             const { state, actions, registerOption } = createListboxHost()
             registerOption('option-1')
             registerOption('option-2')
-            actions.activate('option-2')
-            actions.activatePrev()
+            actions.highlight('option-2')
+            actions.highlightPrev()
             await nextTick()
-            expect(state.activeValue).toBe('option-1')
+            expect(state.highlightValue).toBe('option-1')
         })
     })
 
@@ -272,29 +272,29 @@ describe('useListbox', () => {
             expect(bindings.root['aria-orientation']).toBe('horizontal')
         })
 
-        it('ArrowDown activates next option', async () => {
+        it('ArrowDown highlights next option', async () => {
             const { state, bindings, registerOption } = createListboxHost()
             registerOption('option-1')
             registerOption('option-2')
             bindings.root.onKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown' }))
             await nextTick()
-            expect(state.activeValue).toBe('option-1')
+            expect(state.highlightValue).toBe('option-1')
         })
 
-        it('ArrowUp activates prev option', async () => {
+        it('ArrowUp highlights prev option', async () => {
             const { state, actions, bindings, registerOption } = createListboxHost()
             registerOption('option-1')
             registerOption('option-2')
-            actions.activate('option-2')
+            actions.highlight('option-2')
             bindings.root.onKeydown(new KeyboardEvent('keydown', { key: 'ArrowUp' }))
             await nextTick()
-            expect(state.activeValue).toBe('option-1')
+            expect(state.highlightValue).toBe('option-1')
         })
 
         it('Enter toggles active option', async () => {
             const { actions, bindings, registerOption } = createListboxHost()
             registerOption('option-1')
-            actions.activate('option-1')
+            actions.highlight('option-1')
             bindings.root.onKeydown(new KeyboardEvent('keydown', { key: 'Enter' }))
             await nextTick()
             expect(actions.isSelected('option-1')).toBe(true)
@@ -303,29 +303,29 @@ describe('useListbox', () => {
         it('Space toggles active option', async () => {
             const { actions, bindings, registerOption } = createListboxHost()
             registerOption('option-1')
-            actions.activate('option-1')
+            actions.highlight('option-1')
             bindings.root.onKeydown(new KeyboardEvent('keydown', { key: ' ' }))
             await nextTick()
             expect(actions.isSelected('option-1')).toBe(true)
         })
 
-        it('ArrowLeft activates prev in horizontal mode', async () => {
+        it('ArrowLeft highlights prev in horizontal mode', async () => {
             const { state, actions, bindings, registerOption } = createListboxHost({ orientation: 'horizontal' })
             registerOption('option-1')
             registerOption('option-2')
-            actions.activate('option-2')
+            actions.highlight('option-2')
             bindings.root.onKeydown(new KeyboardEvent('keydown', { key: 'ArrowLeft' }))
             await nextTick()
-            expect(state.activeValue).toBe('option-1')
+            expect(state.highlightValue).toBe('option-1')
         })
 
-        it('ArrowRight activates next in horizontal mode', async () => {
+        it('ArrowRight highlights next in horizontal mode', async () => {
             const { state, bindings, registerOption } = createListboxHost({ orientation: 'horizontal' })
             registerOption('option-1')
             registerOption('option-2')
             bindings.root.onKeydown(new KeyboardEvent('keydown', { key: 'ArrowRight' }))
             await nextTick()
-            expect(state.activeValue).toBe('option-1')
+            expect(state.highlightValue).toBe('option-1')
         })
     })
 
@@ -352,7 +352,7 @@ describe('useListbox', () => {
 
         it('data-highlight is set when active', async () => {
             const { actions, bindings } = createListboxHost()
-            actions.activate('option-1')
+            actions.highlight('option-1')
             await nextTick()
             expect(bindings.getOptionProps('option-1')['data-highlight']).toBe('')
         })
@@ -380,11 +380,11 @@ describe('useListbox', () => {
             expect(actions.isSelected('option-1')).toBe(false)
         })
 
-        it('onMouseenter activates option', async () => {
+        it('onMouseenter highlights option', async () => {
             const { state, bindings } = createListboxHost()
             bindings.getOptionProps('option-1').onMouseenter()
             await nextTick()
-            expect(state.activeValue).toBe('option-1')
+            expect(state.highlightValue).toBe('option-1')
         })
     })
 
@@ -412,7 +412,7 @@ describe('useListboxOption', () => {
         it('isActive reflects listbox state', async () => {
             const { state, listbox } = createOptionHost({}, { value: 'option-1' })
             expect(state.isActive).toBe(false)
-            listbox.actions.activate('option-1')
+            listbox.actions.highlight('option-1')
             await nextTick()
             expect(state.isActive).toBe(true)
         })

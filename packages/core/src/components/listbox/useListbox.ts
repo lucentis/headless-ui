@@ -28,7 +28,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         onChange: props.onValueChange,
     })
 
-    const activeValue = ref<string | null>(null)
+    const highlightValue = ref<string | null>(null)
     const registry = ref<string[]>([])
     const listboxId = useId('listbox')
     const rootRef = ref<HTMLElement | null>(null)
@@ -61,33 +61,33 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         },
 
         highlight: (optionValue: string) => {
-            activeValue.value = optionValue
+            highlightValue.value = optionValue
         },
 
         highlightFirst: () => {
-            if (registry.value.length > 0) activeValue.value = registry.value[0]
+            if (registry.value.length > 0) highlightValue.value = registry.value[0]
         },
 
         highlightLast: () => {
-            if (registry.value.length > 0) activeValue.value = registry.value[registry.value.length - 1]
+            if (registry.value.length > 0) highlightValue.value = registry.value[registry.value.length - 1]
         },
 
         highlightNext: () => {
             const items = registry.value
             if (items.length === 0) return
-            if (activeValue.value === null) { activeValue.value = items[0]; return }
-            const index = items.indexOf(activeValue.value)
+            if (highlightValue.value === null) { highlightValue.value = items[0]; return }
+            const index = items.indexOf(highlightValue.value)
             const next = items[index + 1]
-            if (next !== undefined) activeValue.value = next
+            if (next !== undefined) highlightValue.value = next
         },
 
         highlightPrev: () => {
             const items = registry.value
             if (items.length === 0) return
-            if (activeValue.value === null) { activeValue.value = items[items.length - 1]; return }
-            const index = items.indexOf(activeValue.value)
+            if (highlightValue.value === null) { highlightValue.value = items[items.length - 1]; return }
+            const index = items.indexOf(highlightValue.value)
             const prev = items[index - 1]
-            if (prev !== undefined) activeValue.value = prev
+            if (prev !== undefined) highlightValue.value = prev
         },
 
         isSelected: (optionValue: string) => {
@@ -96,12 +96,12 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
                 : value.value === optionValue
         },
 
-        isHighlight: (optionValue: string) => activeValue.value === optionValue,
+        isHighlight: (optionValue: string) => highlightValue.value === optionValue,
     }
 
     const state: ListboxApi['state'] = {
         get value() { return value.value },
-        get activeValue() { return activeValue.value },
+        get highlightValue() { return highlightValue.value },
         get isDisabled() { return isDisabled.value },
         get multiple() { return multiple.value },
         get orientation() { return orientation.value },
@@ -113,7 +113,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         role: 'listbox' as const,
         'aria-multiselectable': multiple.value ? (true as const) : undefined,
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
-        'aria-activedescendant': activeValue.value ? `${listboxId}-option-${activeValue.value}` : undefined,
+        'aria-activedescendant': highlightValue.value ? `${listboxId}-option-${highlightValue.value}` : undefined,
         // aria-orientation only set when horizontal — vertical is implicit default
         'aria-orientation': orientation.value === 'horizontal' ? ('horizontal' as const) : undefined,
         tabindex: 0 as const,
@@ -124,24 +124,24 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
             switch (event.key) {
                 case next:
                     event.preventDefault()
-                    actions.activateNext()
+                    actions.highlightNext()
                     break
                 case prev:
                     event.preventDefault()
-                    actions.activatePrev()
+                    actions.highlightPrev()
                     break
                 case Keys.Home:
                     event.preventDefault()
-                    actions.activateFirst()
+                    actions.highlightFirst()
                     break
                 case Keys.End:
                     event.preventDefault()
-                    actions.activateLast()
+                    actions.highlightLast()
                     break
                 case Keys.Enter:
                 case Keys.Space:
                     event.preventDefault()
-                    if (activeValue.value !== null) actions.toggle(activeValue.value)
+                    if (highlightValue.value !== null) actions.toggle(highlightValue.value)
                     break
             }
         },
