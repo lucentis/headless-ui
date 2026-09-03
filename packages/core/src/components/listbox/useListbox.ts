@@ -161,7 +161,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
                 'aria-selected': isSelected,
                 'aria-disabled': isOptionDisabled ? (true as const) : undefined,
                 'data-disabled': isOptionDisabled ? ('' as const) : undefined,
-                'data-active': isActive ? ('' as const) : undefined,
+                'data-highlight': isActive ? ('' as const) : undefined,
                 'data-selected': isSelected ? ('' as const) : undefined,
                 onMousedown: (event: MouseEvent) => event.preventDefault(),
                 onClick: composeHandlers(

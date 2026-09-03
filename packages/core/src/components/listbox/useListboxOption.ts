@@ -31,7 +31,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         'aria-selected': isSelected.value,
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
-        'data-active': isActive.value ? ('' as const) : undefined,
+        'data-highlight': isActive.value ? ('' as const) : undefined,
         'data-selected': isSelected.value ? ('' as const) : undefined,
         onMousedown: (event: MouseEvent) => event.preventDefault(),
         onClick: composeHandlers(
@@ -54,7 +54,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         get 'aria-selected'() { return optionBindings.value['aria-selected'] },
         get 'aria-disabled'() { return optionBindings.value['aria-disabled'] },
         get 'data-disabled'() { return optionBindings.value['data-disabled'] },
-        get 'data-active'() { return optionBindings.value['data-active'] },
+        get 'data-highlight'() { return optionBindings.value['data-highlight'] },
         get 'data-selected'() { return optionBindings.value['data-selected'] },
         get onMousedown() { return optionBindings.value.onMousedown },
         get onClick() { return optionBindings.value.onClick },

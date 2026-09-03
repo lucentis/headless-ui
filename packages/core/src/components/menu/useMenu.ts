@@ -167,7 +167,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
                 role: 'menuitem' as const,
                 'aria-disabled': isDisabled ? (true as const) : undefined,
                 'data-disabled': isDisabled ? ('' as const) : undefined,
-                'data-active': isActive ? ('' as const) : undefined,
+                'data-highlight': isActive ? ('' as const) : undefined,
                 onClick: composeHandlers(
                     isDisabled ? undefined : userProps?.onClick,
                     () => { if (!isDisabled) actions.close() }

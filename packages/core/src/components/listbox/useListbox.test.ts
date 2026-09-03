@@ -350,11 +350,11 @@ describe('useListbox', () => {
             expect(bindings.getOptionProps('option-1')['data-selected']).toBe('')
         })
 
-        it('data-active is set when active', async () => {
+        it('data-highlight is set when active', async () => {
             const { actions, bindings } = createListboxHost()
             actions.activate('option-1')
             await nextTick()
-            expect(bindings.getOptionProps('option-1')['data-active']).toBe('')
+            expect(bindings.getOptionProps('option-1')['data-highlight']).toBe('')
         })
 
         it('onClick toggles option', async () => {

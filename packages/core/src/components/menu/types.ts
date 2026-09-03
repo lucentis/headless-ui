@@ -32,7 +32,7 @@ export interface MenuItemBindings {
     role: 'menuitem'
     'aria-disabled': true | undefined
     'data-disabled': '' | undefined
-    'data-active': '' | undefined
+    'data-highlight': '' | undefined
     onClick: () => void
     onMouseenter: () => void
 }

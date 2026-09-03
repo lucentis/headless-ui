@@ -383,19 +383,19 @@ describe('useMenu', () => {
             wrapper.unmount()
         })
 
-        it('data-active is set when item is active', async () => {
+        it('data-highlight is set when item is active', async () => {
             const { bindings, actions, wrapper } = createHost()
             actions.activate('edit')
             await nextTick()
             const itemProps = bindings.getItemProps('edit')
-            expect(itemProps['data-active']).toBe('')
+            expect(itemProps['data-highlight']).toBe('')
             wrapper.unmount()
         })
 
-        it('data-active is undefined when item is not active', () => {
+        it('data-highlight is undefined when item is not active', () => {
             const { bindings, wrapper } = createHost()
             const itemProps = bindings.getItemProps('edit')
-            expect(itemProps['data-active']).toBeUndefined()
+            expect(itemProps['data-highlight']).toBeUndefined()
             wrapper.unmount()
         })
 

@@ -43,7 +43,7 @@ export interface ListboxOptionBindings {
     'aria-selected': boolean
     'aria-disabled': true | undefined
     'data-disabled': '' | undefined
-    'data-active': '' | undefined
+    'data-highlight': '' | undefined
     'data-selected': '' | undefined
     onMousedown: (event: MouseEvent) => void
     onClick: () => void
