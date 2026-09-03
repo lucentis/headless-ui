@@ -40,19 +40,19 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         close,
         toggle,
 
-        activate: (value: string) => {
+        highlight: (value: string) => {
             activeValue.value = value
         },
 
-        activateFirst: () => {
+        highlightFirst: () => {
             if (registry.value.length > 0) activeValue.value = registry.value[0]
         },
 
-        activateLast: () => {
+        highlightLast: () => {
             if (registry.value.length > 0) activeValue.value = registry.value[registry.value.length - 1]
         },
 
-        activateNext: () => {
+        highlightNext: () => {
             const items = registry.value
             if (items.length === 0) return
             if (activeValue.value === null) {
@@ -64,7 +64,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
             if (next !== undefined) activeValue.value = next
         },
 
-        activatePrev: () => {
+        highlightPrev: () => {
             const items = registry.value
             if (items.length === 0) return
             if (activeValue.value === null) {
@@ -76,7 +76,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
             if (prev !== undefined) activeValue.value = prev
         },
 
-        isActive: (value: string) => activeValue.value === value,
+        isHighlight: (value: string) => activeValue.value === value,
     }
 
     useEscape({

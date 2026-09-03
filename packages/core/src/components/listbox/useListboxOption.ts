@@ -10,7 +10,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         listboxApi.state.isDisabled || (toValue(props.disabled) ?? false)
     )
     const isSelected = computed(() => listboxApi.actions.isSelected(props.value))
-    const isActive = computed(() => listboxApi.actions.isActive(props.value))
+    const isHighlight = computed(() => listboxApi.actions.isHighlight(props.value))
 
     const optionId = `${listboxApi.state.listboxId}-option-${props.value}`
 
@@ -20,7 +20,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
 
     const state: ListboxOptionApi['state'] = {
         get isSelected() { return isSelected.value },
-        get isActive() { return isActive.value },
+        get isHighlight() { return isHighlight.value },
         get isDisabled() { return isDisabled.value },
         get optionId() { return optionId },
     }
@@ -31,7 +31,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         'aria-selected': isSelected.value,
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
-        'data-highlight': isActive.value ? ('' as const) : undefined,
+        'data-highlight': isHighlight.value ? ('' as const) : undefined,
         'data-selected': isSelected.value ? ('' as const) : undefined,
         onMousedown: (event: MouseEvent) => event.preventDefault(),
         onClick: composeHandlers(

@@ -10,7 +10,7 @@ export interface UseMenuProps {
 export interface MenuState {
     isOpen: boolean
     isPresent: boolean
-    activeValue: string | null
+    highlightValue: string | null
     triggerId: string
     contentId: string
 }
@@ -19,12 +19,12 @@ export interface MenuActions {
     open: () => void
     close: () => void
     toggle: () => void
-    activate: (value: string) => void
-    activateFirst: () => void
-    activateLast: () => void
-    activateNext: () => void
-    activatePrev: () => void
-    isActive: (value: string) => boolean
+    highlight: (value: string) => void
+    highlightFirst: () => void
+    highlightLast: () => void
+    highlightNext: () => void
+    highlightPrev: () => void
+    isHighlight: (value: string) => boolean
 }
 
 export interface MenuBindings {

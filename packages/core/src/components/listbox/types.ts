@@ -12,7 +12,7 @@ export interface UseListboxProps {
 
 export interface ListboxState {
     value: string | string[]
-    activeValue: string | null
+    highlightValue: string | null
     isDisabled: boolean
     multiple: boolean
     orientation: 'horizontal' | 'vertical'
@@ -23,13 +23,13 @@ export interface ListboxActions {
     select: (value: string) => void
     deselect: (value: string) => void
     toggle: (value: string) => void
-    activate: (value: string) => void
-    activateFirst: () => void
-    activateLast: () => void
-    activateNext: () => void
-    activatePrev: () => void
+    highlight: (value: string) => void
+    highlightFirst: () => void
+    highlightLast: () => void
+    highlightNext: () => void
+    highlightPrev: () => void
     isSelected: (value: string) => boolean
-    isActive: (value: string) => boolean
+    isHighlight: (value: string) => boolean
 }
 
 export interface ListboxOptionBindings {

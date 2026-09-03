@@ -60,19 +60,19 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
                 : actions.select(optionValue)
         },
 
-        activate: (optionValue: string) => {
+        highlight: (optionValue: string) => {
             activeValue.value = optionValue
         },
 
-        activateFirst: () => {
+        highlightFirst: () => {
             if (registry.value.length > 0) activeValue.value = registry.value[0]
         },
 
-        activateLast: () => {
+        highlightLast: () => {
             if (registry.value.length > 0) activeValue.value = registry.value[registry.value.length - 1]
         },
 
-        activateNext: () => {
+        highlightNext: () => {
             const items = registry.value
             if (items.length === 0) return
             if (activeValue.value === null) { activeValue.value = items[0]; return }
@@ -81,7 +81,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
             if (next !== undefined) activeValue.value = next
         },
 
-        activatePrev: () => {
+        highlightPrev: () => {
             const items = registry.value
             if (items.length === 0) return
             if (activeValue.value === null) { activeValue.value = items[items.length - 1]; return }
@@ -96,7 +96,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
                 : value.value === optionValue
         },
 
-        isActive: (optionValue: string) => activeValue.value === optionValue,
+        isHighlight: (optionValue: string) => activeValue.value === optionValue,
     }
 
     const state: ListboxApi['state'] = {
