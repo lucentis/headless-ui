@@ -149,35 +149,6 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
 
     const bindings: ListboxApi['bindings'] = {
         get root() { return rootBindings.value },
-        getOptionProps(optionValue: string, userProps?: ListboxOptionUserProps) {
-            const isOptionDisabled = userProps?.disabled ?? false
-            const isSelected = actions.isSelected(optionValue)
-            const isActive = actions.isActive(optionValue)
-            const optionId = `${listboxId}-option-${optionValue}`
-
-            return {
-                id: optionId,
-                role: 'option' as const,
-                'aria-selected': isSelected,
-                'aria-disabled': isOptionDisabled ? (true as const) : undefined,
-                'data-disabled': isOptionDisabled ? ('' as const) : undefined,
-                'data-highlight': isActive ? ('' as const) : undefined,
-                'data-selected': isSelected ? ('' as const) : undefined,
-                onMousedown: (event: MouseEvent) => event.preventDefault(),
-                onClick: composeHandlers(
-                    isOptionDisabled ? undefined : userProps?.onClick,
-                    () => {
-                        if (!isOptionDisabled && !isDisabled.value) {
-                            rootRef.value?.focus()
-                            actions.toggle(optionValue)
-                        }
-                    }
-                ),
-                onMouseenter: () => {
-                    if (!isOptionDisabled && !isDisabled.value) actions.activate(optionValue)
-                },
-            }
-        },
     }
 
     return {

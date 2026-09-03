@@ -4,8 +4,7 @@ import { useOpenState } from '../../utils/useOpenState'
 import { useEscape } from '../../utils/useEscape'
 import { useOutsideClick } from '../../utils/useOutsideClick'
 import { useConfig } from '../../config'
-import { composeHandlers } from '../../utils/eventHandler'
-import type { UseMenuProps, MenuApi, MenuItemUserProps } from './types'
+import type { UseMenuProps, MenuApi } from './types'
 
 const Keys = {
     ArrowUp: 'ArrowUp',
@@ -157,26 +156,6 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     const bindings: MenuApi['bindings'] = {
         get trigger() { return triggerBindings.value },
         get content() { return contentBindings.value },
-        getItemProps(value: string, userProps?: MenuItemUserProps) {
-            const isDisabled = userProps?.disabled ?? false
-            const isActive = actions.isActive(value)
-            const itemId = `${contentId}-item-${value}`
-
-            return {
-                id: itemId,
-                role: 'menuitem' as const,
-                'aria-disabled': isDisabled ? (true as const) : undefined,
-                'data-disabled': isDisabled ? ('' as const) : undefined,
-                'data-highlight': isActive ? ('' as const) : undefined,
-                onClick: composeHandlers(
-                    isDisabled ? undefined : userProps?.onClick,
-                    () => { if (!isDisabled) actions.close() }
-                ),
-                onMouseenter: () => {
-                    if (!isDisabled) actions.activate(value)
-                },
-            }
-        },
     }
 
     return {

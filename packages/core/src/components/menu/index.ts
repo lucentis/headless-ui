@@ -1,4 +1,5 @@
 export { useMenu } from './useMenu'
+export { useMenuItem } from './useMenuItem'
 export { provideMenuContext, useMenuContext } from './MenuContext'
 export type {
     UseMenuProps,
@@ -6,6 +7,4 @@ export type {
     MenuActions,
     MenuBindings,
     MenuApi,
-    MenuItemBindings,
-    MenuItemUserProps,
 } from './types'

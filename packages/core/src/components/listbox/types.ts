@@ -32,11 +32,6 @@ export interface ListboxActions {
     isActive: (value: string) => boolean
 }
 
-export interface ListboxOptionUserProps {
-    onClick?: () => void
-    disabled?: boolean
-}
-
 export interface ListboxOptionBindings {
     id: string
     role: 'option'

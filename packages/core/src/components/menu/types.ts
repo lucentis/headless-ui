@@ -27,21 +27,6 @@ export interface MenuActions {
     isActive: (value: string) => boolean
 }
 
-export interface MenuItemBindings {
-    id: string
-    role: 'menuitem'
-    'aria-disabled': true | undefined
-    'data-disabled': '' | undefined
-    'data-highlight': '' | undefined
-    onClick: () => void
-    onMouseenter: () => void
-}
-
-export interface MenuItemUserProps {
-    onClick?: () => void
-    disabled?: boolean
-}
-
 export interface MenuBindings {
     trigger: {
         id: string
@@ -60,7 +45,16 @@ export interface MenuBindings {
         tabindex: -1
         onKeydown: (event: KeyboardEvent) => void
     }
-    getItemProps: (value: string, userProps?: MenuItemUserProps) => MenuItemBindings
+}
+
+export interface MenuItemBindings {
+    id: string
+    role: 'menuitem'
+    'aria-disabled': true | undefined
+    'data-disabled': '' | undefined
+    'data-highlight': '' | undefined
+    onClick: () => void
+    onMouseenter: () => void
 }
 
 export interface MenuApi extends ComponentApi<MenuState, MenuActions, MenuBindings> {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover, useMenu, useListbox, useListboxOption } from '@lucentis/headless-ui-core'
+import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover, useMenu, useMenuItem, useListbox, useListboxOption } from '@lucentis/headless-ui-core'
 import { ref } from 'vue';
 
 const isLoading = ref(false)
@@ -29,6 +29,9 @@ const tooltip = useTooltip({ delayDuration: 500 })
 const popover = usePopover()
 
 const menu = useMenu()
+const editItem = useMenuItem({ value: 'edit', onClick: () => console.log('edit') }, menu)
+const deleteItem = useMenuItem({ value: 'delete', onClick: () => console.log('delete') }, menu)
+const disabledItem = useMenuItem({ value: 'share', disabled: true }, menu)
 
 const listbox = useListbox({ defaultValue: 'option-1' })
 
@@ -187,22 +190,13 @@ const option3 = useListboxOption({ value: 'option-3' }, listbox)
 
         <div
             v-if="menu.state.isPresent"
-                :ref="el => { menu.contentRef.value = el as HTMLElement }"
-                v-bind="menu.bindings.content"
-                style="position:absolute;left:0;top: 20px;background:white;border:1px solid #ccc;padding:16px;border-radius:8px"
-            >
-            <div v-bind="menu.bindings.getItemProps('edit', { onClick: () => console.log('edit') })"
-                style="padding:8px 16px;cursor:pointer">
-                Edit
-            </div>
-            <div v-bind="menu.bindings.getItemProps('delete', { onClick: () => console.log('delete') })"
-                style="padding:8px 16px;cursor:pointer">
-                Delete
-            </div>
-            <div v-bind="menu.bindings.getItemProps('disabled-item', { disabled: true })"
-                style="padding:8px 16px;opacity:0.5">
-                Disabled
-            </div>
+            :ref="el => { menu.contentRef.value = el as HTMLElement }"
+            v-bind="menu.bindings.content"
+            style="position:fixed;top:100px;left:100px;background:white;border:1px solid #ccc;border-radius:4px"
+        >
+            <div v-bind="editItem.bindings" style="padding:8px 16px;cursor:pointer">Edit</div>
+            <div v-bind="deleteItem.bindings" style="padding:8px 16px;cursor:pointer">Delete</div>
+            <div v-bind="disabledItem.bindings" style="padding:8px 16px;opacity:0.5">Share</div>
         </div>
     </div>
 
