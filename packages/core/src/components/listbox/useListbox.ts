@@ -96,7 +96,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
                 : value.value === optionValue
         },
 
-        isHighlight: (optionValue: string) => highlightValue.value === optionValue,
+        isHighlighted: (optionValue: string) => highlightValue.value === optionValue,
     }
 
     const state: ListboxApi['state'] = {

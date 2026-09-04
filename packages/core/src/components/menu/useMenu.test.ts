@@ -133,12 +133,12 @@ describe('useMenu', () => {
             wrapper.unmount()
         })
 
-        it('isActive returns true for active item', async () => {
+        it('isHighlight returns true for Highlight item', async () => {
             const { actions, wrapper } = createHost()
             actions.highlight('item-1')
             await nextTick()
-            expect(actions.isActive('item-1')).toBe(true)
-            expect(actions.isActive('item-2')).toBe(false)
+            expect(actions.isHighlight('item-1')).toBe(true)
+            expect(actions.isHighlight('item-2')).toBe(false)
             wrapper.unmount()
         })
 
@@ -238,7 +238,7 @@ describe('useMenu', () => {
             registerItem('item-2')
             actions.highlightFirst()
             await nextTick()
-            expect(actions.isActive('item-1')).toBe(true)
+            expect(actions.isHighlight('item-1')).toBe(true)
             wrapper.unmount()
         })
 
@@ -249,7 +249,7 @@ describe('useMenu', () => {
             unregisterItem('item-1')
             actions.highlightFirst()
             await nextTick()
-            expect(actions.isActive('item-2')).toBe(true)
+            expect(actions.isHighlight('item-2')).toBe(true)
             wrapper.unmount()
         })
 
@@ -259,7 +259,7 @@ describe('useMenu', () => {
             registerItem('item-1')
             actions.highlightFirst()
             await nextTick()
-            expect(actions.isActive('item-1')).toBe(true)
+            expect(actions.isHighlight('item-1')).toBe(true)
             wrapper.unmount()
         })
     })
@@ -371,82 +371,6 @@ describe('useMenu', () => {
             bindings.content.onKeydown(new KeyboardEvent('keydown', { key: 'Tab' }))
             await nextTick()
             expect(state.isOpen).toBe(false)
-            wrapper.unmount()
-        })
-    })
-
-    describe('bindings.getItemProps', () => {
-        it('role is menuitem', () => {
-            const { bindings, wrapper } = createHost()
-            const itemProps = bindings.getItemProps('edit')
-            expect(itemProps.role).toBe('menuitem')
-            wrapper.unmount()
-        })
-
-        it('data-highlight is set when item is active', async () => {
-            const { bindings, actions, wrapper } = createHost()
-            actions.highlight('edit')
-            await nextTick()
-            const itemProps = bindings.getItemProps('edit')
-            expect(itemProps['data-highlight']).toBe('')
-            wrapper.unmount()
-        })
-
-        it('data-highlight is undefined when item is not active', () => {
-            const { bindings, wrapper } = createHost()
-            const itemProps = bindings.getItemProps('edit')
-            expect(itemProps['data-highlight']).toBeUndefined()
-            wrapper.unmount()
-        })
-
-        it('onClick calls user handler then closes menu', async () => {
-            const userHandler = vi.fn()
-            const { state, actions, bindings, wrapper } = createHost()
-            actions.open()
-            await nextTick()
-            const itemProps = bindings.getItemProps('edit', { onClick: userHandler })
-            itemProps.onClick()
-            await nextTick()
-            expect(userHandler).toHaveBeenCalledTimes(1)
-            expect(state.isOpen).toBe(false)
-            wrapper.unmount()
-        })
-
-        it('onClick does nothing when disabled', async () => {
-            const userHandler = vi.fn()
-            const { state, actions, bindings, wrapper } = createHost()
-            actions.open()
-            await nextTick()
-            const itemProps = bindings.getItemProps('edit', { onClick: userHandler, disabled: true })
-            itemProps.onClick()
-            await nextTick()
-            expect(userHandler).not.toHaveBeenCalled()
-            expect(state.isOpen).toBe(true)
-            wrapper.unmount()
-        })
-
-        it('aria-disabled is true when disabled', () => {
-            const { bindings, wrapper } = createHost()
-            const itemProps = bindings.getItemProps('edit', { disabled: true })
-            expect(itemProps['aria-disabled']).toBe(true)
-            wrapper.unmount()
-        })
-
-        it('onMouseenter highlights item', async () => {
-            const { state, bindings, wrapper } = createHost()
-            const itemProps = bindings.getItemProps('edit')
-            itemProps.onMouseenter()
-            await nextTick()
-            expect(state.highlightValue).toBe('edit')
-            wrapper.unmount()
-        })
-
-        it('onMouseenter does nothing when disabled', async () => {
-            const { state, bindings, wrapper } = createHost()
-            const itemProps = bindings.getItemProps('edit', { disabled: true })
-            itemProps.onMouseenter()
-            await nextTick()
-            expect(state.highlightValue).toBeNull()
             wrapper.unmount()
         })
     })

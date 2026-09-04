@@ -24,7 +24,7 @@ export interface MenuActions {
     highlightLast: () => void
     highlightNext: () => void
     highlightPrev: () => void
-    isHighlight: (value: string) => boolean
+    isHighlighted: (value: string) => boolean
 }
 
 export interface MenuBindings {
@@ -52,7 +52,7 @@ export interface MenuItemBindings {
     role: 'menuitem'
     'aria-disabled': true | undefined
     'data-disabled': '' | undefined
-    'data-highlight': '' | undefined
+    'data-highlighted': '' | undefined
     onClick: () => void
     onMouseenter: () => void
 }

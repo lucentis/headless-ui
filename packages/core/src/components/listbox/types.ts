@@ -29,7 +29,7 @@ export interface ListboxActions {
     highlightNext: () => void
     highlightPrev: () => void
     isSelected: (value: string) => boolean
-    isHighlight: (value: string) => boolean
+    isHighlighted: (value: string) => boolean
 }
 
 export interface ListboxOptionBindings {
@@ -56,7 +56,6 @@ export interface ListboxBindings {
         tabindex: 0
         onKeydown: (event: KeyboardEvent) => void
     }
-    getOptionProps: (value: string, userProps?: ListboxOptionUserProps) => ListboxOptionBindings
 }
 
 export interface ListboxApi extends ComponentApi<ListboxState, ListboxActions, ListboxBindings> {
@@ -74,7 +73,7 @@ export interface UseListboxOptionProps {
 
 export interface ListboxOptionState {
     isSelected: boolean
-    isActive: boolean
+    isHighlighted: boolean
     isDisabled: boolean
     optionId: string
 }

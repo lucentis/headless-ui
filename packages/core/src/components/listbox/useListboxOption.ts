@@ -10,7 +10,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         listboxApi.state.isDisabled || (toValue(props.disabled) ?? false)
     )
     const isSelected = computed(() => listboxApi.actions.isSelected(props.value))
-    const isHighlight = computed(() => listboxApi.actions.isHighlight(props.value))
+    const isHighlighted = computed(() => listboxApi.actions.isHighlighted(props.value))
 
     const optionId = `${listboxApi.state.listboxId}-option-${props.value}`
 
@@ -31,7 +31,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         'aria-selected': isSelected.value,
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
-        'data-highlight': isHighlight.value ? ('' as const) : undefined,
+        'data-highlighted': isHighlighted.value ? ('' as const) : undefined,
         'data-selected': isSelected.value ? ('' as const) : undefined,
         onMousedown: (event: MouseEvent) => event.preventDefault(),
         onClick: composeHandlers(
@@ -44,7 +44,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
             }
         ),
         onMouseenter: () => {
-            if (!isDisabled.value) listboxApi.actions.activate(props.value)
+            if (!isDisabled.value) listboxApi.actions.highlight(props.value)
         },
     }))
 
@@ -54,7 +54,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         get 'aria-selected'() { return optionBindings.value['aria-selected'] },
         get 'aria-disabled'() { return optionBindings.value['aria-disabled'] },
         get 'data-disabled'() { return optionBindings.value['data-disabled'] },
-        get 'data-highlight'() { return optionBindings.value['data-highlight'] },
+        get 'data-highlighted'() { return optionBindings.value['data-highlighted'] },
         get 'data-selected'() { return optionBindings.value['data-selected'] },
         get onMousedown() { return optionBindings.value.onMousedown },
         get onClick() { return optionBindings.value.onClick },

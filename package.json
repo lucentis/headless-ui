@@ -9,7 +9,7 @@
   "scripts": {
     "build": "npm run build --workspace=packages/core",
     "typecheck": "npm run typecheck --workspace=packages/core",
-    "test": "vitest",
+    "test": "vitest run",
     "dev": "npm run dev --workspace=packages/playground"
   },
   "devDependencies": {

@@ -76,7 +76,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
             if (prev !== undefined) highlightValue.value = prev
         },
 
-        isHighlight: (value: string) => highlightValue.value === value,
+        isHighlighted: (value: string) => highlightValue.value === value,
     }
 
     useEscape({

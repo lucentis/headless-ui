@@ -28,12 +28,16 @@ const tooltip = useTooltip({ delayDuration: 500 })
 
 const popover = usePopover()
 
-const menu = useMenu()
+const menu = useMenu({onOpenChange(value) {
+    console.log(value)
+},})
 const editItem = useMenuItem({ value: 'edit', onClick: () => console.log('edit') }, menu)
 const deleteItem = useMenuItem({ value: 'delete', onClick: () => console.log('delete') }, menu)
 const disabledItem = useMenuItem({ value: 'share', disabled: true }, menu)
 
-const listbox = useListbox({ defaultValue: 'option-1' })
+const listbox = useListbox({ defaultValue: 'option-1', onValueChange(value) {
+    console.log(value)
+}, })
 
 const option1 = useListboxOption({ value: 'option-1' }, listbox)
 const option2 = useListboxOption({ value: 'option-2' }, listbox)
