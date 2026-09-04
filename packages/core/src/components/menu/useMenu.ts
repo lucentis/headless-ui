@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
 import { useEscape } from '../../utils/useEscape'
@@ -26,6 +26,9 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         },
     })
 
+    
+        
+        
     const highlightValue = ref<string | null>(null)
     const registry = ref<string[]>([])
 
@@ -34,6 +37,16 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
 
     const triggerRef = ref<HTMLElement | null>(null)
     const contentRef = ref<HTMLElement | null>(null)
+
+    /// try to focus the content of menu when open for arrow navigation
+    
+    watch(isOpen, async (newOpen) => {
+        if (!newOpen) return
+    
+        await nextTick()
+    
+        contentRef.value?.focus()
+    })
 
     const actions: MenuApi['actions'] = {
         open,

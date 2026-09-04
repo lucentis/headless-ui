@@ -225,4 +225,8 @@ div {
 #listbox:focus {
     border: 2px solid red
 }
+
+[data-highlighted] {
+    border: 1px solid blue;
+}
 </style>

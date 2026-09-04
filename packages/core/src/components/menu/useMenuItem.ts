@@ -22,13 +22,13 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
         get role() { return 'menuitem' as const },
         get 'aria-disabled'() { return props.disabled ? (true as const) : undefined },
         get 'data-disabled'() { return props.disabled ? ('' as const) : undefined },
-        get 'data-highlighted'() { return menuApi.actions.isHighlight(props.value) ? ('' as const) : undefined },
+        get 'data-highlighted'() { return menuApi.actions.isHighlighted(props.value) ? ('' as const) : undefined },
         onClick: composeHandlers(
             props.disabled ? undefined : props.onClick,
             () => { if (!props.disabled) menuApi.actions.close() }
         ),
         onMouseenter: () => {
-            if (!props.disabled) menuApi.actions.highlighted(props.value)
+            if (!props.disabled) menuApi.actions.highlight(props.value)
         },
     }
 
