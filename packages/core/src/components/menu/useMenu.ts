@@ -26,6 +26,15 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         },
     })
 
+    /// try to focus the content of menu when open for arrow navigation
+    
+    watch(isOpen, async (newOpen) => {
+        if (!newOpen) return
+    
+        await nextTick()
+    
+        contentRef.value?.focus()
+    })
     
         
         
@@ -38,15 +47,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     const triggerRef = ref<HTMLElement | null>(null)
     const contentRef = ref<HTMLElement | null>(null)
 
-    /// try to focus the content of menu when open for arrow navigation
     
-    watch(isOpen, async (newOpen) => {
-        if (!newOpen) return
-    
-        await nextTick()
-    
-        contentRef.value?.focus()
-    })
 
     const actions: MenuApi['actions'] = {
         open,
