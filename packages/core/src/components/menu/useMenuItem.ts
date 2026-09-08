@@ -1,7 +1,7 @@
 import { onMounted, onUnmounted, computed } from 'vue'
 import { useMenuContext } from './MenuContext'
 import { composeHandlers } from '../../utils/eventHandler'
-import type { MenuApi } from './types'
+import type { MenuApi, MenuItemBindings } from './types'
 
 export interface UseMenuItemProps {
     value: string
@@ -32,7 +32,7 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
         },
     }))
 
-    const bindings: ListboxOptionApi['bindings'] = {
+    const bindings: MenuItemBindings['bindings'] = {
         get root() { return menuItemBindings.value },
     }
 

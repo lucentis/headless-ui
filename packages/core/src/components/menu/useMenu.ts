@@ -3,16 +3,11 @@ import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
 import { useEscape } from '../../utils/useEscape'
 import { useOutsideClick } from '../../utils/useOutsideClick'
+import { useRegistry } from '../../utils/useRegistry'
+import { useHighlight } from '../../utils/useHighlight'
+import { Keys } from '../../utils/keys'
 import { useConfig } from '../../config'
 import type { UseMenuProps, MenuApi } from './types'
-
-const Keys = {
-    ArrowUp: 'ArrowUp',
-    ArrowDown: 'ArrowDown',
-    Home: 'Home',
-    End: 'End',
-    Tab: 'Tab',
-} as const
 
 export function useMenu(props: UseMenuProps = {}): MenuApi {
     const config = useConfig()
@@ -21,7 +16,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         open: props.open,
         defaultOpen: props.defaultOpen,
         onOpenChange: (value) => {
-            if (!value) highlightValue.value = null
+            if (!value) clearHighlight()
             props.onOpenChange?.(value)
         },
     })
@@ -36,10 +31,8 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         contentRef.value?.focus()
     })
     
-        
-        
-    const highlightValue = ref<string | null>(null)
-    const registry = ref<string[]>([])
+    const { registry, register, unregister } = useRegistry()
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
 
     const triggerId = useId('menu-trigger')
     const contentId = useId('menu-content')
@@ -47,50 +40,16 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     const triggerRef = ref<HTMLElement | null>(null)
     const contentRef = ref<HTMLElement | null>(null)
 
-    
-
     const actions: MenuApi['actions'] = {
         open,
         close,
         toggle,
-
-        highlight: (value: string) => {
-            highlightValue.value = value
-        },
-
-        highlightFirst: () => {
-            if (registry.value.length > 0) highlightValue.value = registry.value[0]
-        },
-
-        highlightLast: () => {
-            if (registry.value.length > 0) highlightValue.value = registry.value[registry.value.length - 1]
-        },
-
-        highlightNext: () => {
-            const items = registry.value
-            if (items.length === 0) return
-            if (highlightValue.value === null) {
-                highlightValue.value = items[0]
-                return
-            }
-            const index = items.indexOf(highlightValue.value)
-            const next = items[index + 1]
-            if (next !== undefined) highlightValue.value = next
-        },
-
-        highlightPrev: () => {
-            const items = registry.value
-            if (items.length === 0) return
-            if (highlightValue.value === null) {
-                highlightValue.value = items[items.length - 1]
-                return
-            }
-            const index = items.indexOf(highlightValue.value)
-            const prev = items[index - 1]
-            if (prev !== undefined) highlightValue.value = prev
-        },
-
-        isHighlighted: (value: string) => highlightValue.value === value,
+        highlight,
+        highlightFirst,
+        highlightLast,
+        highlightNext,
+        highlightPrev,
+        isHighlighted
     }
 
     useEscape({

@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import type { ComputedRef, MaybeRef } from 'vue'
+import type { ComputedRef, MaybeRef, Ref } from 'vue'
 import { useControllableState } from './useControllableState'
 import { usePresence } from './usePresence'
 
