@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useSelect, useSelectOption } from '@lucentis/headless-ui-core'
 import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover, useMenu, useMenuItem, useListbox, useListboxOption } from '@lucentis/headless-ui-core'
 import { ref } from 'vue';
 
@@ -42,6 +43,15 @@ const listbox = useListbox({ defaultValue: 'option-1', onValueChange(value) {
 const option1 = useListboxOption({ value: 'option-1' }, listbox)
 const option2 = useListboxOption({ value: 'option-2' }, listbox)
 const option3 = useListboxOption({ value: 'option-3' }, listbox)
+
+
+
+const select = useSelect({ placeholder: 'Select a language' })
+
+const optFr = useSelectOption({ value: 'fr', label: 'French' }, select)
+const optEn = useSelectOption({ value: 'en', label: 'English' }, select)
+const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
+
 </script>
 
 <template>
@@ -213,6 +223,28 @@ const option3 = useListboxOption({ value: 'option-3' }, listbox)
         <div v-bind="option1.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-1') ? { background: '#e0e7ff' } : {}">Option 1</div>
         <div v-bind="option2.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-2') ? { background: '#e0e7ff' } : {}">Option 2</div>
         <div v-bind="option3.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-3') ? { background: '#e0e7ff' } : {}">Option 3</div>
+    </div>
+
+    <!-- select -->
+    <div style="position: relative; display: inline-block">
+        <button
+            :ref="el => { select.triggerRef.value = el as HTMLElement }"
+            v-bind="select.bindings.trigger"
+        >
+            {{ select.state.selectedLabel ?? select.state.placeholder ?? 'Select...' }}
+        </button>
+
+
+        <div
+            v-if="select.state.isPresent"
+            :ref="el => { select.contentRef.value = el as HTMLElement }"
+            v-bind="select.bindings.content"
+            style="position:fixed;top:100px;left:100px;background:white;border:1px solid #ccc;border-radius:4px;width:200px"
+        >
+            <div v-bind="optFr.bindings.root" style="padding:8px 16px;cursor:pointer">French</div>
+            <div v-bind="optEn.bindings.root" style="padding:8px 16px;cursor:pointer">English</div>
+            <div v-bind="optEs.bindings.root" style="padding:8px 16px;cursor:pointer">Spanish</div>
+        </div>
     </div>
 
 </template>

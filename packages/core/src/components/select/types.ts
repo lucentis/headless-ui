@@ -88,16 +88,18 @@ export interface SelectOptionState {
 export type SelectOptionActions = Record<never, never>
 
 export interface SelectOptionBindings {
-    id: string
-    role: 'option'
-    'aria-selected': boolean
-    'aria-disabled': true | undefined
-    'data-disabled': '' | undefined
-    'data-highlighted': '' | undefined
-    'data-selected': '' | undefined
-    onMousedown: (event: MouseEvent) => void
-    onClick: () => void
-    onMouseenter: () => void
+    root: {
+        id: string
+        role: 'option'
+        'aria-selected': boolean
+        'aria-disabled': true | undefined
+        'data-disabled': '' | undefined
+        'data-highlighted': '' | undefined
+        'data-selected': '' | undefined
+        onMousedown: (event: MouseEvent) => void
+        onClick: () => void
+        onMouseenter: () => void
+    }
 }
 
 export interface SelectOptionApi extends ComponentApi<SelectOptionState, SelectOptionActions, SelectOptionBindings> {}

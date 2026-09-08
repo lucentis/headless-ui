@@ -1,4 +1,4 @@
-import { computed, ref, toValue } from 'vue'
+import { computed, ref, toValue, watch, nextTick } from 'vue'
 import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
@@ -35,6 +35,16 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
             if (!val) highlightValue.value = null
             props.onOpenChange?.(val)
         },
+    })
+
+    /// try to focus the content of menu when open for arrow navigation
+    
+    watch(isOpen, async (newOpen) => {
+        if (!newOpen) return
+    
+        await nextTick()
+    
+        contentRef.value?.focus()
     })
 
     const highlightValue = ref<string | null>(null)
@@ -94,7 +104,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         },
 
         isSelected: (optionValue: string) => value.value === optionValue,
-        isHighlight: (optionValue: string) => highlightValue.value === optionValue,
+        isHighlighted: (optionValue: string) => highlightValue.value === optionValue,
     }
 
     useEscape({

@@ -26,6 +26,7 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
     const actions: DialogApi['actions'] = { open, close }
 
     const { lock, unlock } = useScrollLock()
+    
     watch(
         () => isOpen.value && isModal.value && config.scrollLock !== 'none',
         (shouldLock) => shouldLock ? lock() : unlock(),
