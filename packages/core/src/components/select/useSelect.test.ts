@@ -3,7 +3,7 @@ import { defineComponent, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useSelect } from './useSelect'
 import { useSelectOption } from './useSelectOption'
-import { provideSelectContext, useSelectContext } from './selectContext'
+import { provideSelectContext, useSelectContext } from './SelectContext'
 
 function createSelectHost(props: Parameters<typeof useSelect>[0] = {}) {
     let exposed: ReturnType<typeof useSelect>
@@ -175,11 +175,11 @@ describe('useSelect', () => {
             wrapper.unmount()
         })
 
-        it('isHighlight returns true for highlighted value', async () => {
+        it('isHighlighted returns true for highlighted value', async () => {
             const { actions, wrapper } = createSelectHost()
             actions.highlight('fr')
             await nextTick()
-            expect(actions.isHighlight('fr')).toBe(true)
+            expect(actions.isHighlighted('fr')).toBe(true)
             wrapper.unmount()
         })
 
@@ -346,10 +346,10 @@ describe('useSelectOption', () => {
 
         it('isHighlight reflects select state', async () => {
             const { state, select } = createOptionHost({}, { value: 'fr', label: 'French' })
-            expect(state.isHighlight).toBe(false)
+            expect(state.isHighlighted).toBe(false)
             select.actions.highlight('fr')
             await nextTick()
-            expect(state.isHighlight).toBe(true)
+            expect(state.isHighlighted).toBe(true)
         })
 
         it('isDisabled is true when select is disabled', () => {
@@ -377,27 +377,27 @@ describe('useSelectOption', () => {
     describe('bindings', () => {
         it('role is option', () => {
             const { bindings } = createOptionHost({}, { value: 'fr', label: 'French' })
-            expect(bindings.role).toBe('option')
+            expect(bindings.root.role).toBe('option')
         })
 
         it('aria-selected reflects isSelected', async () => {
             const { bindings, select } = createOptionHost({}, { value: 'fr', label: 'French' })
-            expect(bindings['aria-selected']).toBe(false)
+            expect(bindings.root['aria-selected']).toBe(false)
             select.actions.select('fr')
             await nextTick()
-            expect(bindings['aria-selected']).toBe(true)
+            expect(bindings.root['aria-selected']).toBe(true)
         })
 
         it('data-highlighted is set when highlighted', async () => {
             const { bindings, select } = createOptionHost({}, { value: 'fr', label: 'French' })
             select.actions.highlight('fr')
             await nextTick()
-            expect(bindings['data-highlighted']).toBe('')
+            expect(bindings.root['data-highlighted']).toBe('')
         })
 
         it('onClick selects option and closes', async () => {
             const { bindings, select } = createOptionHost({ defaultOpen: true }, { value: 'fr', label: 'French' })
-            bindings.onClick()
+            bindings.root.onClick()
             await nextTick()
             expect(select.state.value).toBe('fr')
             expect(select.state.isOpen).toBe(false)
@@ -405,7 +405,7 @@ describe('useSelectOption', () => {
 
         it('onClick does nothing when disabled', async () => {
             const { bindings, select } = createOptionHost({ defaultOpen: true }, { value: 'fr', label: 'French', disabled: true })
-            bindings.onClick()
+            bindings.root.onClick()
             await nextTick()
             expect(select.state.value).toBe('')
             expect(select.state.isOpen).toBe(true)
@@ -413,7 +413,7 @@ describe('useSelectOption', () => {
 
         it('onMouseenter highlights option', async () => {
             const { bindings, select } = createOptionHost({}, { value: 'fr', label: 'French' })
-            bindings.onMouseenter()
+            bindings.root.onMouseenter()
             await nextTick()
             expect(select.state.highlightValue).toBe('fr')
         })
