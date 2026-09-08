@@ -198,9 +198,9 @@ const option3 = useListboxOption({ value: 'option-3' }, listbox)
             v-bind="menu.bindings.content"
             style="position:fixed;top:100px;left:100px;background:white;border:1px solid #ccc;border-radius:4px"
         >
-            <div v-bind="editItem.bindings" style="padding:8px 16px;cursor:pointer">Edit</div>
-            <div v-bind="deleteItem.bindings" style="padding:8px 16px;cursor:pointer">Delete</div>
-            <div v-bind="disabledItem.bindings" style="padding:8px 16px;opacity:0.5">Share</div>
+            <div v-bind="editItem.bindings.root" style="padding:8px 16px;cursor:pointer">Edit</div>
+            <div v-bind="deleteItem.bindings.root" style="padding:8px 16px;cursor:pointer">Delete</div>
+            <div v-bind="disabledItem.bindings.root" style="padding:8px 16px;opacity:0.5">Share</div>
         </div>
     </div>
 
@@ -210,9 +210,9 @@ const option3 = useListboxOption({ value: 'option-3' }, listbox)
         v-bind="listbox.bindings.root"
         style="border:1px solid #ccc;width:200px"
     >
-        <div v-bind="option1.bindings" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-1') ? { background: '#e0e7ff' } : {}">Option 1</div>
-        <div v-bind="option2.bindings" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-2') ? { background: '#e0e7ff' } : {}">Option 2</div>
-        <div v-bind="option3.bindings" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-3') ? { background: '#e0e7ff' } : {}">Option 3</div>
+        <div v-bind="option1.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-1') ? { background: '#e0e7ff' } : {}">Option 1</div>
+        <div v-bind="option2.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-2') ? { background: '#e0e7ff' } : {}">Option 2</div>
+        <div v-bind="option3.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-3') ? { background: '#e0e7ff' } : {}">Option 3</div>
     </div>
 
 </template>

@@ -32,19 +32,6 @@ export interface ListboxActions {
     isHighlighted: (value: string) => boolean
 }
 
-export interface ListboxOptionBindings {
-    id: string
-    role: 'option'
-    'aria-selected': boolean
-    'aria-disabled': true | undefined
-    'data-disabled': '' | undefined
-    'data-highlight': '' | undefined
-    'data-selected': '' | undefined
-    onMousedown: (event: MouseEvent) => void
-    onClick: () => void
-    onMouseenter: () => void
-}
-
 export interface ListboxBindings {
     root: {
         id: string
@@ -55,6 +42,21 @@ export interface ListboxBindings {
         'aria-orientation': 'horizontal' | 'vertical' | undefined
         tabindex: 0
         onKeydown: (event: KeyboardEvent) => void
+    }
+}
+
+export interface ListboxOptionBindings {
+    root: {
+        id: string
+        role: 'option'
+        'aria-selected': boolean
+        'aria-disabled': true | undefined
+        'data-disabled': '' | undefined
+        'data-highlighted': '' | undefined
+        'data-selected': '' | undefined
+        onMousedown: (event: MouseEvent) => void
+        onClick: () => void
+        onMouseenter: () => void
     }
 }
 

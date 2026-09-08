@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, computed } from 'vue'
 import { useMenuContext } from './MenuContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import type { MenuApi } from './types'
@@ -17,12 +17,12 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
     onMounted(() => menuApi.registerItem(props.value))
     onUnmounted(() => menuApi.unregisterItem(props.value))
 
-    const bindings = {
-        get id() { return itemId },
-        get role() { return 'menuitem' as const },
-        get 'aria-disabled'() { return props.disabled ? (true as const) : undefined },
-        get 'data-disabled'() { return props.disabled ? ('' as const) : undefined },
-        get 'data-highlighted'() { return menuApi.actions.isHighlighted(props.value) ? ('' as const) : undefined },
+    const menuItemBindings = computed(() => ({
+        id: itemId,
+        role: 'menuitem' as const,
+        'aria-disabled': props.disabled,
+        'data-disabled': props.disabled ? ('' as const) : undefined,
+        'data-highlighted': menuApi.actions.isHighlighted(props.value) ? ('' as const) : undefined,
         onClick: composeHandlers(
             props.disabled ? undefined : props.onClick,
             () => { if (!props.disabled) menuApi.actions.close() }
@@ -30,6 +30,10 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
         onMouseenter: () => {
             if (!props.disabled) menuApi.actions.highlight(props.value)
         },
+    }))
+
+    const bindings: ListboxOptionApi['bindings'] = {
+        get root() { return menuItemBindings.value },
     }
 
     return { bindings }

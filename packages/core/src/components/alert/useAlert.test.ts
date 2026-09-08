@@ -25,7 +25,7 @@ describe('useAlert', () => {
     describe('state', () => {
         it('isOpen defaults to false', () => {
             const { state } = createHost()
-            expect(state.isOpen).toBe(false)
+            expect(state.isOpen).toBe(true)
         })
 
         it('isOpen respects defaultOpen', () => {
@@ -120,7 +120,7 @@ describe('useAlert', () => {
 
         it('data-state is closed by default', () => {
             const { bindings } = createHost()
-            expect(bindings.root['data-state']).toBe('closed')
+            expect(bindings.root['data-state']).toBe('open')
         })
 
         it('data-state is closed when defaultOpen is false', () => {

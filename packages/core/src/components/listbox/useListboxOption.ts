@@ -20,7 +20,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
 
     const state: ListboxOptionApi['state'] = {
         get isSelected() { return isSelected.value },
-        get isHighlight() { return isHighlight.value },
+        get isHighlighted() { return isHighlighted.value },
         get isDisabled() { return isDisabled.value },
         get optionId() { return optionId },
     }
@@ -29,7 +29,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         id: optionId,
         role: 'option' as const,
         'aria-selected': isSelected.value,
-        'aria-disabled': isDisabled.value ? (true as const) : undefined,
+        'aria-disabled': isDisabled.value,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-highlighted': isHighlighted.value ? ('' as const) : undefined,
         'data-selected': isSelected.value ? ('' as const) : undefined,
@@ -49,17 +49,8 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
     }))
 
     const bindings: ListboxOptionApi['bindings'] = {
-        get id() { return optionBindings.value.id },
-        get role() { return optionBindings.value.role },
-        get 'aria-selected'() { return optionBindings.value['aria-selected'] },
-        get 'aria-disabled'() { return optionBindings.value['aria-disabled'] },
-        get 'data-disabled'() { return optionBindings.value['data-disabled'] },
-        get 'data-highlighted'() { return optionBindings.value['data-highlighted'] },
-        get 'data-selected'() { return optionBindings.value['data-selected'] },
-        get onMousedown() { return optionBindings.value.onMousedown },
-        get onClick() { return optionBindings.value.onClick },
-        get onMouseenter() { return optionBindings.value.onMouseenter },
+        get root() { return optionBindings.value },
     }
-
+    
     return { state, actions: {}, bindings }
 }

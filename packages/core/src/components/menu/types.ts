@@ -48,13 +48,15 @@ export interface MenuBindings {
 }
 
 export interface MenuItemBindings {
-    id: string
-    role: 'menuitem'
-    'aria-disabled': true | undefined
-    'data-disabled': '' | undefined
-    'data-highlighted': '' | undefined
-    onClick: () => void
-    onMouseenter: () => void
+    root: {
+        id: string
+        role: 'menuitem'
+        'aria-disabled': true | undefined
+        'data-disabled': '' | undefined
+        'data-highlighted': '' | undefined
+        onClick: () => void
+        onMouseenter: () => void
+    }
 }
 
 export interface MenuApi extends ComponentApi<MenuState, MenuActions, MenuBindings> {

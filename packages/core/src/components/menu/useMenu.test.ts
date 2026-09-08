@@ -137,8 +137,8 @@ describe('useMenu', () => {
             const { actions, wrapper } = createHost()
             actions.highlight('item-1')
             await nextTick()
-            expect(actions.isHighlight('item-1')).toBe(true)
-            expect(actions.isHighlight('item-2')).toBe(false)
+            expect(actions.isHighlighted('item-1')).toBe(true)
+            expect(actions.isHighlighted('item-2')).toBe(false)
             wrapper.unmount()
         })
 
@@ -238,7 +238,7 @@ describe('useMenu', () => {
             registerItem('item-2')
             actions.highlightFirst()
             await nextTick()
-            expect(actions.isHighlight('item-1')).toBe(true)
+            expect(actions.isHighlighted('item-1')).toBe(true)
             wrapper.unmount()
         })
 
@@ -249,7 +249,7 @@ describe('useMenu', () => {
             unregisterItem('item-1')
             actions.highlightFirst()
             await nextTick()
-            expect(actions.isHighlight('item-2')).toBe(true)
+            expect(actions.isHighlighted('item-2')).toBe(true)
             wrapper.unmount()
         })
 
@@ -259,7 +259,7 @@ describe('useMenu', () => {
             registerItem('item-1')
             actions.highlightFirst()
             await nextTick()
-            expect(actions.isHighlight('item-1')).toBe(true)
+            expect(actions.isHighlighted('item-1')).toBe(true)
             wrapper.unmount()
         })
     })

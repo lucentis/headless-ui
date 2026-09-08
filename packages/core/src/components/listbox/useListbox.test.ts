@@ -329,65 +329,6 @@ describe('useListbox', () => {
         })
     })
 
-    describe('bindings.getOptionProps', () => {
-        it('role is option', () => {
-            const { bindings } = createListboxHost()
-            expect(bindings.getOptionProps('option-1').role).toBe('option')
-        })
-
-        it('aria-selected reflects selection', async () => {
-            const { actions, bindings } = createListboxHost()
-            expect(bindings.getOptionProps('option-1')['aria-selected']).toBe(false)
-            actions.select('option-1')
-            await nextTick()
-            expect(bindings.getOptionProps('option-1')['aria-selected']).toBe(true)
-        })
-
-        it('data-selected is set when selected', async () => {
-            const { actions, bindings } = createListboxHost()
-            actions.select('option-1')
-            await nextTick()
-            expect(bindings.getOptionProps('option-1')['data-selected']).toBe('')
-        })
-
-        it('data-highlight is set when active', async () => {
-            const { actions, bindings } = createListboxHost()
-            actions.highlight('option-1')
-            await nextTick()
-            expect(bindings.getOptionProps('option-1')['data-highlight']).toBe('')
-        })
-
-        it('onClick toggles option', async () => {
-            const { actions, bindings } = createListboxHost()
-            bindings.getOptionProps('option-1').onClick()
-            await nextTick()
-            expect(actions.isSelected('option-1')).toBe(true)
-        })
-
-        it('onClick calls user handler then toggles', async () => {
-            const userHandler = vi.fn()
-            const { actions, bindings } = createListboxHost()
-            bindings.getOptionProps('option-1', { onClick: userHandler }).onClick()
-            await nextTick()
-            expect(userHandler).toHaveBeenCalledTimes(1)
-            expect(actions.isSelected('option-1')).toBe(true)
-        })
-
-        it('onClick does nothing when option disabled', async () => {
-            const { actions, bindings } = createListboxHost()
-            bindings.getOptionProps('option-1', { disabled: true }).onClick()
-            await nextTick()
-            expect(actions.isSelected('option-1')).toBe(false)
-        })
-
-        it('onMouseenter highlights option', async () => {
-            const { state, bindings } = createListboxHost()
-            bindings.getOptionProps('option-1').onMouseenter()
-            await nextTick()
-            expect(state.highlightValue).toBe('option-1')
-        })
-    })
-
     describe('context', () => {
         it('useListboxContext throws outside provider', () => {
             const Host = defineComponent({
@@ -409,12 +350,12 @@ describe('useListboxOption', () => {
             expect(state.isSelected).toBe(true)
         })
 
-        it('isActive reflects listbox state', async () => {
+        it('isHighlighted reflects listbox state', async () => {
             const { state, listbox } = createOptionHost({}, { value: 'option-1' })
-            expect(state.isActive).toBe(false)
+            expect(state.isHighlighted).toBe(false)
             listbox.actions.highlight('option-1')
             await nextTick()
-            expect(state.isActive).toBe(true)
+            expect(state.isHighlighted).toBe(true)
         })
 
         it('isDisabled is true when listbox is disabled', () => {
@@ -436,22 +377,22 @@ describe('useListboxOption', () => {
     describe('bindings', () => {
         it('aria-selected reflects isSelected', async () => {
             const { bindings, listbox } = createOptionHost({}, { value: 'option-1' })
-            expect(bindings['aria-selected']).toBe(false)
+            expect(bindings.root['aria-selected']).toBe(false)
             listbox.actions.select('option-1')
             await nextTick()
-            expect(bindings['aria-selected']).toBe(true)
+            expect(bindings.root['aria-selected']).toBe(true)
         })
 
         it('onClick toggles option', async () => {
             const { state, bindings } = createOptionHost({}, { value: 'option-1' })
-            bindings.onClick()
+            bindings.root.onClick()
             await nextTick()
             expect(state.isSelected).toBe(true)
         })
 
         it('onClick does nothing when disabled', async () => {
             const { state, bindings } = createOptionHost({}, { value: 'option-1', disabled: true })
-            bindings.onClick()
+            bindings.root.onClick()
             await nextTick()
             expect(state.isSelected).toBe(false)
         })
