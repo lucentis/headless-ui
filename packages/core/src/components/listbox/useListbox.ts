@@ -121,11 +121,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         actions,
         bindings,
         rootRef,
-        registerOption: (optionValue: string) => {
-            if (!registry.value.includes(optionValue)) registry.value.push(optionValue)
-        },
-        unregisterOption: (optionValue: string) => {
-            registry.value = registry.value.filter(v => v !== optionValue)
-        },
+        registerOption: register,
+        unregisterOption: unregister,
     }
 }

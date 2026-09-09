@@ -8,7 +8,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
     const listboxApi = listbox ?? useListboxContext()
     const disabled = useDisabled(props.disabled)
     const isDisabled = computed(() =>
-        listboxApi.state.isDisabled || (disabled ?? false)
+        listboxApi.state.isDisabled || (disabled.value ?? false)
     )
     const isSelected = computed(() => listboxApi.actions.isSelected(props.value))
     const isHighlighted = computed(() => listboxApi.actions.isHighlighted(props.value))

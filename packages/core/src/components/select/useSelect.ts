@@ -1,4 +1,4 @@
-import { computed, ref, toValue, watch, nextTick } from 'vue'
+import { computed, ref, toValue, watch } from 'vue'
 import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
@@ -166,13 +166,13 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         bindings,
         triggerRef,
         contentRef,
-        registerOption: (optionValue: string, label: string) => {
-            if (!registry.value.includes(optionValue)) registry.value.push(optionValue)
-            labelMap.value.set(optionValue, label)
+        registerOption: (value: string, label: string) => {
+            register(value)
+            labelMap.value.set(value, label)
         },
-        unregisterOption: (optionValue: string) => {
-            registry.value = registry.value.filter(v => v !== optionValue)
-            labelMap.value.delete(optionValue)
+        unregisterOption: (value: string) => {
+            unregister(value)
+            labelMap.value.delete(value)
         },
     }
 }

@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, computed } from 'vue'
+import { onMounted, onUnmounted, computed, type MaybeRef } from 'vue'
 import { useMenuContext } from './MenuContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'
@@ -7,7 +7,7 @@ import type { MenuApi, MenuItemBindings } from './types'
 export interface UseMenuItemProps {
     value: string
     onClick?: (event?) => void
-    disabled?: boolean
+    disabled?: MaybeRef<boolean>
 }
 
 export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
@@ -22,7 +22,7 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
     const menuItemBindings = computed(() => ({
         id: itemId,
         role: 'menuitem' as const,
-        'aria-disabled': isDisabled.value,
+        'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-highlighted': menuApi.actions.isHighlighted(props.value) ? ('' as const) : undefined,
         onClick: composeHandlers(

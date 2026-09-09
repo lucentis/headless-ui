@@ -1,4 +1,4 @@
-import { computed, ref, watch, nextTick } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
 import { useEscape } from '../../utils/useEscape'
@@ -135,11 +135,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         bindings,
         triggerRef,
         contentRef,
-        registerItem: (value: string) => {
-            if (!registry.value.includes(value)) registry.value.push(value)
-        },
-        unregisterItem: (value: string) => {
-            registry.value = registry.value.filter(v => v !== value)
-        },
+        registerItem: register,
+        unregisterItem: unregister,
     }
 }

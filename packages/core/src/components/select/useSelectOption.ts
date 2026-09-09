@@ -7,7 +7,7 @@ export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi)
     const selectApi = select ?? useSelectContext()
     const disabled = useDisabled(props.disabled)
     const isDisabled = computed(() =>
-        selectApi.state.isDisabled || (disabled ?? false)
+        selectApi.state.isDisabled || (disabled.value ?? false)
     )
     const isSelected = computed(() => selectApi.actions.isSelected(props.value))
     const isHighlighted = computed(() => selectApi.actions.isHighlighted(props.value))
