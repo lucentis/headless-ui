@@ -49,7 +49,7 @@ export interface SelectBindings {
         disabled: true | undefined
         'data-disabled': '' | undefined
         'data-state': 'open' | 'closed'
-        onClick: () => void
+        onClick: (event: MouseEvent) => void
     }
     content: {
         id: string
@@ -75,7 +75,8 @@ export interface SelectApi extends ComponentApi<SelectState, SelectActions, Sele
 export interface UseSelectOptionProps {
     value: string
     label: string
-    disabled?: MaybeRef<boolean>
+    disabled?: MaybeRef<boolean>,
+    onClick?: (event: MouseEvent) => void
 }
 
 export interface SelectOptionState {
@@ -97,8 +98,8 @@ export interface SelectOptionBindings {
         'data-highlighted': '' | undefined
         'data-selected': '' | undefined
         onMousedown: (event: MouseEvent) => void
-        onClick: () => void
-        onMouseenter: () => void
+        onClick: (event: MouseEvent) => void
+        onMouseenter: (event: MouseEvent) => void
     }
 }
 

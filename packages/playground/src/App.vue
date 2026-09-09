@@ -34,7 +34,7 @@ const menu = useMenu({onOpenChange(value) {
 },})
 const editItem = useMenuItem({ value: 'edit', onClick: () => console.log('edit') }, menu)
 const deleteItem = useMenuItem({ value: 'delete', onClick: () => console.log('delete') }, menu)
-const disabledItem = useMenuItem({ value: 'share', disabled: true, onClick: (event) => {console.log('share clicked via props', event)} }, menu)
+const disabledItem = useMenuItem({ value: 'share', disabled: true, onClick: (event: MouseEvent) => {console.log('share clicked via props', event)} }, menu)
 
 const listbox = useListbox({ defaultValue: 'option-1', onValueChange(value) {
     console.log(value)

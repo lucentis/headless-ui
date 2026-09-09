@@ -7,4 +7,6 @@ export type {
     MenuActions,
     MenuBindings,
     MenuApi,
+    UseMenuItemProps,
+    MenuItemBindings
 } from './types'

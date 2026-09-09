@@ -34,7 +34,7 @@ export interface MenuBindings {
         'aria-expanded': boolean
         'aria-controls': string
         'data-state': 'open' | 'closed'
-        onClick: () => void
+        onClick: (event: MouseEvent) => void
     }
     content: {
         id: string
@@ -47,6 +47,13 @@ export interface MenuBindings {
     }
 }
 
+
+export interface UseMenuItemProps {
+    value: string
+    onClick?: (event: MouseEvent) => void
+    disabled?: MaybeRef<boolean>
+}
+
 export interface MenuItemBindings {
     root: {
         id: string
@@ -54,8 +61,8 @@ export interface MenuItemBindings {
         'aria-disabled': true | undefined
         'data-disabled': '' | undefined
         'data-highlighted': '' | undefined
-        onClick: () => void
-        onMouseenter: () => void
+        onClick: (event: MouseEvent) => void
+        onMouseenter: (event: MouseEvent) => void
     }
 }
 

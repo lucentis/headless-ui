@@ -55,8 +55,8 @@ export interface ListboxOptionBindings {
         'data-highlighted': '' | undefined
         'data-selected': '' | undefined
         onMousedown: (event: MouseEvent) => void
-        onClick: () => void
-        onMouseenter: () => void
+        onClick: (event: MouseEvent) => void
+        onMouseenter: (event: MouseEvent) => void
     }
 }
 
@@ -70,7 +70,8 @@ export interface ListboxApi extends ComponentApi<ListboxState, ListboxActions, L
 
 export interface UseListboxOptionProps {
     value: string
-    disabled?: MaybeRef<boolean>
+    disabled?: MaybeRef<boolean>,
+    onClick?: (event: MouseEvent) => void
 }
 
 export interface ListboxOptionState {

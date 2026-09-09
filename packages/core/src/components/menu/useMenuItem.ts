@@ -2,13 +2,7 @@ import { onMounted, onUnmounted, computed, type MaybeRef } from 'vue'
 import { useMenuContext } from './MenuContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'
-import type { MenuApi, MenuItemBindings } from './types'
-
-export interface UseMenuItemProps {
-    value: string
-    onClick?: (event?) => void
-    disabled?: MaybeRef<boolean>
-}
+import type { MenuApi, MenuItemBindings, useMenuItemProps } from './types'
 
 export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
     const menuApi = menu ?? useMenuContext()
