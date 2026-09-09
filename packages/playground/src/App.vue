@@ -34,7 +34,7 @@ const menu = useMenu({onOpenChange(value) {
 },})
 const editItem = useMenuItem({ value: 'edit', onClick: () => console.log('edit') }, menu)
 const deleteItem = useMenuItem({ value: 'delete', onClick: () => console.log('delete') }, menu)
-const disabledItem = useMenuItem({ value: 'share', disabled: true }, menu)
+const disabledItem = useMenuItem({ value: 'share', disabled: true, onClick: (event) => {console.log('share clicked via props', event)} }, menu)
 
 const listbox = useListbox({ defaultValue: 'option-1', onValueChange(value) {
     console.log(value)
@@ -101,7 +101,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
             <h3>
                 <button v-bind="item3.bindings.trigger">Item 3</button>
             </h3>
-            
+
             <div v-if="item3.state.isExpanded" v-bind="item3.bindings.content">
                 <p>Content for item 3</p>
             </div>
@@ -211,9 +211,9 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
             v-bind="menu.bindings.content"
             style="position:fixed;top:100px;left:100px;background:white;border:1px solid #ccc;border-radius:4px"
         >
-            <div v-bind="editItem.bindings.root" style="padding:8px 16px;cursor:pointer">Edit</div>
+            <div v-bind="editItem.bindings.root" @click.prevent="console.log('edit clicked')" style="padding:8px 16px;cursor:pointer">Edit</div>
             <div v-bind="deleteItem.bindings.root" style="padding:8px 16px;cursor:pointer">Delete</div>
-            <div v-bind="disabledItem.bindings.root" style="padding:8px 16px;opacity:0.5">Share</div>
+            <div v-bind="disabledItem.bindings.root" @click.prevent="console.log('share clicked')" style="padding:8px 16px;opacity:0.5">Share</div>
         </div>
     </div>
 

@@ -1,13 +1,14 @@
 import { computed, onMounted, onUnmounted, toValue } from 'vue'
 import { useListboxContext } from './ListboxContext'
 import { composeHandlers } from '../../utils/eventHandler'
+import { useDisabled } from '../../utils/useDisabled'
 import type { UseListboxOptionProps, ListboxOptionApi, ListboxApi } from './types'
 
 export function useListboxOption(props: UseListboxOptionProps, listbox?: ListboxApi): ListboxOptionApi {
     const listboxApi = listbox ?? useListboxContext()
-
+    const disabled = useDisabled(props.disabled)
     const isDisabled = computed(() =>
-        listboxApi.state.isDisabled || (toValue(props.disabled) ?? false)
+        listboxApi.state.isDisabled || (disabled ?? false)
     )
     const isSelected = computed(() => listboxApi.actions.isSelected(props.value))
     const isHighlighted = computed(() => listboxApi.actions.isHighlighted(props.value))
@@ -35,7 +36,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         'data-selected': isSelected.value ? ('' as const) : undefined,
         onMousedown: (event: MouseEvent) => event.preventDefault(),
         onClick: composeHandlers(
-            undefined,
+            props.onClick,
             () => {
                 if (!isDisabled.value) {
                     listboxApi.rootRef.value?.focus()

@@ -1,12 +1,13 @@
 import { computed, onMounted, onUnmounted, toValue } from 'vue'
 import { useSelectContext } from './SelectContext'
+import { useDisabled } from '../../utils/useDisabled'
 import type { UseSelectOptionProps, SelectOptionApi, SelectApi } from './types'
 
 export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi): SelectOptionApi {
     const selectApi = select ?? useSelectContext()
-
+    const disabled = useDisabled(props.disabled)
     const isDisabled = computed(() =>
-        selectApi.state.isDisabled || (toValue(props.disabled) ?? false)
+        selectApi.state.isDisabled || (disabled ?? false)
     )
     const isSelected = computed(() => selectApi.actions.isSelected(props.value))
     const isHighlighted = computed(() => selectApi.actions.isHighlighted(props.value))
@@ -33,12 +34,15 @@ export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi)
         'data-highlighted': isHighlighted.value ? ('' as const) : undefined,
         'data-selected': isSelected.value ? ('' as const) : undefined,
         onMousedown: (event: MouseEvent) => event.preventDefault(),
-        onClick: () => {
-            if (!isDisabled.value) {
-                selectApi.triggerRef.value?.focus()
-                selectApi.actions.select(props.value)
+        onClick: composeHandlers(
+            props.onClick,
+            () => {
+                if (!isDisabled.value) {
+                    selectApi.triggerRef.value?.focus()
+                    selectApi.actions.select(props.value)
+                }
             }
-        },
+        ),
         onMouseenter: () => {
             if (!isDisabled.value) selectApi.actions.highlight(props.value)
         },
