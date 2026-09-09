@@ -5,18 +5,11 @@ import { useDisabled } from '../../utils/useDisabled'
 import { useOpenState } from '../../utils/useOpenState'
 import { useEscape } from '../../utils/useEscape'
 import { useOutsideClick } from '../../utils/useOutsideClick'
+import { useRegistry } from '../../utils/useRegistry'
+import { useHighlight } from '../../utils/useHighlight'
+import { Keys } from '../../utils/keys'
 import { useConfig } from '../../config'
 import type { UseSelectProps, SelectApi } from './types'
-
-const Keys = {
-    ArrowUp: 'ArrowUp',
-    ArrowDown: 'ArrowDown',
-    Home: 'Home',
-    End: 'End',
-    Enter: 'Enter',
-    Space: ' ',
-    Tab: 'Tab',
-} as const
 
 export function useSelect(props: UseSelectProps = {}): SelectApi {
     const config = useConfig()
@@ -47,8 +40,9 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         contentRef.value?.focus()
     })
 
-    const highlightValue = ref<string | null>(null)
-    const registry = ref<string[]>([])
+    const { registry, register, unregister } = useRegistry()
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlight, clearHighlight } = useHighlight(registry)
+
     const labelMap = ref<Map<string, string>>(new Map())
 
     const triggerId = useId('select-trigger')
@@ -66,45 +60,20 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         open,
         close,
         toggle,
-
+        highlight,
+        highlightFirst,
+        highlightLast,
+        highlightNext,
+        highlightPrev,
+        isHighlighted,
+        
         select: (optionValue: string) => {
             if (isDisabled.value) return
             setValue(optionValue)
             close()
         },
 
-        highlight: (optionValue: string) => {
-            highlightValue.value = optionValue
-        },
-
-        highlightFirst: () => {
-            if (registry.value.length > 0) highlightValue.value = registry.value[0]
-        },
-
-        highlightLast: () => {
-            if (registry.value.length > 0) highlightValue.value = registry.value[registry.value.length - 1]
-        },
-
-        highlightNext: () => {
-            const items = registry.value
-            if (items.length === 0) return
-            if (highlightValue.value === null) { highlightValue.value = items[0]; return }
-            const index = items.indexOf(highlightValue.value)
-            const next = items[index + 1]
-            if (next !== undefined) highlightValue.value = next
-        },
-
-        highlightPrev: () => {
-            const items = registry.value
-            if (items.length === 0) return
-            if (highlightValue.value === null) { highlightValue.value = items[items.length - 1]; return }
-            const index = items.indexOf(highlightValue.value)
-            const prev = items[index - 1]
-            if (prev !== undefined) highlightValue.value = prev
-        },
-
         isSelected: (optionValue: string) => value.value === optionValue,
-        isHighlighted: (optionValue: string) => highlightValue.value === optionValue,
     }
 
     useEscape({

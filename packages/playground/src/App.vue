@@ -58,7 +58,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     <button v-bind="bindings.button" @click="console.log('clicked')">Submit</button>
 
     <!-- alert -->
-    <div class="" v-bind="alert.bindings.root">
+    <div class="" v-bind="alert.bindings.root" v-if="alert.state.isPresent">
         <p>alert</p>
 
         <button @click="alert.actions.close">Close</button>
@@ -71,7 +71,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
         </button>
 
         <div v-if="collapsible.state.isPresent" v-bind="collapsible.bindings.content">
-        <p>This is the collapsible content.</p>
+            <p>This is the collapsible content.</p>
         </div>
     </div>
 
@@ -81,6 +81,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
             <h3>
                 <button v-bind="item1.bindings.trigger">Item 1</button>
             </h3>
+
             <div v-if="item1.state.isExpanded" v-bind="item1.bindings.content">
                 <p>Content for item 1</p>
             </div>
@@ -90,6 +91,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
             <h3>
                 <button v-bind="item2.bindings.trigger">Item 2</button>
             </h3>
+
             <div v-if="item2.state.isExpanded" v-bind="item2.bindings.content">
                 <p>Content for item 2</p>
             </div>
@@ -99,6 +101,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
             <h3>
                 <button v-bind="item3.bindings.trigger">Item 3</button>
             </h3>
+            
             <div v-if="item3.state.isExpanded" v-bind="item3.bindings.content">
                 <p>Content for item 3</p>
             </div>
