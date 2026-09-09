@@ -26,10 +26,8 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     watch(isOpen, async (newOpen) => {
         if (!newOpen) return
     
-        await nextTick()
-    
         contentRef.value?.focus()
-    })
+    }, { flush: 'post' })
     
     const { registry, register, unregister } = useRegistry()
     const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)

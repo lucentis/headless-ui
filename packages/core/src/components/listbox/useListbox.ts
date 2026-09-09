@@ -19,7 +19,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         onChange: props.onValueChange,
     })
     const { registry, register, unregister } = useRegistry()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlight, clearHighlight } = useHighlight(registry)
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
     const listboxId = useId('listbox')
     const rootRef = ref<HTMLElement | null>(null)
 
@@ -30,7 +30,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         highlightNext,
         highlightPrev,
         isHighlighted,
-        
+
         select: (optionValue: string) => {
             if (isDisabled.value) return
             if (multiple.value) {

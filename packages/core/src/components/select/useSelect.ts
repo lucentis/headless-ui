@@ -35,13 +35,11 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     watch(isOpen, async (newOpen) => {
         if (!newOpen) return
     
-        await nextTick()
-    
         contentRef.value?.focus()
-    })
+    }, { flush: 'post' })
 
     const { registry, register, unregister } = useRegistry()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlight, clearHighlight } = useHighlight(registry)
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
 
     const labelMap = ref<Map<string, string>>(new Map())
 
@@ -66,7 +64,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         highlightNext,
         highlightPrev,
         isHighlighted,
-        
+
         select: (optionValue: string) => {
             if (isDisabled.value) return
             setValue(optionValue)
