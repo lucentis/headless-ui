@@ -1,6 +1,13 @@
 import type { MaybeRef, Ref } from 'vue'
 import type { ComponentApi } from '../../types'
 
+export interface SelectRegistryItem {
+    value: string
+    id: string
+    disabled: boolean
+    label: string
+}
+
 export interface UseSelectProps {
     defaultValue?: string
     value?: MaybeRef<string>
@@ -49,7 +56,7 @@ export interface SelectBindings {
         disabled: true | undefined
         'data-disabled': '' | undefined
         'data-state': 'open' | 'closed'
-        onClick: (event: MouseEvent) => void
+        onClick: () => void
     }
     content: {
         id: string
@@ -65,9 +72,10 @@ export interface SelectBindings {
 export interface SelectApi extends ComponentApi<SelectState, SelectActions, SelectBindings> {
     triggerRef: Ref<HTMLElement | null>
     contentRef: Ref<HTMLElement | null>
-    // internal — used by useSelectOption
-    registerOption: (value: string, label: string) => void
+    registerOption: (item: SelectRegistryItem) => void
     unregisterOption: (value: string) => void
+    updateOption: (value: string, patch: Partial<Omit<SelectRegistryItem, 'value'>>) => void
+    getOption: (value: string) => SelectRegistryItem | undefined
 }
 
 // --- Option ---
@@ -75,7 +83,7 @@ export interface SelectApi extends ComponentApi<SelectState, SelectActions, Sele
 export interface UseSelectOptionProps {
     value: string
     label: string
-    disabled?: MaybeRef<boolean>,
+    disabled?: MaybeRef<boolean>
     onClick?: (event: MouseEvent) => void
 }
 

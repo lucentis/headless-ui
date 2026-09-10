@@ -1,23 +1,31 @@
-import { computed, onMounted, onUnmounted, toValue } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
+import { useId } from '../../utils/useId'
 import { useSelectContext } from './SelectContext'
-import { useDisabled } from '../../utils/useDisabled'
 import { composeHandlers } from '../../utils/eventHandler'
+import { useDisabled } from '../../utils/useDisabled'
 import type { UseSelectOptionProps, SelectOptionApi, SelectApi } from './types'
 
 export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi): SelectOptionApi {
     const selectApi = select ?? useSelectContext()
-    const disabled = useDisabled(props.disabled)
-    const isDisabled = computed(() =>
-        selectApi.state.isDisabled || (disabled.value ?? false)
-    )
+    const ownDisabled = useDisabled(props.disabled)
+    const isDisabled = computed(() => selectApi.state.isDisabled || ownDisabled.value)
     const isSelected = computed(() => selectApi.actions.isSelected(props.value))
     const isHighlighted = computed(() => selectApi.actions.isHighlighted(props.value))
 
-    // id derived from contentId + value — matches aria-activedescendant format
-    const optionId = `${selectApi.state.contentId}-option-${props.value}`
+    const optionId = useId('select-option')
 
-    onMounted(() => selectApi.registerOption(props.value, props.label))
+    onMounted(() => selectApi.registerOption({
+        value: props.value,
+        id: optionId,
+        disabled: isDisabled.value,
+        label: props.label,
+    }))
+
     onUnmounted(() => selectApi.unregisterOption(props.value))
+
+    watch(isDisabled, (disabled) => {
+        selectApi.updateOption(props.value, { disabled })
+    })
 
     const state: SelectOptionApi['state'] = {
         get isSelected() { return isSelected.value },
@@ -50,7 +58,7 @@ export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi)
     }))
 
     const bindings: SelectOptionApi['bindings'] = {
-        get root() { return optionBindings.value}
+        get root() { return optionBindings.value },
     }
 
     return { state, actions: {}, bindings }

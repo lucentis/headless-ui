@@ -1,4 +1,4 @@
-import { computed, ref, toValue, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
@@ -9,7 +9,7 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { Keys } from '../../utils/keys'
 import { useConfig } from '../../config'
-import type { UseSelectProps, SelectApi } from './types'
+import type { UseSelectProps, SelectApi, SelectRegistryItem } from './types'
 
 export function useSelect(props: UseSelectProps = {}): SelectApi {
     const config = useConfig()
@@ -25,23 +25,18 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         open: props.open,
         defaultOpen: props.defaultOpen,
         onOpenChange: (val) => {
-            if (!val) highlightValue.value = null
+            if (!val) clearHighlight()
             props.onOpenChange?.(val)
         },
     })
 
-    /// try to focus the content of menu when open for arrow navigation
-    
-    watch(isOpen, async (newOpen) => {
+    watch(isOpen, (newOpen) => {
         if (!newOpen) return
-    
         contentRef.value?.focus()
     }, { flush: 'post' })
 
-    const { registry, register, unregister } = useRegistry()
+    const { registry, register, unregister, updateItem, getItem } = useRegistry<SelectRegistryItem>()
     const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
-
-    const labelMap = ref<Map<string, string>>(new Map())
 
     const triggerId = useId('select-trigger')
     const contentId = useId('select-content')
@@ -49,9 +44,10 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     const triggerRef = ref<HTMLElement | null>(null)
     const contentRef = ref<HTMLElement | null>(null)
 
+    // selectedLabel comes directly from the registry — no separate labelMap needed
     const selectedLabel = computed(() => {
         const v = value.value
-        return v ? labelMap.value.get(v) ?? null : null
+        return v ? getItem(v)?.label ?? null : null
     })
 
     const actions: SelectApi['actions'] = {
@@ -121,7 +117,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         role: 'listbox' as const,
         'aria-labelledby': triggerId,
         'aria-activedescendant': highlightValue.value
-            ? `${contentId}-option-${highlightValue.value}`
+            ? getItem(highlightValue.value)?.id
             : undefined,
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
         tabindex: -1 as const,
@@ -166,13 +162,9 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         bindings,
         triggerRef,
         contentRef,
-        registerOption: (value: string, label: string) => {
-            register(value)
-            labelMap.value.set(value, label)
-        },
-        unregisterOption: (value: string) => {
-            unregister(value)
-            labelMap.value.delete(value)
-        },
+        registerOption: register,
+        unregisterOption: unregister,
+        updateOption: updateItem,
+        getOption: getItem,
     }
 }
