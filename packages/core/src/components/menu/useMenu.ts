@@ -7,7 +7,7 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { Keys } from '../../utils/keys'
 import { useConfig } from '../../config'
-import type { UseMenuProps, MenuApi } from './types'
+import type { UseMenuProps, MenuApi, MenuRegistryItem } from './types'
 
 export function useMenu(props: UseMenuProps = {}): MenuApi {
     const config = useConfig()
@@ -21,15 +21,12 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         },
     })
 
-    /// try to focus the content of menu when open for arrow navigation
-    
-    watch(isOpen, async (newOpen) => {
+    watch(isOpen, (newOpen) => {
         if (!newOpen) return
-    
         contentRef.value?.focus()
     }, { flush: 'post' })
-    
-    const { registry, register, unregister } = useRegistry()
+
+    const { registry, register, unregister, updateItem, getItem } = useRegistry<MenuRegistryItem>()
     const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
 
     const triggerId = useId('menu-trigger')
@@ -47,7 +44,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         highlightLast,
         highlightNext,
         highlightPrev,
-        isHighlighted
+        isHighlighted,
     }
 
     useEscape({
@@ -86,7 +83,9 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         id: contentId,
         role: 'menu' as const,
         'aria-labelledby': triggerId,
-        'aria-activedescendant': highlightValue.value ? `${contentId}-item-${highlightValue.value}` : undefined,
+        'aria-activedescendant': highlightValue.value
+            ? getItem(highlightValue.value)?.id
+            : undefined,
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
         tabindex: -1 as const,
         onKeydown: (event: KeyboardEvent) => {
@@ -137,5 +136,6 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         contentRef,
         registerItem: register,
         unregisterItem: unregister,
+        updateItem,
     }
 }

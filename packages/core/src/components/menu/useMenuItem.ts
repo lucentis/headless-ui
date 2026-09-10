@@ -1,17 +1,28 @@
-import { onMounted, onUnmounted, computed, type MaybeRef } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
+import { useId } from '../../utils/useId'
 import { useMenuContext } from './MenuContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'
-import type { MenuApi, MenuItemBindings, useMenuItemProps } from './types'
+import type { MenuApi, MenuItemBindings, UseMenuItemProps } from './types'
 
 export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
     const menuApi = menu ?? useMenuContext()
-
-    const itemId = `${menuApi.state.contentId}-item-${props.value}`
     const isDisabled = useDisabled(props.disabled)
 
-    onMounted(() => menuApi.registerItem(props.value))
+    const itemId = useId('menu-item')
+
+    onMounted(() => menuApi.registerItem({
+        value: props.value,
+        id: itemId,
+        disabled: isDisabled.value,
+    }))
+
     onUnmounted(() => menuApi.unregisterItem(props.value))
+
+    // keep registry in sync when disabled changes
+    watch(isDisabled, (disabled) => {
+        menuApi.updateItem(props.value, { disabled })
+    })
 
     const menuItemBindings = computed(() => ({
         id: itemId,

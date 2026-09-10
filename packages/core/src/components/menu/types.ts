@@ -1,6 +1,12 @@
 import type { MaybeRef, Ref } from 'vue'
 import type { ComponentApi } from '../../types'
 
+export interface MenuRegistryItem {
+    value: string
+    id: string
+    disabled: boolean
+}
+
 export interface UseMenuProps {
     defaultOpen?: boolean
     open?: MaybeRef<boolean>
@@ -34,7 +40,7 @@ export interface MenuBindings {
         'aria-expanded': boolean
         'aria-controls': string
         'data-state': 'open' | 'closed'
-        onClick: (event: MouseEvent) => void
+        onClick: () => void
     }
     content: {
         id: string
@@ -46,7 +52,6 @@ export interface MenuBindings {
         onKeydown: (event: KeyboardEvent) => void
     }
 }
-
 
 export interface UseMenuItemProps {
     value: string
@@ -69,7 +74,7 @@ export interface MenuItemBindings {
 export interface MenuApi extends ComponentApi<MenuState, MenuActions, MenuBindings> {
     triggerRef: Ref<HTMLElement | null>
     contentRef: Ref<HTMLElement | null>
-    // internal — used by useMenuItem via context
-    registerItem: (value: string) => void
+    registerItem: (item: MenuRegistryItem) => void
     unregisterItem: (value: string) => void
+    updateItem: (value: string, patch: Partial<Omit<MenuRegistryItem, 'value'>>) => void
 }
