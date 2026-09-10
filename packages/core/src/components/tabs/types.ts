@@ -28,7 +28,12 @@ export interface TabsActions {
 
 export type TabsBindings = Record<never, never>
 
-export interface TabsApi extends ComponentApi<TabsState, TabsActions, TabsBindings> {}
+export interface TabsApi extends ComponentApi<TabsState, TabsActions, TabsBindings> {
+    // internal — used by useTabsTrigger to register its generated ID
+    registerTrigger: (value: string, triggerId: string) => void
+    unregisterTrigger: (value: string) => void
+    getTriggerId: (value: string) => string
+}
 
 // --- Trigger ---
 

@@ -35,6 +35,9 @@ export function useHighlight(registry: Ref<string[]>): UseHighlightReturn {
             return
         }
         const index = items.indexOf(highlightValue.value)
+
+        if (index === -1) return
+
         const next = items[index + 1]
         if (next !== undefined) highlightValue.value = next
     }
@@ -47,6 +50,9 @@ export function useHighlight(registry: Ref<string[]>): UseHighlightReturn {
             return
         }
         const index = items.indexOf(highlightValue.value)
+
+        if (index === -1) return
+        
         const prev = items[index - 1]
         if (prev !== undefined) highlightValue.value = prev
     }

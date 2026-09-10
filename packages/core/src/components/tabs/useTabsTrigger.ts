@@ -1,19 +1,9 @@
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useId } from '../../utils/useId'
 import { useDisabled } from '../../utils/useDisabled'
 import { useTabsContext } from './TabsContext'
+import { Keys } from '../../utils/keys'
 import type { UseTabsTriggerProps, TabsTriggerApi, TabsApi } from './types'
-
-const Keys = {
-    ArrowLeft: 'ArrowLeft',
-    ArrowRight: 'ArrowRight',
-    ArrowUp: 'ArrowUp',
-    ArrowDown: 'ArrowDown',
-    Home: 'Home',
-    End: 'End',
-    Enter: 'Enter',
-    Space: ' ',
-} as const
 
 export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): TabsTriggerApi {
     const tabsApi = tabs ?? useTabsContext()
@@ -25,6 +15,9 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
 
     const triggerId = useId('tabs-trigger')
     const panelId = `tabs-panel-${props.value}`
+
+    onMounted(() => tabsApi.registerTrigger(props.value, triggerId))
+    onUnmounted(() => tabsApi.unregisterTrigger(props.value))
 
     const state: TabsTriggerApi['state'] = {
         get isSelected() { return isSelected.value },
