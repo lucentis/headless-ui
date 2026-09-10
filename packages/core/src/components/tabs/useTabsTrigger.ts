@@ -13,11 +13,12 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
     const isSelected = computed(() => tabsApi.actions.isSelected(props.value))
     const isFocused = computed(() => tabsApi.actions.isFocused(props.value))
 
+    // trigger owns both IDs — single source of truth
     const triggerId = useId('tabs-trigger')
-    const panelId = `tabs-panel-${props.value}`
+    const panelId = useId('tabs-panel')
 
-    onMounted(() => tabsApi.registerTrigger(props.value, triggerId))
-    onUnmounted(() => tabsApi.unregisterTrigger(props.value))
+    onMounted(() => tabsApi.linkTrigger({ value: props.value, triggerId, panelId }))
+    onUnmounted(() => tabsApi.unlinkTrigger(props.value))
 
     const state: TabsTriggerApi['state'] = {
         get isSelected() { return isSelected.value },
@@ -34,7 +35,7 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
         id: triggerId,
         role: 'tab' as const,
         'aria-selected': isSelected.value,
-        'aria-controls': panelId,
+        'aria-controls': tabsApi.getPanelId(props.value),
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-state': isSelected.value ? ('active' as const) : ('inactive' as const),

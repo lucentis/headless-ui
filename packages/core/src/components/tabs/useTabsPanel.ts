@@ -7,14 +7,12 @@ export function useTabsPanel(props: UseTabsPanelProps, tabs?: TabsApi): TabsPane
 
     const isSelected = computed(() => tabsApi.actions.isSelected(props.value))
 
-    const panelId = `tabs-panel-${props.value}`
-
     const state: TabsPanelApi['state'] = {
         get isSelected() { return isSelected.value },
     }
 
     const panelBindings = computed(() => ({
-        id: panelId,
+        id: tabsApi.getPanelId(props.value),
         role: 'tabpanel' as const,
         'aria-labelledby': tabsApi.getTriggerId(props.value),
         'data-state': isSelected.value ? ('active' as const) : ('inactive' as const),
