@@ -1,6 +1,7 @@
 import { computed, onMounted, onUnmounted, toValue } from 'vue'
 import { useSelectContext } from './SelectContext'
 import { useDisabled } from '../../utils/useDisabled'
+import { composeHandlers } from '../../utils/eventHandler'
 import type { UseSelectOptionProps, SelectOptionApi, SelectApi } from './types'
 
 export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi): SelectOptionApi {

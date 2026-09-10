@@ -12,49 +12,60 @@ export interface UseHighlightReturn {
     clearHighlight: () => void
 }
 
-export function useHighlight(registry: Ref<string[]>): UseHighlightReturn {
+export function useHighlight(
+    registry: Ref<{ value: string; disabled?: boolean }[]>
+): UseHighlightReturn {
     const highlightValue = ref<string | null>(null)
+
+    function getEnabled(): { value: string; disabled?: boolean }[] {
+        return registry.value.filter(item => !item.disabled)
+    }
 
     function highlight(value: string): void {
         highlightValue.value = value
     }
 
     function highlightFirst(): void {
-        if (registry.value.length > 0) highlightValue.value = registry.value[0]
+        const first = getEnabled()[0]
+        if (first) highlightValue.value = first.value
     }
 
     function highlightLast(): void {
-        if (registry.value.length > 0) highlightValue.value = registry.value[registry.value.length - 1]
+        const enabled = getEnabled()
+        const last = enabled[enabled.length - 1]
+        if (last) highlightValue.value = last.value
     }
 
     function highlightNext(): void {
-        const items = registry.value
-        if (items.length === 0) return
+        const enabled = getEnabled()
+        if (enabled.length === 0) return
+
         if (highlightValue.value === null) {
-            highlightValue.value = items[0]
+            highlightValue.value = enabled[0].value
             return
         }
-        const index = items.indexOf(highlightValue.value)
 
-        if (index === -1) return
+        const index = enabled.findIndex(i => i.value === highlightValue.value)
+        if (index === -1) return  // stale highlight — no-op
 
-        const next = items[index + 1]
-        if (next !== undefined) highlightValue.value = next
+        const next = enabled[index + 1]
+        if (next) highlightValue.value = next.value
     }
 
     function highlightPrev(): void {
-        const items = registry.value
-        if (items.length === 0) return
+        const enabled = getEnabled()
+        if (enabled.length === 0) return
+
         if (highlightValue.value === null) {
-            highlightValue.value = items[items.length - 1]
+            highlightValue.value = enabled[enabled.length - 1].value
             return
         }
-        const index = items.indexOf(highlightValue.value)
 
-        if (index === -1) return
-        
-        const prev = items[index - 1]
-        if (prev !== undefined) highlightValue.value = prev
+        const index = enabled.findIndex(i => i.value === highlightValue.value)
+        if (index === -1) return  // stale highlight — no-op
+
+        const prev = enabled[index - 1]
+        if (prev) highlightValue.value = prev.value
     }
 
     function isHighlighted(value: string): boolean {
