@@ -2,24 +2,26 @@ import { computed, ref, toValue } from 'vue'
 import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
-import { composeHandlers } from '../../utils/eventHandler'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { Keys } from '../../utils/keys'
-import type { UseListboxProps, ListboxApi, ListboxOptionUserProps } from './types'
+import type { UseListboxProps, ListboxApi, ListboxRegistryItem } from './types'
 
 export function useListbox(props: UseListboxProps = {}): ListboxApi {
     const multiple = computed(() => toValue(props.multiple) ?? false)
     const orientation = computed(() => toValue(props.orientation) ?? 'vertical')
     const isDisabled = useDisabled(props.disabled)
+
     const defaultValue = props.defaultValue ?? (multiple.value ? [] : '')
     const { value, setValue } = useControllableState<string | string[]>({
         value: props.value,
         defaultValue,
         onChange: props.onValueChange,
     })
-    const { registry, register, unregister } = useRegistry()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
+
+    const { registry, register, unregister, updateItem, getItem } = useRegistry<ListboxRegistryItem>()
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted } = useHighlight(registry)
+
     const listboxId = useId('listbox')
     const rootRef = ref<HTMLElement | null>(null)
 
@@ -78,8 +80,9 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         role: 'listbox' as const,
         'aria-multiselectable': multiple.value ? (true as const) : undefined,
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
-        'aria-activedescendant': highlightValue.value ? `${listboxId}-option-${highlightValue.value}` : undefined,
-        // aria-orientation only set when horizontal — vertical is implicit default
+        'aria-activedescendant': highlightValue.value
+            ? getItem(highlightValue.value)?.id
+            : undefined,
         'aria-orientation': orientation.value === 'horizontal' ? ('horizontal' as const) : undefined,
         tabindex: 0 as const,
         onKeydown: (event: KeyboardEvent) => {
@@ -123,5 +126,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         rootRef,
         registerOption: register,
         unregisterOption: unregister,
+        updateOption: updateItem,
+        getOption: getItem,
     }
 }

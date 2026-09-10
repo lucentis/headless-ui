@@ -1,4 +1,5 @@
-import { computed, onMounted, onUnmounted, toValue } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
+import { useId } from '../../utils/useId'
 import { useListboxContext } from './ListboxContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'
@@ -6,18 +7,24 @@ import type { UseListboxOptionProps, ListboxOptionApi, ListboxApi } from './type
 
 export function useListboxOption(props: UseListboxOptionProps, listbox?: ListboxApi): ListboxOptionApi {
     const listboxApi = listbox ?? useListboxContext()
-    const disabled = useDisabled(props.disabled)
-    const isDisabled = computed(() =>
-        listboxApi.state.isDisabled || (disabled.value ?? false)
-    )
+    const ownDisabled = useDisabled(props.disabled)
+    const isDisabled = computed(() => listboxApi.state.isDisabled || ownDisabled.value)
     const isSelected = computed(() => listboxApi.actions.isSelected(props.value))
     const isHighlighted = computed(() => listboxApi.actions.isHighlighted(props.value))
 
-    const optionId = `${listboxApi.state.listboxId}-option-${props.value}`
+    const optionId = useId('listbox-option')
 
-    // register on mount, unregister on unmount — maintains DOM order in registry
-    onMounted(() => listboxApi.registerOption(props.value))
+    onMounted(() => listboxApi.registerOption({
+        value: props.value,
+        id: optionId,
+        disabled: isDisabled.value,
+    }))
+
     onUnmounted(() => listboxApi.unregisterOption(props.value))
+
+    watch(isDisabled, (disabled) => {
+        listboxApi.updateOption(props.value, { disabled })
+    })
 
     const state: ListboxOptionApi['state'] = {
         get isSelected() { return isSelected.value },
@@ -30,7 +37,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         id: optionId,
         role: 'option' as const,
         'aria-selected': isSelected.value,
-        'aria-disabled': isDisabled.value,
+        'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-highlighted': isHighlighted.value ? ('' as const) : undefined,
         'data-selected': isSelected.value ? ('' as const) : undefined,
@@ -52,6 +59,6 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
     const bindings: ListboxOptionApi['bindings'] = {
         get root() { return optionBindings.value },
     }
-    
+
     return { state, actions: {}, bindings }
 }
