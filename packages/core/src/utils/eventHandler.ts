@@ -1,12 +1,12 @@
 // internal only — not exported from the package
 // user handler runs first, internal handler runs second unless user called event.preventDefault()
 export function composeHandlers<E extends Event>(
-    userHandler: ((event: E) => void) | undefined,
-    internalHandler: (event: E) => void,
-): (event: E) => void {
-    return (event: E) => {
+    userHandler: ((event?: E) => void) | undefined,
+    internalHandler: (event?: E) => void,
+): (event?: E) => void {
+    return (event?: E) => {
         userHandler?.(event)
-        if (!event.defaultPrevented) {
+        if (!event?.defaultPrevented) {
             internalHandler(event)
         }
     }

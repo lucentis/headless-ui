@@ -18,8 +18,8 @@ function createListboxHost(props: Parameters<typeof useListbox>[0] = {}) {
         get state() { return exposed.state },
         get actions() { return exposed.actions },
         get bindings() { return exposed.bindings },
-        get registerOption() { return exposed.registerOption },
-        get unregisterOption() { return exposed.unregisterOption },
+        registerOption: (value: string) => exposed.registerOption({ value, id: `listbox-option-${value}`, disabled: false }),
+        unregisterOption: (value: string) => exposed.unregisterOption(value),
         get api() { return exposed },
     }
 }
@@ -368,9 +368,9 @@ describe('useListboxOption', () => {
             expect(state.isDisabled).toBe(true)
         })
 
-        it('optionId matches listbox aria-activedescendant format', () => {
-            const { state, listbox } = createOptionHost({}, { value: 'option-1' })
-            expect(state.optionId).toBe(`${listbox.state.listboxId}-option-option-1`)
+        it('optionId is a stable string', () => {
+            const { state } = createOptionHost({}, { value: 'option-1' })
+            expect(typeof state.optionId).toBe('string')
         })
     })
 

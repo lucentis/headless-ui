@@ -20,8 +20,8 @@ function createHost(props: Parameters<typeof useMenu>[0] = {}) {
         get bindings() { return exposed.bindings },
         get triggerRef() { return exposed.triggerRef },
         get contentRef() { return exposed.contentRef },
-        get registerItem() { return exposed.registerItem },
-        get unregisterItem() { return exposed.unregisterItem },
+        registerItem: (value: string) => exposed.registerItem({ value, id: `menu-item-${value}`, disabled: false }),
+        unregisterItem: (value: string) => exposed.unregisterItem(value),
     }
 }
 
@@ -133,7 +133,7 @@ describe('useMenu', () => {
             wrapper.unmount()
         })
 
-        it('isHighlight returns true for Highlight item', async () => {
+        it('isHighlight returns true for highlighted item', async () => {
             const { actions, wrapper } = createHost()
             actions.highlight('item-1')
             await nextTick()
@@ -312,11 +312,15 @@ describe('useMenu', () => {
         })
 
         it('aria-activedescendant reflects highlightValue', async () => {
-            const { bindings, actions, state, wrapper } = createHost()
+            const { bindings, actions, state, wrapper, registerItem } = createHost()
+            registerItem('item-1')
+            registerItem('item-2')
             expect(bindings.content['aria-activedescendant']).toBeUndefined()
             actions.highlight('item-1')
             await nextTick()
-            expect(bindings.content['aria-activedescendant']).toBe(`${state.contentId}-item-item-1`)
+            console.log(bindings.content['aria-activedescendant']);
+            
+            expect(bindings.content['aria-activedescendant']).toBe(`menu-item-item-1`)
             wrapper.unmount()
         })
 

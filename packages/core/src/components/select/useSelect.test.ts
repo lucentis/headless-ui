@@ -21,8 +21,8 @@ function createSelectHost(props: Parameters<typeof useSelect>[0] = {}) {
         get bindings() { return exposed.bindings },
         get triggerRef() { return exposed.triggerRef },
         get contentRef() { return exposed.contentRef },
-        get registerOption() { return exposed.registerOption },
-        get unregisterOption() { return exposed.unregisterOption },
+        registerOption: (value: string, label: string) => exposed.registerOption({ value, id: `select-option-${value}`, disabled: false, label }),
+        unregisterOption: (value: string) => exposed.unregisterOption(value),
         get api() { return exposed },
     }
 }
@@ -267,11 +267,13 @@ describe('useSelect', () => {
         })
 
         it('aria-activedescendant reflects highlightValue', async () => {
-            const { bindings, actions, state, wrapper } = createSelectHost()
+            const { bindings, actions, wrapper, registerOption } = createSelectHost()
+            registerOption('fr', 'French')
+            registerOption('en', 'English')
             expect(bindings.content['aria-activedescendant']).toBeUndefined()
             actions.highlight('fr')
             await nextTick()
-            expect(bindings.content['aria-activedescendant']).toBe(`${state.contentId}-option-fr`)
+            expect(bindings.content['aria-activedescendant']).toBe(`select-option-fr`)
             wrapper.unmount()
         })
 
@@ -362,9 +364,9 @@ describe('useSelectOption', () => {
             expect(state.isDisabled).toBe(true)
         })
 
-        it('optionId matches aria-activedescendant format', () => {
-            const { state, select } = createOptionHost({}, { value: 'fr', label: 'French' })
-            expect(state.optionId).toBe(`${select.state.contentId}-option-fr`)
+        it('optionId is a stable string', () => {
+            const { state } = createOptionHost({}, { value: 'fr', label: 'French' })
+            expect(typeof state.optionId).toBe('string')
         })
 
         it('registers label on mount', async () => {

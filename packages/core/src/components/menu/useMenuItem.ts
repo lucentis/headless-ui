@@ -11,6 +11,9 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
 
     const itemId = useId('menu-item')
 
+    console.log(itemId);
+    
+
     onMounted(() => menuApi.registerItem({
         value: props.value,
         id: itemId,
