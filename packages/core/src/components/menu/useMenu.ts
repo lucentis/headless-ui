@@ -7,7 +7,8 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { Keys } from '../../utils/keys'
 import { useConfig } from '../../config'
-import type { UseMenuProps, MenuApi, MenuRegistryItem } from './types'
+import type { UseMenuProps, MenuApi, MenuRegistryItem, MenuInternals } from './types'
+import { MenuInternalKey } from '../../keys/internal-keys'
 
 export function useMenu(props: UseMenuProps = {}): MenuApi {
     const config = useConfig()
@@ -36,15 +37,8 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     const contentRef = ref<HTMLElement | null>(null)
 
     const actions: MenuApi['actions'] = {
-        open,
-        close,
-        toggle,
-        highlight,
-        highlightFirst,
-        highlightLast,
-        highlightNext,
-        highlightPrev,
-        isHighlighted,
+        open, close, toggle,
+        highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
     }
 
     useEscape({
@@ -92,21 +86,13 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
             switch (event.key) {
                 case Keys.ArrowDown:
                     event.preventDefault()
-                    if (!isOpen.value) {
-                        actions.open()
-                        actions.highlightFirst()
-                    } else {
-                        actions.highlightNext()
-                    }
+                    if (!isOpen.value) { actions.open(); actions.highlightFirst() }
+                    else actions.highlightNext()
                     break
                 case Keys.ArrowUp:
                     event.preventDefault()
-                    if (!isOpen.value) {
-                        actions.open()
-                        actions.highlightLast()
-                    } else {
-                        actions.highlightPrev()
-                    }
+                    if (!isOpen.value) { actions.open(); actions.highlightLast() }
+                    else actions.highlightPrev()
                     break
                 case Keys.Home:
                     event.preventDefault()
@@ -128,14 +114,18 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         get content() { return contentBindings.value },
     }
 
+    const internals: MenuInternals = {
+        registerItem: register,
+        unregisterItem: unregister,
+        updateItem,
+    }
+
     return {
         state,
         actions,
         bindings,
         triggerRef,
         contentRef,
-        registerItem: register,
-        unregisterItem: unregister,
-        updateItem,
+        [MenuInternalKey]: internals,
     }
 }

@@ -4,28 +4,19 @@ import { useMenuContext } from './MenuContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'
 import type { MenuApi, MenuItemBindings, UseMenuItemProps } from './types'
+import { MenuInternalKey } from '../../keys/internal-keys'
 
 export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
     const menuApi = menu ?? useMenuContext()
+    const { registerItem, unregisterItem, updateItem } = menuApi[MenuInternalKey]
     const isDisabled = useDisabled(props.disabled)
 
     const itemId = useId('menu-item')
 
-    console.log(itemId);
-    
+    onMounted(() => registerItem({ value: props.value, id: itemId, disabled: isDisabled.value }))
+    onUnmounted(() => unregisterItem(props.value))
 
-    onMounted(() => menuApi.registerItem({
-        value: props.value,
-        id: itemId,
-        disabled: isDisabled.value,
-    }))
-
-    onUnmounted(() => menuApi.unregisterItem(props.value))
-
-    // keep registry in sync when disabled changes
-    watch(isDisabled, (disabled) => {
-        menuApi.updateItem(props.value, { disabled })
-    })
+    watch(isDisabled, (disabled) => updateItem(props.value, { disabled }))
 
     const menuItemBindings = computed(() => ({
         id: itemId,
