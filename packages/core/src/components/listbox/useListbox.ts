@@ -5,7 +5,8 @@ import { useDisabled } from '../../utils/useDisabled'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { Keys } from '../../utils/keys'
-import type { UseListboxProps, ListboxApi, ListboxRegistryItem } from './types'
+import type { UseListboxProps, ListboxApi, ListboxRegistryItem, ListboxInternals } from './types'
+import { ListboxInternalKey } from '../../keys/internal-keys'
 
 export function useListbox(props: UseListboxProps = {}): ListboxApi {
     const multiple = computed(() => toValue(props.multiple) ?? false)
@@ -26,12 +27,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
     const rootRef = ref<HTMLElement | null>(null)
 
     const actions: ListboxApi['actions'] = {
-        highlight,
-        highlightFirst,
-        highlightLast,
-        highlightNext,
-        highlightPrev,
-        isHighlighted,
+        highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
 
         select: (optionValue: string) => {
             if (isDisabled.value) return
@@ -54,9 +50,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         },
 
         toggle: (optionValue: string) => {
-            actions.isSelected(optionValue)
-                ? actions.deselect(optionValue)
-                : actions.select(optionValue)
+            actions.isSelected(optionValue) ? actions.deselect(optionValue) : actions.select(optionValue)
         },
 
         isSelected: (optionValue: string) => {
@@ -80,9 +74,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         role: 'listbox' as const,
         'aria-multiselectable': multiple.value ? (true as const) : undefined,
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
-        'aria-activedescendant': highlightValue.value
-            ? getItem(highlightValue.value)?.id
-            : undefined,
+        'aria-activedescendant': highlightValue.value ? getItem(highlightValue.value)?.id : undefined,
         'aria-orientation': orientation.value === 'horizontal' ? ('horizontal' as const) : undefined,
         tabindex: 0 as const,
         onKeydown: (event: KeyboardEvent) => {
@@ -90,22 +82,10 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
             const next = orientation.value === 'horizontal' ? Keys.ArrowRight : Keys.ArrowDown
 
             switch (event.key) {
-                case next:
-                    event.preventDefault()
-                    actions.highlightNext()
-                    break
-                case prev:
-                    event.preventDefault()
-                    actions.highlightPrev()
-                    break
-                case Keys.Home:
-                    event.preventDefault()
-                    actions.highlightFirst()
-                    break
-                case Keys.End:
-                    event.preventDefault()
-                    actions.highlightLast()
-                    break
+                case next: event.preventDefault(); actions.highlightNext(); break
+                case prev: event.preventDefault(); actions.highlightPrev(); break
+                case Keys.Home: event.preventDefault(); actions.highlightFirst(); break
+                case Keys.End: event.preventDefault(); actions.highlightLast(); break
                 case Keys.Enter:
                 case Keys.Space:
                     event.preventDefault()
@@ -119,14 +99,17 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         get root() { return rootBindings.value },
     }
 
+    const internals: ListboxInternals = {
+        registerOption: register,
+        unregisterOption: unregister,
+        updateOption: updateItem,
+    }
+    
     return {
         state,
         actions,
         bindings,
         rootRef,
-        registerOption: register,
-        unregisterOption: unregister,
-        updateOption: updateItem,
-        getOption: getItem,
+        [ListboxInternalKey]: internals,
     }
 }

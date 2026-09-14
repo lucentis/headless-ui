@@ -3,10 +3,13 @@ import { useId } from '../../utils/useId'
 import { useSelectContext } from './SelectContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'
-import type { UseSelectOptionProps, SelectOptionApi, SelectApi } from './types'
+import { UseSelectOptionProps, SelectOptionApi, SelectApi } from './types'
+import { SelectInternalKey } from '../../keys/internal-keys'
 
 export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi): SelectOptionApi {
     const selectApi = select ?? useSelectContext()
+    const { registerOption, unregisterOption, updateOption } = selectApi[SelectInternalKey]
+
     const ownDisabled = useDisabled(props.disabled)
     const isDisabled = computed(() => selectApi.state.isDisabled || ownDisabled.value)
     const isSelected = computed(() => selectApi.actions.isSelected(props.value))
@@ -14,18 +17,10 @@ export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi)
 
     const optionId = useId('select-option')
 
-    onMounted(() => selectApi.registerOption({
-        value: props.value,
-        id: optionId,
-        disabled: isDisabled.value,
-        label: props.label,
-    }))
+    onMounted(() => registerOption({ value: props.value, id: optionId, disabled: isDisabled.value, label: props.label }))
+    onUnmounted(() => unregisterOption(props.value))
 
-    onUnmounted(() => selectApi.unregisterOption(props.value))
-
-    watch(isDisabled, (disabled) => {
-        selectApi.updateOption(props.value, { disabled })
-    })
+    watch(isDisabled, (disabled) => updateOption(props.value, { disabled }))
 
     const state: SelectOptionApi['state'] = {
         get isSelected() { return isSelected.value },

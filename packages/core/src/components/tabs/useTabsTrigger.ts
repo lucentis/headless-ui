@@ -4,9 +4,11 @@ import { useDisabled } from '../../utils/useDisabled'
 import { useTabsContext } from './TabsContext'
 import { Keys } from '../../utils/keys'
 import type { UseTabsTriggerProps, TabsTriggerApi, TabsApi } from './types'
+import { TabsInternalKey } from '../../keys/internal-keys'
 
 export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): TabsTriggerApi {
     const tabsApi = tabs ?? useTabsContext()
+    const { getPanelId, linkTrigger, unlinkTrigger } = tabsApi[TabsInternalKey]
 
     const ownDisabled = useDisabled(props.disabled)
     const isDisabled = computed(() => tabsApi.state.isDisabled || ownDisabled.value)
@@ -17,8 +19,8 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
     const triggerId = useId('tabs-trigger')
     const panelId = useId('tabs-panel')
 
-    onMounted(() => tabsApi.linkTrigger({ value: props.value, triggerId, panelId }))
-    onUnmounted(() => tabsApi.unlinkTrigger(props.value))
+    onMounted(() => linkTrigger({ value: props.value, triggerId, panelId }))
+    onUnmounted(() => unlinkTrigger(props.value))
 
     const state: TabsTriggerApi['state'] = {
         get isSelected() { return isSelected.value },
@@ -35,7 +37,7 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
         id: triggerId,
         role: 'tab' as const,
         'aria-selected': isSelected.value,
-        'aria-controls': tabsApi.getPanelId(props.value),
+        'aria-controls': getPanelId(props.value),
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-state': isSelected.value ? ('active' as const) : ('inactive' as const),

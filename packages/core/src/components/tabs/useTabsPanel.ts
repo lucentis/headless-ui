@@ -1,9 +1,11 @@
 import { computed } from 'vue'
 import { useTabsContext } from './TabsContext'
 import type { UseTabsPanelProps, TabsPanelApi, TabsApi } from './types'
+import { TabsInternalKey } from '../../keys/internal-keys'
 
 export function useTabsPanel(props: UseTabsPanelProps, tabs?: TabsApi): TabsPanelApi {
     const tabsApi = tabs ?? useTabsContext()
+    const { getPanelId, getTriggerId } = tabsApi[TabsInternalKey]
 
     const isSelected = computed(() => tabsApi.actions.isSelected(props.value))
 
@@ -12,9 +14,9 @@ export function useTabsPanel(props: UseTabsPanelProps, tabs?: TabsApi): TabsPane
     }
 
     const panelBindings = computed(() => ({
-        id: tabsApi.getPanelId(props.value),
+        id: getPanelId(props.value),
         role: 'tabpanel' as const,
-        'aria-labelledby': tabsApi.getTriggerId(props.value),
+        'aria-labelledby': getTriggerId(props.value),
         'data-state': isSelected.value ? ('active' as const) : ('inactive' as const),
         'data-orientation': tabsApi.state.orientation,
         tabindex: 0 as const,

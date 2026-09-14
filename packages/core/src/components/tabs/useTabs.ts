@@ -3,7 +3,8 @@ import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
 import { useRegistry } from '../../utils/useRegistry'
-import type { UseTabsProps, TabsApi, TabsRegistryItem } from './types'
+import type { UseTabsProps, TabsApi, TabsRegistryItem, TabsInternals } from './types'
+import { TabsInternalKey } from '../../keys/internal-keys'
 
 export function useTabs(props: UseTabsProps = {}): TabsApi {
     const { value, setValue } = useControllableState({
@@ -18,7 +19,6 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     const isDisabled = useDisabled(props.disabled)
     const listId = useId('tabs-list')
 
-    // registry stores triggerId + panelId per tab value
     const { register, unregister, getItem } = useRegistry<TabsRegistryItem>()
 
     const state: TabsApi['state'] = {
@@ -52,13 +52,17 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
         },
     }
 
-    return {
-        state,
-        actions,
-        bindings: {},
+    const internals: TabsInternals = {
         linkTrigger: register,
         unlinkTrigger: unregister,
         getTriggerId: (tabValue: string) => getItem(tabValue)?.triggerId ?? '',
         getPanelId: (tabValue: string) => getItem(tabValue)?.panelId ?? '',
+    }
+
+    return {
+        state,
+        actions,
+        bindings: {},
+        [TabsInternalKey]: internals,
     }
 }

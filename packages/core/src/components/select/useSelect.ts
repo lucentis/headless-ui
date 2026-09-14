@@ -9,7 +9,8 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { Keys } from '../../utils/keys'
 import { useConfig } from '../../config'
-import type { UseSelectProps, SelectApi, SelectRegistryItem } from './types'
+import type { UseSelectProps, SelectApi, SelectRegistryItem, SelectInternals } from './types'
+import { SelectInternalKey } from '../../keys/internal-keys'
 
 export function useSelect(props: UseSelectProps = {}): SelectApi {
     const config = useConfig()
@@ -30,6 +31,9 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         },
     })
 
+    const triggerRef = ref<HTMLElement | null>(null)
+    const contentRef = ref<HTMLElement | null>(null)
+
     watch(isOpen, (newOpen) => {
         if (!newOpen) return
         contentRef.value?.focus()
@@ -41,25 +45,14 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     const triggerId = useId('select-trigger')
     const contentId = useId('select-content')
 
-    const triggerRef = ref<HTMLElement | null>(null)
-    const contentRef = ref<HTMLElement | null>(null)
-
-    // selectedLabel comes directly from the registry — no separate labelMap needed
     const selectedLabel = computed(() => {
         const v = value.value
         return v ? getItem(v)?.label ?? null : null
     })
 
     const actions: SelectApi['actions'] = {
-        open,
-        close,
-        toggle,
-        highlight,
-        highlightFirst,
-        highlightLast,
-        highlightNext,
-        highlightPrev,
-        isHighlighted,
+        open, close, toggle,
+        highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
 
         select: (optionValue: string) => {
             if (isDisabled.value) return
@@ -116,37 +109,21 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         id: contentId,
         role: 'listbox' as const,
         'aria-labelledby': triggerId,
-        'aria-activedescendant': highlightValue.value
-            ? getItem(highlightValue.value)?.id
-            : undefined,
+        'aria-activedescendant': highlightValue.value ? getItem(highlightValue.value)?.id : undefined,
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
         tabindex: -1 as const,
         onKeydown: (event: KeyboardEvent) => {
             switch (event.key) {
-                case Keys.ArrowDown:
-                    event.preventDefault()
-                    actions.highlightNext()
-                    break
-                case Keys.ArrowUp:
-                    event.preventDefault()
-                    actions.highlightPrev()
-                    break
-                case Keys.Home:
-                    event.preventDefault()
-                    actions.highlightFirst()
-                    break
-                case Keys.End:
-                    event.preventDefault()
-                    actions.highlightLast()
-                    break
+                case Keys.ArrowDown: event.preventDefault(); actions.highlightNext(); break
+                case Keys.ArrowUp: event.preventDefault(); actions.highlightPrev(); break
+                case Keys.Home: event.preventDefault(); actions.highlightFirst(); break
+                case Keys.End: event.preventDefault(); actions.highlightLast(); break
                 case Keys.Enter:
                 case Keys.Space:
                     event.preventDefault()
                     if (highlightValue.value !== null) actions.select(highlightValue.value)
                     break
-                case Keys.Tab:
-                    actions.close()
-                    break
+                case Keys.Tab: actions.close(); break
             }
         },
     }))
@@ -156,15 +133,18 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         get content() { return contentBindings.value },
     }
 
+    const internals: SelectInternals = {
+        registerOption: register,
+        unregisterOption: unregister,
+        updateOption: updateItem,
+    }
+
     return {
         state,
         actions,
         bindings,
         triggerRef,
         contentRef,
-        registerOption: register,
-        unregisterOption: unregister,
-        updateOption: updateItem,
-        getOption: getItem,
+        [SelectInternalKey]: internals,
     }
 }

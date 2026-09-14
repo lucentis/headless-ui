@@ -4,9 +4,12 @@ import { useListboxContext } from './ListboxContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'
 import type { UseListboxOptionProps, ListboxOptionApi, ListboxApi } from './types'
+import { ListboxInternalKey } from '../../keys/internal-keys'
 
 export function useListboxOption(props: UseListboxOptionProps, listbox?: ListboxApi): ListboxOptionApi {
     const listboxApi = listbox ?? useListboxContext()
+    const { registerOption, unregisterOption, updateOption } = listboxApi[ListboxInternalKey]
+
     const ownDisabled = useDisabled(props.disabled)
     const isDisabled = computed(() => listboxApi.state.isDisabled || ownDisabled.value)
     const isSelected = computed(() => listboxApi.actions.isSelected(props.value))
@@ -14,17 +17,10 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
 
     const optionId = useId('listbox-option')
 
-    onMounted(() => listboxApi.registerOption({
-        value: props.value,
-        id: optionId,
-        disabled: isDisabled.value,
-    }))
+    onMounted(() => registerOption({ value: props.value, id: optionId, disabled: isDisabled.value }))
+    onUnmounted(() => unregisterOption(props.value))
 
-    onUnmounted(() => listboxApi.unregisterOption(props.value))
-
-    watch(isDisabled, (disabled) => {
-        listboxApi.updateOption(props.value, { disabled })
-    })
+    watch(isDisabled, (disabled) => updateOption(props.value, { disabled }))
 
     const state: ListboxOptionApi['state'] = {
         get isSelected() { return isSelected.value },
