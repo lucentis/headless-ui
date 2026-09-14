@@ -1,10 +1,18 @@
 import type { MaybeRef, Ref } from 'vue'
 import type { ComponentApi } from '../../types'
+import type { ListboxInternalKey } from '../../internal-keys'
 
 export interface ListboxRegistryItem {
     value: string
     id: string
     disabled: boolean
+}
+
+export interface ListboxInternals {
+    registerOption: (item: ListboxRegistryItem) => void
+    unregisterOption: (value: string) => void
+    updateOption: (value: string, patch: Partial<Omit<ListboxRegistryItem, 'value'>>) => void
+    rootRef: Ref<HTMLElement | null>
 }
 
 export interface UseListboxProps {
@@ -52,11 +60,8 @@ export interface ListboxBindings {
 }
 
 export interface ListboxApi extends ComponentApi<ListboxState, ListboxActions, ListboxBindings> {
-    rootRef: Ref<HTMLElement | null>
-    registerOption: (item: ListboxRegistryItem) => void
-    unregisterOption: (value: string) => void
-    updateOption: (value: string, patch: Partial<Omit<ListboxRegistryItem, 'value'>>) => void
-    getOption: (value: string) => ListboxRegistryItem | undefined
+    rootRef: Ref<HTMLElement | null>,
+    readonly [ListboxInternalKey]: ListboxInternals
 }
 
 // --- Option ---

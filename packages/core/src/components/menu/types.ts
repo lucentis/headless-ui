@@ -1,10 +1,17 @@
 import type { MaybeRef, Ref } from 'vue'
 import type { ComponentApi } from '../../types'
+import type { MenuInternalKey } from '../../internal-keys'
 
 export interface MenuRegistryItem {
     value: string
     id: string
     disabled: boolean
+}
+
+export interface MenuInternals {
+    registerItem: (item: MenuRegistryItem) => void
+    unregisterItem: (value: string) => void
+    updateItem: (value: string, patch: Partial<Omit<MenuRegistryItem, 'value'>>) => void
 }
 
 export interface UseMenuProps {
@@ -74,7 +81,5 @@ export interface MenuItemBindings {
 export interface MenuApi extends ComponentApi<MenuState, MenuActions, MenuBindings> {
     triggerRef: Ref<HTMLElement | null>
     contentRef: Ref<HTMLElement | null>
-    registerItem: (item: MenuRegistryItem) => void
-    unregisterItem: (value: string) => void
-    updateItem: (value: string, patch: Partial<Omit<MenuRegistryItem, 'value'>>) => void
+    readonly [MenuInternalKey]: MenuInternals
 }

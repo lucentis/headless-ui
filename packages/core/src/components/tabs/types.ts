@@ -1,10 +1,18 @@
 import type { MaybeRef } from 'vue'
 import type { ComponentApi } from '../../types'
+import type { TabsInternalKey } from '../../internal-keys'
 
 export interface TabsRegistryItem {
     value: string
     triggerId: string
     panelId: string
+}
+
+export interface TabsInternals {
+    linkTrigger: (item: TabsRegistryItem) => void
+    unlinkTrigger: (value: string) => void
+    getTriggerId: (value: string) => string
+    getPanelId: (value: string) => string
 }
 
 export interface UseTabsProps {
@@ -35,10 +43,7 @@ export interface TabsActions {
 export type TabsBindings = Record<never, never>
 
 export interface TabsApi extends ComponentApi<TabsState, TabsActions, TabsBindings> {
-    linkTrigger: (item: TabsRegistryItem) => void
-    unlinkTrigger: (value: string) => void
-    getTriggerId: (value: string) => string
-    getPanelId: (value: string) => string
+    readonly [TabsInternalKey]: TabsInternals
 }
 
 // --- Trigger ---

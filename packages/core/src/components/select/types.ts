@@ -1,11 +1,20 @@
 import type { MaybeRef, Ref } from 'vue'
 import type { ComponentApi } from '../../types'
+import type { SelectInternalKey } from '../../internal-keys'
 
 export interface SelectRegistryItem {
     value: string
     id: string
     disabled: boolean
     label: string
+}
+
+export interface SelectInternals {
+    registerOption: (item: SelectRegistryItem) => void
+    unregisterOption: (value: string) => void
+    updateOption: (value: string, patch: Partial<Omit<SelectRegistryItem, 'value'>>) => void
+    triggerRef: Ref<HTMLElement | null>
+    contentRef: Ref<HTMLElement | null>
 }
 
 export interface UseSelectProps {
@@ -71,11 +80,8 @@ export interface SelectBindings {
 
 export interface SelectApi extends ComponentApi<SelectState, SelectActions, SelectBindings> {
     triggerRef: Ref<HTMLElement | null>
-    contentRef: Ref<HTMLElement | null>
-    registerOption: (item: SelectRegistryItem) => void
-    unregisterOption: (value: string) => void
-    updateOption: (value: string, patch: Partial<Omit<SelectRegistryItem, 'value'>>) => void
-    getOption: (value: string) => SelectRegistryItem | undefined
+    contentRef: Ref<HTMLElement | null>,
+    readonly [SelectInternalKey]: SelectInternals
 }
 
 // --- Option ---
