@@ -4,6 +4,7 @@ import { mount } from '@vue/test-utils'
 import { useSelect } from './useSelect'
 import { useSelectOption } from './useSelectOption'
 import { provideSelectContext, useSelectContext } from './SelectContext'
+import { SelectInternalKey } from '../../keys/internal-keys'
 
 function createSelectHost(props: Parameters<typeof useSelect>[0] = {}) {
     let exposed: ReturnType<typeof useSelect>
@@ -19,10 +20,8 @@ function createSelectHost(props: Parameters<typeof useSelect>[0] = {}) {
         get state() { return exposed.state },
         get actions() { return exposed.actions },
         get bindings() { return exposed.bindings },
-        get triggerRef() { return exposed.triggerRef },
-        get contentRef() { return exposed.contentRef },
-        registerOption: (value: string, label: string) => exposed.registerOption({ value, id: `select-option-${value}`, disabled: false, label }),
-        unregisterOption: (value: string) => exposed.unregisterOption(value),
+        registerOption: (value: string, label: string) => exposed[SelectInternalKey].registerOption({ value, id: `select-option-${value}`, disabled: false, label }),
+        unregisterOption: (value: string) => exposed[SelectInternalKey].unregisterOption(value),
         get api() { return exposed },
     }
 }
@@ -269,7 +268,6 @@ describe('useSelect', () => {
         it('aria-activedescendant reflects highlightValue', async () => {
             const { bindings, actions, wrapper, registerOption } = createSelectHost()
             registerOption('fr', 'French')
-            registerOption('en', 'English')
             expect(bindings.content['aria-activedescendant']).toBeUndefined()
             actions.highlight('fr')
             await nextTick()

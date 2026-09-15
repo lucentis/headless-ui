@@ -7,7 +7,7 @@ import { useEscape } from '../../utils/useEscape'
 import { useOutsideClick } from '../../utils/useOutsideClick'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
-import { Keys } from '../../utils/keys'
+import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useConfig } from '../../config'
 import type { UseSelectProps, SelectApi, SelectRegistryItem, SelectInternals } from './types'
 import { SelectInternalKey } from '../../keys/internal-keys'
@@ -105,6 +105,15 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         },
     }))
 
+    const { onKeydown: onArrowKeydown } = useArrowNavigation({
+        onNext: actions.highlightNext,
+        onPrev: actions.highlightPrev,
+        onFirst: actions.highlightFirst,
+        onLast: actions.highlightLast,
+        onEnter: () => { if (highlightValue.value !== null) actions.select(highlightValue.value) },
+        onSpace: () => { if (highlightValue.value !== null) actions.select(highlightValue.value) },
+    })
+
     const contentBindings = computed(() => ({
         id: contentId,
         role: 'listbox' as const,
@@ -113,18 +122,8 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
         tabindex: -1 as const,
         onKeydown: (event: KeyboardEvent) => {
-            switch (event.key) {
-                case Keys.ArrowDown: event.preventDefault(); actions.highlightNext(); break
-                case Keys.ArrowUp: event.preventDefault(); actions.highlightPrev(); break
-                case Keys.Home: event.preventDefault(); actions.highlightFirst(); break
-                case Keys.End: event.preventDefault(); actions.highlightLast(); break
-                case Keys.Enter:
-                case Keys.Space:
-                    event.preventDefault()
-                    if (highlightValue.value !== null) actions.select(highlightValue.value)
-                    break
-                case Keys.Tab: actions.close(); break
-            }
+            if (event.key === 'Tab') { actions.close(); return }
+            onArrowKeydown(event)
         },
     }))
 
@@ -137,6 +136,8 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         registerOption: register,
         unregisterOption: unregister,
         updateOption: updateItem,
+        triggerRef,
+        contentRef,
     }
 
     return {

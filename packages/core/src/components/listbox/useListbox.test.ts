@@ -4,6 +4,7 @@ import { mount } from '@vue/test-utils'
 import { useListbox } from './useListbox'
 import { useListboxOption } from './useListboxOption'
 import { provideListboxContext, useListboxContext } from './ListboxContext'
+import { ListboxInternalKey } from '../../keys/internal-keys'
 
 function createListboxHost(props: Parameters<typeof useListbox>[0] = {}) {
     let exposed: ReturnType<typeof useListbox>
@@ -18,8 +19,8 @@ function createListboxHost(props: Parameters<typeof useListbox>[0] = {}) {
         get state() { return exposed.state },
         get actions() { return exposed.actions },
         get bindings() { return exposed.bindings },
-        registerOption: (value: string) => exposed.registerOption({ value, id: `listbox-option-${value}`, disabled: false }),
-        unregisterOption: (value: string) => exposed.unregisterOption(value),
+        registerOption: (value: string) => exposed[ListboxInternalKey].registerOption({ value, id: `listbox-option-${value}`, disabled: false }),
+        unregisterOption: (value: string) => exposed[ListboxInternalKey].unregisterOption(value),
         get api() { return exposed },
     }
 }
@@ -368,9 +369,12 @@ describe('useListboxOption', () => {
             expect(state.isDisabled).toBe(true)
         })
 
-        it('optionId is a stable string', () => {
-            const { state } = createOptionHost({}, { value: 'option-1' })
-            expect(typeof state.optionId).toBe('string')
+        it('optionId matches listbox aria-activedescendant when highlighted', async () => {
+            const { state, listbox } = createOptionHost({}, { value: 'option-1' })
+            await nextTick() // wait for onMounted registration
+            listbox.actions.highlight('option-1')
+            await nextTick()
+            expect(listbox.bindings.root['aria-activedescendant']).toBe(state.optionId)
         })
     })
 

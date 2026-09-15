@@ -5,7 +5,7 @@ import { useEscape } from '../../utils/useEscape'
 import { useOutsideClick } from '../../utils/useOutsideClick'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
-import { Keys } from '../../utils/keys'
+import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useConfig } from '../../config'
 import type { UseMenuProps, MenuApi, MenuRegistryItem, MenuInternals } from './types'
 import { MenuInternalKey } from '../../keys/internal-keys'
@@ -73,6 +73,13 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         onClick: () => actions.toggle(),
     }))
 
+    const { onKeydown: onArrowKeydown } = useArrowNavigation({
+        onNext: actions.highlightNext,
+        onPrev: actions.highlightPrev,
+        onFirst: actions.highlightFirst,
+        onLast: actions.highlightLast,
+    })
+
     const contentBindings = computed(() => ({
         id: contentId,
         role: 'menu' as const,
@@ -83,29 +90,8 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
         tabindex: -1 as const,
         onKeydown: (event: KeyboardEvent) => {
-            switch (event.key) {
-                case Keys.ArrowDown:
-                    event.preventDefault()
-                    if (!isOpen.value) { actions.open(); actions.highlightFirst() }
-                    else actions.highlightNext()
-                    break
-                case Keys.ArrowUp:
-                    event.preventDefault()
-                    if (!isOpen.value) { actions.open(); actions.highlightLast() }
-                    else actions.highlightPrev()
-                    break
-                case Keys.Home:
-                    event.preventDefault()
-                    actions.highlightFirst()
-                    break
-                case Keys.End:
-                    event.preventDefault()
-                    actions.highlightLast()
-                    break
-                case Keys.Tab:
-                    actions.close()
-                    break
-            }
+            if (event.key === 'Tab') { actions.close(); return }
+            onArrowKeydown(event)
         },
     }))
 

@@ -4,7 +4,7 @@ import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
-import { Keys } from '../../utils/keys'
+import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import type { UseListboxProps, ListboxApi, ListboxRegistryItem, ListboxInternals } from './types'
 import { ListboxInternalKey } from '../../keys/internal-keys'
 
@@ -69,6 +69,16 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         get listboxId() { return listboxId },
     }
 
+    const { onKeydown } = useArrowNavigation({
+        orientation,
+        onNext: actions.highlightNext,
+        onPrev: actions.highlightPrev,
+        onFirst: actions.highlightFirst,
+        onLast: actions.highlightLast,
+        onEnter: () => { if (highlightValue.value !== null) actions.toggle(highlightValue.value) },
+        onSpace: () => { if (highlightValue.value !== null) actions.toggle(highlightValue.value) },
+    })
+
     const rootBindings = computed(() => ({
         id: listboxId,
         role: 'listbox' as const,
@@ -77,22 +87,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         'aria-activedescendant': highlightValue.value ? getItem(highlightValue.value)?.id : undefined,
         'aria-orientation': orientation.value === 'horizontal' ? ('horizontal' as const) : undefined,
         tabindex: 0 as const,
-        onKeydown: (event: KeyboardEvent) => {
-            const prev = orientation.value === 'horizontal' ? Keys.ArrowLeft : Keys.ArrowUp
-            const next = orientation.value === 'horizontal' ? Keys.ArrowRight : Keys.ArrowDown
-
-            switch (event.key) {
-                case next: event.preventDefault(); actions.highlightNext(); break
-                case prev: event.preventDefault(); actions.highlightPrev(); break
-                case Keys.Home: event.preventDefault(); actions.highlightFirst(); break
-                case Keys.End: event.preventDefault(); actions.highlightLast(); break
-                case Keys.Enter:
-                case Keys.Space:
-                    event.preventDefault()
-                    if (highlightValue.value !== null) actions.toggle(highlightValue.value)
-                    break
-            }
-        },
+        onKeydown,
     }))
 
     const bindings: ListboxApi['bindings'] = {
@@ -103,8 +98,9 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         registerOption: register,
         unregisterOption: unregister,
         updateOption: updateItem,
+        rootRef,
     }
-    
+
     return {
         state,
         actions,
