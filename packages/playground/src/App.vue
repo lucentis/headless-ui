@@ -25,6 +25,8 @@ const panel3 = useTabsPanel({ value: 'tab-3' }, tabs)
 
 const dialog = useDialog()
 
+const dialog2 = useDialog()
+
 const tooltip = useTooltip({ delayDuration: 500 })
 
 const popover = usePopover()
@@ -151,9 +153,32 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
                     <p v-bind="dialog.bindings.description">Dialog description for screen readers.</p>
                     <p>Dialog content goes here.</p>
                     <button @click="dialog.actions.close">Close</button>
-                    <button @click="dialog.actions.close">Close</button>
-                    <button @click="dialog.actions.close">Close</button>
-                    <button @click="dialog.actions.close">Close</button>
+
+                    <div class="">
+                        <button @click="dialog2.actions.open">Open Dialog2 in dialog</button>
+
+                        <Teleport to="body">
+                            <template v-if="dialog2.state.isPresent">
+                                <!-- overlay -->
+                                <div
+                                    v-bind="dialog2.bindings.overlay"
+                                    style="position:fixed;inset:0;background:rgba(0,0,0,0.5)"
+                                />
+
+                                <!-- content -->
+                                <div
+                                    :ref="el => { dialog2.contentRef.value = el as HTMLElement | null }"
+                                    v-bind="dialog2.bindings.content"
+                                    style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:24px"
+                                >
+                                    <h2 v-bind="dialog2.bindings.title">Dialog Title</h2>
+                                    <p v-bind="dialog2.bindings.description">Dialog description for screen readers.</p>
+                                    <p>Dialog content goes here.</p>
+                                    <button @click="dialog2.actions.close">Close</button>
+                                </div>
+                            </template>
+                        </Teleport>
+                    </div>
                 </div>
             </template>
         </Teleport>

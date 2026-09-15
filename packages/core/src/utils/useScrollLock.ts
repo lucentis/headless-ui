@@ -1,40 +1,67 @@
 import { onUnmounted } from 'vue'
 import { useConfig } from '../config'
 
+// module-level — shared across all instances
+let lockCount = 0
+let originalOverflow = ''
+let originalPaddingRight = ''
+let originalMarginRight = ''
+
+function applyLock(mode: 'padding' | 'margin' | 'none'): void {
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+
+    originalOverflow = document.body.style.overflow
+    originalPaddingRight = document.body.style.paddingRight
+    originalMarginRight = document.body.style.marginRight
+
+    document.body.style.overflow = 'hidden'
+
+    if (mode === 'padding' && scrollbarWidth > 0) {
+        const current = parseInt(window.getComputedStyle(document.body).paddingRight, 10)
+        document.body.style.paddingRight = `${current + scrollbarWidth}px`
+    }
+
+    if (mode === 'margin' && scrollbarWidth > 0) {
+        const current = parseInt(window.getComputedStyle(document.body).marginRight, 10)
+        document.body.style.marginRight = `${current + scrollbarWidth}px`
+    }
+}
+
+function restoreLock(): void {
+    document.body.style.overflow = originalOverflow
+    document.body.style.paddingRight = originalPaddingRight
+    document.body.style.marginRight = originalMarginRight
+}
+
 export function useScrollLock() {
     const config = useConfig()
-    let originalPaddingRight = ''
-    let originalOverflow = ''
-    let locked = false
+    let instanceLocked = false
 
     function lock(): void {
-        if (locked) return
+        if (instanceLocked) return
 
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+        instanceLocked = true
+        lockCount++
 
-        originalOverflow = document.body.style.overflow
-        originalPaddingRight = document.body.style.paddingRight
-
-        document.body.style.overflow = 'hidden'
-
-        if (config.scrollLock === 'padding' && scrollbarWidth > 0) {
-        const currentPadding = parseInt(window.getComputedStyle(document.body).paddingRight, 10)
-        document.body.style.paddingRight = `${currentPadding + scrollbarWidth}px`
+        if (lockCount === 1) {
+            applyLock(config.scrollLock)
         }
 
-        if (config.scrollLock === 'margin' && scrollbarWidth > 0) {
-        const currentMargin = parseInt(window.getComputedStyle(document.body).marginRight, 10)
-        document.body.style.marginRight = `${currentMargin + scrollbarWidth}px`
-        }
-
-        locked = true
+        console.log('lockCount: ', lockCount);
+        
     }
 
     function unlock(): void {
-        if (!locked) return
-        document.body.style.overflow = originalOverflow
-        document.body.style.paddingRight = originalPaddingRight
-        locked = false
+        if (!instanceLocked) return
+
+        instanceLocked = false
+        lockCount--
+
+        if (lockCount === 0) {
+            restoreLock()
+        }
+
+        console.log('lockCount: ', lockCount);
     }
 
     onUnmounted(unlock)
