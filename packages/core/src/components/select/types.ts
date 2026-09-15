@@ -1,6 +1,6 @@
 import type { MaybeRef, Ref } from 'vue'
 import type { ComponentApi } from '../../types'
-import type { SelectInternalKey } from '../../internal-keys'
+import type { SelectInternalKey } from '../../keys/internal-keys'
 
 export interface SelectRegistryItem {
     value: string

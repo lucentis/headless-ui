@@ -1,6 +1,6 @@
 import type { MaybeRef, Ref } from 'vue'
 import type { ComponentApi } from '../../types'
-import type { ListboxInternalKey } from '../../internal-keys'
+import type { ListboxInternalKey } from '../../keys/internal-keys'
 
 export interface ListboxRegistryItem {
     value: string
