@@ -1,6 +1,10 @@
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 
+export interface UseHighlightOptions {
+    loop?: boolean
+}
+
 export interface UseHighlightReturn {
     highlightValue: Ref<string | null>
     highlight: (value: string) => void
@@ -13,8 +17,10 @@ export interface UseHighlightReturn {
 }
 
 export function useHighlight(
-    registry: Ref<{ value: string; disabled?: boolean }[]>
+    registry: Ref<{ value: string; disabled?: boolean }[]>,
+    options: UseHighlightOptions = {}
 ): UseHighlightReturn {
+    const { loop = false } = options
     const highlightValue = ref<string | null>(null)
 
     function getEnabled(): { value: string; disabled?: boolean }[] {
@@ -48,8 +54,11 @@ export function useHighlight(
         const index = enabled.findIndex(i => i.value === highlightValue.value)
         if (index === -1) return  // stale highlight — no-op
 
-        const next = enabled[index + 1]
-        if (next) highlightValue.value = next.value
+        if (index === enabled.length - 1) {
+            if (loop) highlightValue.value = enabled[0].value
+        } else {
+            highlightValue.value = enabled[index + 1].value
+        }
     }
 
     function highlightPrev(): void {
@@ -64,8 +73,11 @@ export function useHighlight(
         const index = enabled.findIndex(i => i.value === highlightValue.value)
         if (index === -1) return  // stale highlight — no-op
 
-        const prev = enabled[index - 1]
-        if (prev) highlightValue.value = prev.value
+        if (index === 0) {
+            if (loop) highlightValue.value = enabled[enabled.length - 1].value
+        } else {
+            highlightValue.value = enabled[index - 1].value
+        }
     }
 
     function isHighlighted(value: string): boolean {

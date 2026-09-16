@@ -1,4 +1,4 @@
-import type { MaybeRef } from 'vue'
+import type { MaybeRef, Ref } from 'vue'
 import type { ComponentApi } from '../../types'
 import type { TabsInternalKey } from '../../internal-keys'
 
@@ -6,7 +6,7 @@ export interface TabsRegistryItem {
     value: string
     triggerId: string
     panelId: string,
-    triggerRef: HTMLElement | null
+    triggerRef: Ref<HTMLElement | null>
 }
 
 export interface TabsInternals {
@@ -36,9 +36,13 @@ export interface TabsState {
 
 export interface TabsActions {
     select: (value: string) => void
-    focus: (value: string) => void
     isSelected: (value: string) => boolean
-    isFocused: (value: string) => boolean
+    highlight: (value: string) => void
+    highlightFirst: () => void
+    highlightLast: () => void
+    highlightNext: () => void
+    highlightPrev: () => void
+    isHighlighted: (value: string) => boolean
 }
 
 export interface TabsBindings {
@@ -62,13 +66,12 @@ export interface UseTabsTriggerProps {
 
 export interface TabsTriggerState {
     isSelected: boolean
-    isFocused: boolean
+    isHighlight: boolean
     isDisabled: boolean
 }
 
 export interface TabsTriggerActions {
     select: () => void
-    focus: () => void
 }
 
 export interface TabsTriggerBindings {
@@ -83,7 +86,6 @@ export interface TabsTriggerBindings {
         'data-orientation': 'horizontal' | 'vertical'
         tabindex: 0 | -1
         onClick: () => void
-        onFocus: () => void
         onKeydown: (event: KeyboardEvent) => void
     }
 }

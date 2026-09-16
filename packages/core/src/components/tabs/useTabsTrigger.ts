@@ -47,23 +47,10 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
         'data-state': isSelected.value ? ('active' as const) : ('inactive' as const),
         'data-highlighted': isHighlighted.value ? ('' as const) : undefined,
         'data-orientation': tabsApi.state.orientation,
-        tabindex: isSelected.value ? (0 as const) : (-1 as const),
+        tabindex: isHighlighted.value ? (0 as const) : (-1 as const),
         onClick: () => {
             if (!isDisabled.value) {
                 actions.select()
-            }
-        },
-        onKeydown: (event: KeyboardEvent) => {
-            const orientation = tabsApi.state.orientation
-            const prev = orientation === 'horizontal' ? Keys.ArrowLeft : Keys.ArrowUp
-            const next = orientation === 'horizontal' ? Keys.ArrowRight : Keys.ArrowDown
-
-            if (event.key === prev || event.key === next || event.key === Keys.Home || event.key === Keys.End) {
-                event.preventDefault()
-            }
-
-            if (event.key === Keys.Enter || event.key === Keys.Space) {
-                if (!isDisabled.value) actions.select()
             }
         },
     }))

@@ -16,12 +16,12 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     })
 
     const orientation = computed(() => toValue(props.orientation) ?? 'horizontal')
-    const activation = computed(() => toValue(props.activation) ?? 'automatic')
+    const activation = computed(() => toValue(props.activation) ?? 'manual')
     const isDisabled = useDisabled(props.disabled)
     const listId = useId('tabs-list')
 
     const { registry, register, unregister, getItem } = useRegistry<TabsRegistryItem>()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry, { loop: true })
 
     highlightValue.value = value.value
 
