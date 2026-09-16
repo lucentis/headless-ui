@@ -5,7 +5,8 @@ import type { TabsInternalKey } from '../../internal-keys'
 export interface TabsRegistryItem {
     value: string
     triggerId: string
-    panelId: string
+    panelId: string,
+    triggerRef: HTMLElement | null
 }
 
 export interface TabsInternals {
@@ -26,7 +27,7 @@ export interface UseTabsProps {
 
 export interface TabsState {
     value: string
-    focusedValue: string
+    highlightValue: string
     orientation: 'horizontal' | 'vertical'
     activation: 'automatic' | 'manual'
     isDisabled: boolean
@@ -40,7 +41,13 @@ export interface TabsActions {
     isFocused: (value: string) => boolean
 }
 
-export type TabsBindings = Record<never, never>
+export interface TabsBindings {
+    list: {
+        role: 'tablist'
+        'aria-orientation': 'horizontal' | 'vertical'
+        onKeydown: (event: KeyboardEvent) => void
+    }
+}
 
 export interface TabsApi extends ComponentApi<TabsState, TabsActions, TabsBindings> {
     readonly [TabsInternalKey]: TabsInternals
@@ -81,7 +88,9 @@ export interface TabsTriggerBindings {
     }
 }
 
-export interface TabsTriggerApi extends ComponentApi<TabsTriggerState, TabsTriggerActions, TabsTriggerBindings> {}
+export interface TabsTriggerApi extends ComponentApi<TabsTriggerState, TabsTriggerActions, TabsTriggerBindings> {
+    triggerRef: Ref<HTMLElement | null>
+}
 
 // --- Panel ---
 

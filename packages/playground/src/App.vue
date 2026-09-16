@@ -112,10 +112,10 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
 
     <!-- tabs -->
     <div>
-        <div role="tablist" :aria-orientation="tabs.state.orientation">
-            <button v-bind="trigger1.bindings.trigger">Tab 1</button>
-            <button v-bind="trigger2.bindings.trigger">Tab 2</button>
-            <button v-bind="trigger3.bindings.trigger">Tab 3</button>
+        <div v-bind="tabs.bindings.list">
+            <button v-bind="trigger1.bindings.trigger" :ref="trigger1.triggerRef">Tab 1</button>
+            <button v-bind="trigger2.bindings.trigger" :ref="trigger2.triggerRef">Tab 2</button>
+            <button v-bind="trigger3.bindings.trigger" :ref="trigger3.triggerRef">Tab 3</button>
         </div>
 
         <div v-if="panel1.state.isSelected" v-bind="panel1.bindings.panel">
@@ -256,7 +256,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     <!-- select -->
     <div style="position: relative; display: inline-block">
         <button
-            :ref="el => { select.triggerRef.value = el as HTMLElement }"
+            :ref="select.triggerRef"
             v-bind="select.bindings.trigger"
         >
             {{ select.state.selectedLabel ?? select.state.placeholder ?? 'Select...' }}

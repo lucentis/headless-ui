@@ -50,19 +50,6 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         return v ? getItem(v)?.label ?? null : null
     })
 
-    const actions: SelectApi['actions'] = {
-        open, close, toggle,
-        highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
-
-        select: (optionValue: string) => {
-            if (isDisabled.value) return
-            setValue(optionValue)
-            close()
-        },
-
-        isSelected: (optionValue: string) => value.value === optionValue,
-    }
-
     useEscape({
         active: isOpen,
         onEscape: () => {
@@ -88,6 +75,19 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         get placeholder() { return props.placeholder },
         get triggerId() { return triggerId },
         get contentId() { return contentId },
+    }
+
+    const actions: SelectApi['actions'] = {
+        open, close, toggle,
+        highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
+
+        select: (optionValue: string) => {
+            if (isDisabled.value) return
+            setValue(optionValue)
+            close()
+        },
+
+        isSelected: (optionValue: string) => value.value === optionValue,
     }
 
     const triggerBindings = computed(() => ({
@@ -136,8 +136,6 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         registerOption: register,
         unregisterOption: unregister,
         updateOption: updateItem,
-        triggerRef,
-        contentRef,
     }
 
     return {
