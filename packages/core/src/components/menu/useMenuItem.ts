@@ -13,10 +13,8 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
 
     const itemId = useId('menu-item')
 
-    onMounted(() => registerItem({ value: props.value, id: itemId, disabled: isDisabled.value }))
+    onMounted(() => registerItem({ value: props.value, id: itemId, disabled: isDisabled }))
     onUnmounted(() => unregisterItem(props.value))
-
-    watch(isDisabled, (disabled) => updateItem(props.value, { disabled }))
 
     const menuItemBindings = computed(() => ({
         id: itemId,

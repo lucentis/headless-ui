@@ -1,4 +1,4 @@
-import { computed, ref, toValue } from 'vue'
+import { computed, ref, toValue, reactive } from 'vue'
 import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
@@ -25,6 +25,15 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
 
     const listboxId = useId('listbox')
     const rootRef = ref<HTMLElement | null>(null)
+
+    const state: ListboxApi['state'] = reactive({
+        get value() { return value.value },
+        get highlightValue() { return highlightValue.value },
+        get isDisabled() { return isDisabled.value },
+        get multiple() { return multiple.value },
+        get orientation() { return orientation.value },
+        get listboxId() { return listboxId },
+    })
 
     const actions: ListboxApi['actions'] = {
         highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
@@ -58,15 +67,6 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
                 ? value.value.includes(optionValue)
                 : value.value === optionValue
         },
-    }
-
-    const state: ListboxApi['state'] = {
-        get value() { return value.value },
-        get highlightValue() { return highlightValue.value },
-        get isDisabled() { return isDisabled.value },
-        get multiple() { return multiple.value },
-        get orientation() { return orientation.value },
-        get listboxId() { return listboxId },
     }
 
     const { onKeydown } = useArrowNavigation({

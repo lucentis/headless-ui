@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted, watch } from 'vue'
+import { computed, onMounted, onUnmounted, reactive } from 'vue'
 import { useId } from '../../utils/useId'
 import { useSelectContext } from './SelectContext'
 import { composeHandlers } from '../../utils/eventHandler'
@@ -17,17 +17,15 @@ export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi)
 
     const optionId = useId('select-option')
 
-    onMounted(() => registerOption({ value: props.value, id: optionId, disabled: isDisabled.value, label: props.label }))
+    onMounted(() => registerOption({ value: props.value, id: optionId, disabled: isDisabled, label: props.label }))
     onUnmounted(() => unregisterOption(props.value))
 
-    watch(isDisabled, (disabled) => updateOption(props.value, { disabled }))
-
-    const state: SelectOptionApi['state'] = {
+    const state: SelectOptionApi['state'] = reactive({
         get isSelected() { return isSelected.value },
         get isHighlighted() { return isHighlighted.value },
         get isDisabled() { return isDisabled.value },
         get optionId() { return optionId },
-    }
+    })
 
     const optionBindings = computed(() => ({
         id: optionId,

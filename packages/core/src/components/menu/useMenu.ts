@@ -1,4 +1,4 @@
-import { computed, ref, watch } from 'vue'
+import { computed, ref, reactive, watch } from 'vue'
 import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
 import { useEscape } from '../../utils/useEscape'
@@ -56,13 +56,13 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         },
     })
 
-    const state: MenuApi['state'] = {
+    const state: MenuApi['state'] = reactive({
         get isOpen() { return isOpen.value },
         get isPresent() { return isPresent.value },
         get highlightValue() { return highlightValue.value },
         get triggerId() { return triggerId },
         get contentId() { return contentId },
-    }
+    })
 
     const triggerBindings = computed(() => ({
         id: triggerId,

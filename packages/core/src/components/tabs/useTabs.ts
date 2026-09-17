@@ -1,4 +1,4 @@
-import { computed, ref, toValue , watch} from 'vue'
+import { computed, ref, toValue, watch, reactive} from 'vue'
 import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
@@ -25,14 +25,14 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
 
     highlightValue.value = value.value
 
-    const state: TabsApi['state'] = {
+    const state: TabsApi['state'] = reactive({
         get value() { return value.value },
         get highlightValue() { return highlightValue.value },
         get orientation() { return orientation.value },
         get activation() { return activation.value },
         get isDisabled() { return isDisabled.value },
         get listId() { return listId },
-    }
+    })
 
     const actions: TabsApi['actions'] = {
         highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,

@@ -1,18 +1,17 @@
-import type { MaybeRef, Ref } from 'vue'
+import type { MaybeRef, Ref, ComputedRef } from 'vue'
 import type { ComponentApi } from '../../types'
 import type { ListboxInternalKey } from '../../keys/internal-keys'
 
 export interface ListboxRegistryItem {
     value: string
     id: string
-    disabled: boolean
+    disabled: ComputedRef<boolean>
 }
 
 export interface ListboxInternals {
     registerOption: (item: ListboxRegistryItem) => void
     unregisterOption: (value: string) => void
     updateOption: (value: string, patch: Partial<Omit<ListboxRegistryItem, 'value'>>) => void
-    rootRef: Ref<HTMLElement | null>
 }
 
 export interface UseListboxProps {

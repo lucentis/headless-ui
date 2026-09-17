@@ -17,10 +17,8 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
 
     const optionId = useId('listbox-option')
 
-    onMounted(() => registerOption({ value: props.value, id: optionId, disabled: isDisabled.value }))
+    onMounted(() => registerOption({ value: props.value, id: optionId, disabled: isDisabled }))
     onUnmounted(() => unregisterOption(props.value))
-
-    watch(isDisabled, (disabled) => updateOption(props.value, { disabled }))
 
     const state: ListboxOptionApi['state'] = {
         get isSelected() { return isSelected.value },

@@ -1,11 +1,11 @@
-import type { MaybeRef, Ref } from 'vue'
+import type { MaybeRef, Ref, ComputedRef } from 'vue'
 import type { ComponentApi } from '../../types'
 import type { MenuInternalKey } from '../../keys/internal-keys'
 
 export interface MenuRegistryItem {
     value: string
     id: string
-    disabled: boolean
+    disabled: ComputedRef<boolean>
 }
 
 export interface MenuInternals {

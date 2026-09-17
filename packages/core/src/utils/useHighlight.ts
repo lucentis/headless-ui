@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, toValue } from 'vue'
 import type { Ref } from 'vue'
 
 export interface UseHighlightOptions {
@@ -24,7 +24,7 @@ export function useHighlight(
     const highlightValue = ref<string | null>(null)
 
     function getEnabled(): { value: string; disabled?: boolean }[] {
-        return registry.value.filter(item => !item.disabled)
+        return registry.value.filter(item => !toValue(item.disabled))
     }
 
     function highlight(value: string): void {

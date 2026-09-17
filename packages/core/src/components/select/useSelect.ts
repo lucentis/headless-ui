@@ -1,4 +1,4 @@
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, reactive } from 'vue'
 import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
@@ -65,7 +65,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         },
     })
 
-    const state: SelectApi['state'] = {
+    const state: SelectApi['state'] = reactive({
         get value() { return value.value },
         get selectedLabel() { return selectedLabel.value },
         get highlightValue() { return highlightValue.value },
@@ -75,7 +75,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         get placeholder() { return props.placeholder },
         get triggerId() { return triggerId },
         get contentId() { return contentId },
-    }
+    })
 
     const actions: SelectApi['actions'] = {
         open, close, toggle,

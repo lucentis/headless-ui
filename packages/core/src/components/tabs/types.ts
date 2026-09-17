@@ -1,4 +1,4 @@
-import type { MaybeRef, Ref } from 'vue'
+import type { MaybeRef, Ref, ComputedRef } from 'vue'
 import type { ComponentApi } from '../../types'
 import type { TabsInternalKey } from '../../internal-keys'
 
@@ -6,6 +6,7 @@ export interface TabsRegistryItem {
     value: string
     triggerId: string
     panelId: string,
+    isDisabled: ComputedRef<boolean>
     triggerRef: Ref<HTMLElement | null>
 }
 

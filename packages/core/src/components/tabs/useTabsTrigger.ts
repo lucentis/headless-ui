@@ -20,7 +20,7 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
     const panelId = useId('tabs-panel')
     const triggerRef = ref<HTMLElement | null>(null)
 
-    onMounted(() => linkTrigger({ value: props.value, triggerId, panelId, triggerRef }))
+    onMounted(() => linkTrigger({ value: props.value, triggerId, panelId, triggerRef, disabled: isDisabled }))
     onUnmounted(() => unlinkTrigger(props.value))
 
     const state: TabsTriggerApi['state'] = {
