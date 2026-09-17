@@ -11,7 +11,7 @@ export interface ListboxRegistryItem {
 export interface ListboxInternals {
     registerOption: (item: ListboxRegistryItem) => void
     unregisterOption: (value: string) => void
-    updateOption: (value: string, patch: Partial<Omit<ListboxRegistryItem, 'value'>>) => void
+    rootRef: Ref<HTMLElement | null>,
 }
 
 export interface UseListboxProps {

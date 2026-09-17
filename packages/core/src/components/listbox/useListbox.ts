@@ -20,7 +20,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         onChange: props.onValueChange,
     })
 
-    const { registry, register, unregister, updateItem, getItem } = useRegistry<ListboxRegistryItem>()
+    const { registry, register, unregister, getItem } = useRegistry<ListboxRegistryItem>()
     const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted } = useHighlight(registry)
 
     const listboxId = useId('listbox')
@@ -97,8 +97,6 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
     const internals: ListboxInternals = {
         registerOption: register,
         unregisterOption: unregister,
-        updateOption: updateItem,
-        rootRef,
     }
 
     return {

@@ -8,7 +8,7 @@ import { ListboxInternalKey } from '../../keys/internal-keys'
 
 export function useListboxOption(props: UseListboxOptionProps, listbox?: ListboxApi): ListboxOptionApi {
     const listboxApi = listbox ?? useListboxContext()
-    const { registerOption, unregisterOption, updateOption } = listboxApi[ListboxInternalKey]
+    const { registerOption, unregisterOption } = listboxApi[ListboxInternalKey]
 
     const ownDisabled = useDisabled(props.disabled)
     const isDisabled = computed(() => listboxApi.state.isDisabled || ownDisabled.value)

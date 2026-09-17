@@ -1,5 +1,5 @@
 import { ref, toValue } from 'vue'
-import type { Ref } from 'vue'
+import type { Ref, ComputedRef } from 'vue'
 
 export interface UseHighlightOptions {
     loop?: boolean
@@ -23,7 +23,7 @@ export function useHighlight(
     const { loop = false } = options
     const highlightValue = ref<string | null>(null)
 
-    function getEnabled(): { value: string; disabled?: boolean }[] {
+    function getEnabled(): { value: string; disabled?: ComputedRef<boolean> }[] {
         return registry.value.filter(item => !toValue(item.disabled))
     }
 
