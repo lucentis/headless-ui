@@ -140,21 +140,21 @@ describe('useTabs', () => {
 
         it('focus updates focusedValue', async () => {
             const { state, actions } = createTabsHost()
-            actions.focus('tab-1')
+            actions.highlight('tab-1')
             await nextTick()
-            expect(state.focusedValue).toBe('tab-1')
+            expect(state.highlightValue).toBe('tab-1')
         })
 
         it('focus also selects in automatic mode', async () => {
             const { state, actions } = createTabsHost({ activation: 'automatic' })
-            actions.focus('tab-1')
+            actions.highlight('tab-1')
             await nextTick()
             expect(state.value).toBe('tab-1')
         })
 
         it('focus does not select in manual mode', async () => {
             const { state, actions } = createTabsHost({ activation: 'manual' })
-            actions.focus('tab-1')
+            actions.highlight('tab-1')
             await nextTick()
             expect(state.value).toBe('')
         })

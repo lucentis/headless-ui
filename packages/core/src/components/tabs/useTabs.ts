@@ -16,7 +16,7 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     })
 
     const orientation = computed(() => toValue(props.orientation) ?? 'horizontal')
-    const activation = computed(() => toValue(props.activation) ?? 'manual')
+    const activation = computed(() => toValue(props.activation) ?? 'automatic')
     const isDisabled = useDisabled(props.disabled)
     const listId = useId('tabs-list')
 
@@ -69,9 +69,9 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
 
         const item = getItem(newHighlight)
 
-        if (!item?.triggerRef) return
-
-        item.triggerRef.focus()
+        if (item?.triggerRef) {
+            item.triggerRef.focus()
+        }
 
         if (activation.value === 'automatic') {
             actions.select(newHighlight)
