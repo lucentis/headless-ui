@@ -5,7 +5,7 @@ import { useDisabled } from '../../utils/useDisabled'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
-import { UseTabsProps, TabsApi, TabsRegistryItem, TabsInternals, TabsState, TabsActions, TabsBindings } from './types'
+import type { UseTabsProps, TabsApi, TabsRegistryItem, TabsInternals, TabsState, TabsActions, TabsBindings } from './types'
 import { TabsInternalKey } from '../../keys/internal-keys'
 
 export function useTabs(props: UseTabsProps = {}): TabsApi {
@@ -31,7 +31,7 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
         const item = getItem(newHighlight)
 
         if (item?.triggerRef) {
-            item.triggerRef.focus()
+            item.triggerRef.value?.focus()
         }
 
         if (activation.value === 'automatic') {

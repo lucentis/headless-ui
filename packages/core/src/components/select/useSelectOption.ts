@@ -3,7 +3,7 @@ import { useId } from '../../utils/useId'
 import { useSelectContext } from './SelectContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'
-import { UseSelectOptionProps, SelectOptionApi, SelectApi } from './types'
+import type { UseSelectOptionProps, SelectOptionApi, SelectApi } from './types'
 import { SelectInternalKey } from '../../keys/internal-keys'
 
 export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi): SelectOptionApi {

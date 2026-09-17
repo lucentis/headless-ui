@@ -1,6 +1,6 @@
 import { computed, reactive } from 'vue'
 import { useTabsContext } from './TabsContext'
-import { UseTabsPanelProps, TabsPanelApi, TabsApi, TabsPanelState, TabsPanelBindings } from './types'
+import type { UseTabsPanelProps, TabsPanelApi, TabsApi, TabsPanelState, TabsPanelBindings } from './types'
 import { TabsInternalKey } from '../../keys/internal-keys'
 
 export function useTabsPanel(props: UseTabsPanelProps, tabs?: TabsApi): TabsPanelApi {

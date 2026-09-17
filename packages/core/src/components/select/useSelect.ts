@@ -9,7 +9,7 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useConfig } from '../../config'
-import { UseSelectProps, SelectApi, SelectRegistryItem, SelectInternals, SelectState, SelectActions, SelectBindings } from './types'
+import type { UseSelectProps, SelectApi, SelectRegistryItem, SelectInternals, SelectState, SelectActions, SelectBindings } from './types'
 import { SelectInternalKey } from '../../keys/internal-keys'
 
 export function useSelect(props: UseSelectProps = {}): SelectApi {

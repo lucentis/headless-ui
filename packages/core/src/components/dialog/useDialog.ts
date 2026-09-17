@@ -5,7 +5,7 @@ import { useFocusTrap } from '../../utils/useFocusTrap'
 import { useEscape } from '../../utils/useEscape'
 import { useId } from '../../utils/useId'
 import { useConfig } from '../../config'
-import { UseDialogProps, DialogApi, DialogState, DialogActions, DialogBindings } from './types'
+import type { UseDialogProps, DialogApi, DialogState, DialogActions, DialogBindings } from './types'
 
 export function useDialog(props: UseDialogProps = {}): DialogApi {
     const config = useConfig()

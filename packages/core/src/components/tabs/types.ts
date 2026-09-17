@@ -1,6 +1,6 @@
 import type { MaybeRef, Ref, ComputedRef } from 'vue'
 import type { ComponentApi } from '../../types'
-import type { TabsInternalKey } from '../../internal-keys'
+import type { TabsInternalKey } from '../../keys/internal-keys'
 
 export interface TabsRegistryItem {
     value: string

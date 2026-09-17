@@ -3,7 +3,7 @@ import { useListboxContext } from './ListboxContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'
 import { useId } from '../../utils/useId'
-import { UseListboxOptionProps, ListboxOptionApi, ListboxApi, ListboxOptionState, ListboxOptionBindings } from './types'
+import type { UseListboxOptionProps, ListboxOptionApi, ListboxApi, ListboxOptionState, ListboxOptionBindings } from './types'
 import { ListboxInternalKey } from '../../keys/internal-keys'
 
 export function useListboxOption(props: UseListboxOptionProps, listbox?: ListboxApi): ListboxOptionApi {

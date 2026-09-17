@@ -1,5 +1,5 @@
 import { computed, toValue, reactive } from 'vue'
-import { UseSeparatorProps, SeparatorApi, SeparatorState, SeparatorBindings } from './types'
+import type { UseSeparatorProps, SeparatorApi, SeparatorState, SeparatorBindings } from './types'
 
 export function useSeparator(props: UseSeparatorProps = {}): SeparatorApi {
     const orientation = computed(() => toValue(props.orientation) ?? 'horizontal')

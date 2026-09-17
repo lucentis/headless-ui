@@ -2,8 +2,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useId } from '../../utils/useId'
 import { useDisabled } from '../../utils/useDisabled'
 import { useTabsContext } from './TabsContext'
-import { Keys } from '../../utils/keys'
-import type { UseTabsTriggerProps, TabsTriggerApi, TabsApi } from './types'
+import type { UseTabsTriggerProps, TabsTriggerApi, TabsApi, TabsTriggerState } from './types'
 import { TabsInternalKey } from '../../keys/internal-keys'
 
 export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): TabsTriggerApi {
@@ -20,21 +19,20 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
     const panelId = useId('tabs-panel')
     const triggerRef = ref<HTMLElement | null>(null)
 
-    onMounted(() => linkTrigger({ value: props.value, triggerId, panelId, triggerRef, disabled: isDisabled }))
+    onMounted(() => linkTrigger({ value: props.value, triggerId, panelId, triggerRef, isDisabled }))
     onUnmounted(() => unlinkTrigger(props.value))
 
-    const state: TabsTriggerApi['state'] = {
+    const state = reactive<TabsTriggerState>({
         get isSelected() { return isSelected.value },
         get isHighlighted() { return isHighlighted.value },
         get isDisabled() { return isDisabled.value },
-    }
+    })
 
     const actions: TabsTriggerApi['actions'] = {
         select: () => {
             tabsApi.actions.select(props.value)
             tabsApi.actions.highlight(props.value)
         },
-        // focus: () => tabsApi.actions.focus(props.value),
     }
 
     const triggerBindings = computed(() => ({

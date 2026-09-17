@@ -5,7 +5,7 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useId } from '../../utils/useId'
-import { UseListboxProps, ListboxApi, ListboxRegistryItem, ListboxInternals, ListboxState, ListaboxActions, ListboxBindings } from './types'
+import type { UseListboxProps, ListboxApi, ListboxRegistryItem, ListboxInternals, ListboxState, ListboxActions, ListboxBindings } from './types'
 import { ListboxInternalKey } from '../../keys/internal-keys'
 
 export function useListbox(props: UseListboxProps = {}): ListboxApi {

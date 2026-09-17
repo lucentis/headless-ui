@@ -17,7 +17,7 @@ export interface UseHighlightReturn {
 }
 
 export function useHighlight(
-    registry: Ref<{ value: string; disabled?: boolean }[]>,
+    registry: Ref<{ value: string; disabled?: ComputedRef<boolean> }[]>,
     options: UseHighlightOptions = {}
 ): UseHighlightReturn {
     const { loop = false } = options

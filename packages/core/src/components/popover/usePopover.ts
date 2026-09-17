@@ -4,7 +4,7 @@ import { useOpenState } from '../../utils/useOpenState'
 import { useEscape } from '../../utils/useEscape'
 import { useOutsideClick } from '../../utils/useOutsideClick'
 import { useConfig } from '../../config'
-import { UsePopoverProps, PopoverApi, PopoverState, PopoverActions, PopoverBindings } from './types'
+import type { UsePopoverProps, PopoverApi, PopoverState, PopoverActions, PopoverBindings } from './types'
 
 export function usePopover(props: UsePopoverProps = {}): PopoverApi {
     const config = useConfig()

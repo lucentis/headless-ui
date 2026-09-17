@@ -46,9 +46,6 @@ export function useScrollLock() {
         if (lockCount === 1) {
             applyLock(config.scrollLock)
         }
-
-        console.log('lockCount: ', lockCount);
-        
     }
 
     function unlock(): void {
@@ -60,8 +57,6 @@ export function useScrollLock() {
         if (lockCount === 0) {
             restoreLock()
         }
-
-        console.log('lockCount: ', lockCount);
     }
 
     onUnmounted(unlock)
