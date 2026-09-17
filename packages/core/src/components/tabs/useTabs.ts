@@ -5,7 +5,7 @@ import { useDisabled } from '../../utils/useDisabled'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
-import type { UseTabsProps, TabsApi, TabsRegistryItem, TabsInternals } from './types'
+import { UseTabsProps, TabsApi, TabsRegistryItem, TabsInternals, TabsState, TabsActions, TabsBindings } from './types'
 import { TabsInternalKey } from '../../keys/internal-keys'
 
 export function useTabs(props: UseTabsProps = {}): TabsApi {
@@ -25,7 +25,21 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
 
     highlightValue.value = value.value
 
-    const state: TabsApi['state'] = reactive({
+    watch(highlightValue, (newHighlight) => {
+        if (newHighlight === null) return
+
+        const item = getItem(newHighlight)
+
+        if (item?.triggerRef) {
+            item.triggerRef.focus()
+        }
+
+        if (activation.value === 'automatic') {
+            actions.select(newHighlight)
+        }
+    }, { flush: 'post' })
+
+    const state = reactive<TabsState>({
         get value() { return value.value },
         get highlightValue() { return highlightValue.value },
         get orientation() { return orientation.value },
@@ -34,7 +48,7 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
         get listId() { return listId },
     })
 
-    const actions: TabsApi['actions'] = {
+    const actions: TabsActions = {
         highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
 
         select(tabValue: string): void {
@@ -64,21 +78,7 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
         },
     }))
 
-    watch(highlightValue, (newHighlight) => {
-        if (newHighlight === null) return
-
-        const item = getItem(newHighlight)
-
-        if (item?.triggerRef) {
-            item.triggerRef.focus()
-        }
-
-        if (activation.value === 'automatic') {
-            actions.select(newHighlight)
-        }
-    }, { flush: 'post' })
-
-    const bindings: TabsApi['bindings'] = {
+    const bindings: TabsBindings = {
         get list() { return listBindings.value },
     }
 

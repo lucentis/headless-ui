@@ -1,8 +1,8 @@
-import { computed } from 'vue'
-import { useId } from '../../utils/useId'
+import { computed, reactive } from 'vue'
 import { useOpenState } from '../../utils/useOpenState'
 import { useDisabled } from '../../utils/useDisabled'
-import type { UseCollapsibleProps, CollapsibleApi } from './types'
+import { useId } from '../../utils/useId'
+import { UseCollapsibleProps, CollapsibleApi, CollapsibleState, CollapsibleActions, CollapsibleBindings } from './types'
 
 export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi {
     const { isOpen, isPresent, open, close, toggle } = useOpenState({
@@ -16,15 +16,15 @@ export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi 
     const triggerId = useId('collapsible-trigger')
     const contentId = useId('collapsible-content')
 
-    const state: CollapsibleApi['state'] = {
+    const state = reactive<CollapsibleState>({
         get isOpen() { return isOpen.value },
         get isPresent() { return isPresent.value },
         get isDisabled() { return isDisabled.value },
         get triggerId() { return triggerId },
         get contentId() { return contentId },
-    }
+    })
 
-    const actions: CollapsibleApi['actions'] = { open, close, toggle }
+    const actions: CollapsibleActions = { open, close, toggle }
 
     const triggerBindings = computed(() => ({
         id: triggerId,
@@ -45,7 +45,7 @@ export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi 
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
     }))
 
-    const bindings: CollapsibleApi['bindings'] = {
+    const bindings: CollapsibleBindings = {
         get trigger() { return triggerBindings.value },
         get content() { return contentBindings.value },
     }

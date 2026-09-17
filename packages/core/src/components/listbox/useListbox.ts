@@ -1,11 +1,11 @@
 import { computed, ref, toValue, reactive } from 'vue'
-import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
-import type { UseListboxProps, ListboxApi, ListboxRegistryItem, ListboxInternals } from './types'
+import { useId } from '../../utils/useId'
+import { UseListboxProps, ListboxApi, ListboxRegistryItem, ListboxInternals, ListboxState, ListaboxActions, ListboxBindings } from './types'
 import { ListboxInternalKey } from '../../keys/internal-keys'
 
 export function useListbox(props: UseListboxProps = {}): ListboxApi {
@@ -26,7 +26,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
     const listboxId = useId('listbox')
     const rootRef = ref<HTMLElement | null>(null)
 
-    const state: ListboxApi['state'] = reactive({
+    const state = reactive<ListboxState>({
         get value() { return value.value },
         get highlightValue() { return highlightValue.value },
         get isDisabled() { return isDisabled.value },
@@ -35,7 +35,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         get listboxId() { return listboxId },
     })
 
-    const actions: ListboxApi['actions'] = {
+    const actions: ListaboxActions = {
         highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
 
         select: (optionValue: string) => {
@@ -90,7 +90,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         onKeydown,
     }))
 
-    const bindings: ListboxApi['bindings'] = {
+    const bindings: ListboxBindings = {
         get root() { return rootBindings.value },
     }
 

@@ -1,8 +1,8 @@
-import { computed } from 'vue'
+import { computed, reactive } from 'vue'
 import { useId } from '../../utils/useId'
 import { useDisabled } from '../../utils/useDisabled'
 import { useAccordionContext } from './AccordionContext'
-import type { UseAccordionItemProps, AccordionItemApi, AccordionApi } from './types'
+import type { UseAccordionItemProps, AccordionItemApi, AccordionApi, AccordionItemState, AccordionItemActions, AccordionItemBindings } from './types'
 
 export function useAccordionItem(props: UseAccordionItemProps, accordion?: AccordionApi): AccordionItemApi {
     const accordionApi = accordion ?? useAccordionContext()
@@ -14,14 +14,14 @@ export function useAccordionItem(props: UseAccordionItemProps, accordion?: Accor
     const triggerId = useId('accordion-trigger')
     const contentId = useId('accordion-content')
 
-    const state: AccordionItemApi['state'] = {
+    const state = reactive<AccordionItemState>({
         get isExpanded() { return isExpanded.value },
         get isDisabled() { return isDisabled.value },
         get triggerId() { return triggerId },
         get contentId() { return contentId },
-    }
+    })
 
-    const actions: AccordionItemApi['actions'] = {
+    const actions: AccordionItemActions = {
         expand: () => accordionApi.actions.expand(props.value),
         collapse: () => accordionApi.actions.collapse(props.value),
         toggle: () => accordionApi.actions.toggle(props.value),
@@ -47,7 +47,7 @@ export function useAccordionItem(props: UseAccordionItemProps, accordion?: Accor
         'data-state': isExpanded.value ? ('open' as const) : ('closed' as const),
     }))
 
-    const bindings: AccordionItemApi['bindings'] = {
+    const bindings: AccordionItemBindings = {
         get trigger() { return triggerBindings.value },
         get content() { return contentBindings.value },
     }

@@ -1,11 +1,11 @@
-import { computed, ref, toValue, watch } from 'vue'
-import { useId } from '../../utils/useId'
+import { computed, ref, toValue, watch, reactive } from 'vue'
 import { useOpenState } from '../../utils/useOpenState'
 import { useScrollLock } from '../../utils/useScrollLock'
 import { useFocusTrap } from '../../utils/useFocusTrap'
 import { useEscape } from '../../utils/useEscape'
+import { useId } from '../../utils/useId'
 import { useConfig } from '../../config'
-import type { UseDialogProps, DialogApi } from './types'
+import { UseDialogProps, DialogApi, DialogState, DialogActions, DialogBindings } from './types'
 
 export function useDialog(props: UseDialogProps = {}): DialogApi {
     const config = useConfig()
@@ -20,10 +20,7 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
 
     const titleId = useId('dialog-title')
     const descriptionId = useId('dialog-description')
-
     const contentRef = ref<HTMLElement | null>(null)
-
-    const actions: DialogApi['actions'] = { open, close }
 
     const { lock, unlock } = useScrollLock()
     
@@ -45,13 +42,15 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
         },
     })
 
-    const state: DialogApi['state'] = {
+    const state = reactive<DialogState>({
         get isOpen() { return isOpen.value },
         get isPresent() { return isPresent.value },
         get isModal() { return isModal.value },
         get titleId() { return titleId },
         get descriptionId() { return descriptionId },
-    }
+    })
+
+    const actions: DialogActions = { open, close }
 
     const overlayBindings = computed(() => ({
         'aria-hidden': true as const,
@@ -69,7 +68,7 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
     }))
 
-    const bindings: DialogApi['bindings'] = {
+    const bindings: DialogBindings = {
         get overlay() { return overlayBindings.value },
         get content() { return contentBindings.value },
         get title() { return { id: titleId } },

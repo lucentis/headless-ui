@@ -1,6 +1,6 @@
-import { computed, toValue } from 'vue'
+import { computed, toValue, reactive } from 'vue'
 import { useOpenState } from '../../utils/useOpenState'
-import type { UseAlertProps, AlertApi } from './types'
+import type { UseAlertProps, AlertApi, AlertState, AlertActions, AlertBindings } from './types'
 
 export function useAlert(props: UseAlertProps = {}): AlertApi {
     const { isOpen, isPresent, open, close } = useOpenState({
@@ -11,12 +11,12 @@ export function useAlert(props: UseAlertProps = {}): AlertApi {
 
     const role = computed(() => toValue(props.role) ?? 'status')
 
-    const state: AlertApi['state'] = {
+    const state = reactive<AlertState>({
         get isOpen() { return isOpen.value },
         get isPresent() { return isPresent.value },
-    }
+    })
 
-    const actions: AlertApi['actions'] = { open, close }
+    const actions: AlertActions = { open, close }
 
     const rootBindings = computed(() => ({
         role: role.value,
@@ -25,7 +25,7 @@ export function useAlert(props: UseAlertProps = {}): AlertApi {
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
     }))
 
-    const bindings: AlertApi['bindings'] = {
+    const bindings: AlertBindings = {
         get root() { return rootBindings.value },
     }
 

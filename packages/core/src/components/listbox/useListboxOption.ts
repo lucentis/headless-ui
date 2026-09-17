@@ -1,9 +1,9 @@
-import { computed, onMounted, onUnmounted, watch } from 'vue'
-import { useId } from '../../utils/useId'
+import { computed, onMounted, onUnmounted, watch, reactive } from 'vue'
 import { useListboxContext } from './ListboxContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'
-import type { UseListboxOptionProps, ListboxOptionApi, ListboxApi } from './types'
+import { useId } from '../../utils/useId'
+import { UseListboxOptionProps, ListboxOptionApi, ListboxApi, ListboxOptionState, ListboxOptionBindings } from './types'
 import { ListboxInternalKey } from '../../keys/internal-keys'
 
 export function useListboxOption(props: UseListboxOptionProps, listbox?: ListboxApi): ListboxOptionApi {
@@ -20,12 +20,12 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
     onMounted(() => registerOption({ value: props.value, id: optionId, disabled: isDisabled }))
     onUnmounted(() => unregisterOption(props.value))
 
-    const state: ListboxOptionApi['state'] = {
+    const state = reactive<ListboxOptionState>({
         get isSelected() { return isSelected.value },
         get isHighlighted() { return isHighlighted.value },
         get isDisabled() { return isDisabled.value },
         get optionId() { return optionId },
-    }
+    })
 
     const optionBindings = computed(() => ({
         id: optionId,
@@ -50,7 +50,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         },
     }))
 
-    const bindings: ListboxOptionApi['bindings'] = {
+    const bindings: ListboxOptionBindings = {
         get root() { return optionBindings.value },
     }
 

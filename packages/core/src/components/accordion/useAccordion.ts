@@ -1,7 +1,7 @@
-import { computed, toValue } from 'vue'
+import { computed, toValue, reactive} from 'vue'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
-import type { UseAccordionProps, AccordionApi } from './types'
+import type { UseAccordionProps, AccordionApi, AccordionState , AccordionActions} from './types'
 
 export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
     const type = computed(() => props.type ?? 'single')
@@ -15,13 +15,13 @@ export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
         onChange: props.onValueChange,
     })
 
-    const state: AccordionApi['state'] = {
+    const state = reactive<AccordionState>({
         get value() { return value.value },
         get isDisabled() { return isDisabled.value },
         get type() { return type.value },
-    }
+    })
 
-    const actions: AccordionApi['actions'] = {
+    const actions: AccordionActions = {
         isExpanded(itemValue: string): boolean {
             const current = value.value
             return Array.isArray(current)

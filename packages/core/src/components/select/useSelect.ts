@@ -9,7 +9,7 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useConfig } from '../../config'
-import type { UseSelectProps, SelectApi, SelectRegistryItem, SelectInternals } from './types'
+import { UseSelectProps, SelectApi, SelectRegistryItem, SelectInternals, SelectState, SelectActions, SelectBindings } from './types'
 import { SelectInternalKey } from '../../keys/internal-keys'
 
 export function useSelect(props: UseSelectProps = {}): SelectApi {
@@ -65,7 +65,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         },
     })
 
-    const state: SelectApi['state'] = reactive({
+    const state = reactive<SelectState>({
         get value() { return value.value },
         get selectedLabel() { return selectedLabel.value },
         get highlightValue() { return highlightValue.value },
@@ -77,7 +77,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         get contentId() { return contentId },
     })
 
-    const actions: SelectApi['actions'] = {
+    const actions: SelectActions = {
         open, close, toggle,
         highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
 
@@ -127,7 +127,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         },
     }))
 
-    const bindings: SelectApi['bindings'] = {
+    const bindings: SelectBindings = {
         get trigger() { return triggerBindings.value },
         get content() { return contentBindings.value },
     }

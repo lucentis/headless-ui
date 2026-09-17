@@ -1,6 +1,6 @@
-import { computed } from 'vue'
+import { computed, reactive } from 'vue'
 import { useTabsContext } from './TabsContext'
-import type { UseTabsPanelProps, TabsPanelApi, TabsApi } from './types'
+import { UseTabsPanelProps, TabsPanelApi, TabsApi, TabsPanelState, TabsPanelBindings } from './types'
 import { TabsInternalKey } from '../../keys/internal-keys'
 
 export function useTabsPanel(props: UseTabsPanelProps, tabs?: TabsApi): TabsPanelApi {
@@ -9,9 +9,9 @@ export function useTabsPanel(props: UseTabsPanelProps, tabs?: TabsApi): TabsPane
 
     const isSelected = computed(() => tabsApi.actions.isSelected(props.value))
 
-    const state: TabsPanelApi['state'] = {
+    const state = reactive<TabsPanelState>({
         get isSelected() { return isSelected.value },
-    }
+    })
 
     const panelBindings = computed(() => ({
         id: getPanelId(props.value),
@@ -22,7 +22,7 @@ export function useTabsPanel(props: UseTabsPanelProps, tabs?: TabsApi): TabsPane
         tabindex: 0 as const,
     }))
 
-    const bindings: TabsPanelApi['bindings'] = {
+    const bindings: TabsPanelBindings = {
         get panel() { return panelBindings.value },
     }
 

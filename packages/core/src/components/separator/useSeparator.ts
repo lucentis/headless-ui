@@ -1,16 +1,16 @@
-import { computed, toValue } from 'vue'
-import type { UseSeparatorProps, SeparatorApi } from './types'
+import { computed, toValue, reactive } from 'vue'
+import { UseSeparatorProps, SeparatorApi, SeparatorState, SeparatorBindings } from './types'
 
 export function useSeparator(props: UseSeparatorProps = {}): SeparatorApi {
     const orientation = computed(() => toValue(props.orientation) ?? 'horizontal')
     const isDecorative = computed(() => toValue(props.decorative) ?? false)
 
-    const state: SeparatorApi['state'] = {
+    const state = reactive<SeparatorState>({
         get orientation() { return orientation.value },
         get isDecorative() { return isDecorative.value },
-    }
+    })
 
-    const bindings: SeparatorApi['bindings'] = {
+    const bindings: SeparatorBindings = {
         get root() {
             return {
                 role: isDecorative.value ? ('none' as const) : ('separator' as const),

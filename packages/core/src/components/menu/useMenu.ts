@@ -7,7 +7,7 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useConfig } from '../../config'
-import type { UseMenuProps, MenuApi, MenuRegistryItem, MenuInternals } from './types'
+import type { UseMenuProps, MenuApi, MenuRegistryItem, MenuInternals, MenuState, MenuActions, MenuBindings } from './types'
 import { MenuInternalKey } from '../../keys/internal-keys'
 
 export function useMenu(props: UseMenuProps = {}): MenuApi {
@@ -36,11 +36,6 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     const triggerRef = ref<HTMLElement | null>(null)
     const contentRef = ref<HTMLElement | null>(null)
 
-    const actions: MenuApi['actions'] = {
-        open, close, toggle,
-        highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
-    }
-
     useEscape({
         active: isOpen,
         onEscape: () => {
@@ -56,13 +51,18 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         },
     })
 
-    const state: MenuApi['state'] = reactive({
+    const state = reactive<MenuState>({
         get isOpen() { return isOpen.value },
         get isPresent() { return isPresent.value },
         get highlightValue() { return highlightValue.value },
         get triggerId() { return triggerId },
         get contentId() { return contentId },
     })
+
+    const actions: MenuActions = {
+        open, close, toggle,
+        highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
+    }
 
     const triggerBindings = computed(() => ({
         id: triggerId,
@@ -95,7 +95,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         },
     }))
 
-    const bindings: MenuApi['bindings'] = {
+    const bindings: MenuBindings = {
         get trigger() { return triggerBindings.value },
         get content() { return contentBindings.value },
     }
