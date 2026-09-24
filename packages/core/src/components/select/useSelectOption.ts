@@ -8,7 +8,7 @@ import { SelectInternalKey } from '../../keys/internal-keys'
 
 export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi): SelectOptionApi {
     const selectApi = select ?? useSelectContext()
-    const { registerOption, unregisterOption, updateOption } = selectApi[SelectInternalKey]
+    const { registerOption, unregisterOption } = selectApi[SelectInternalKey]
 
     const ownDisabled = useDisabled(props.disabled)
     const isDisabled = computed(() => selectApi.state.isDisabled || ownDisabled.value)

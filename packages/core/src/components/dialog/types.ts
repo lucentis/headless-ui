@@ -33,7 +33,6 @@ export interface DialogBindings {
         'aria-labelledby': string
         'aria-describedby': string
         'data-state': 'open' | 'closed'
-        onKeydown: (event: KeyboardEvent) => void
     }
     title: {
         id: string

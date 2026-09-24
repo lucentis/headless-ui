@@ -67,7 +67,7 @@ export interface UseTabsTriggerProps {
 
 export interface TabsTriggerState {
     isSelected: boolean
-    isHighlight: boolean
+    isHighlighted: boolean
     isDisabled: boolean
 }
 
@@ -87,7 +87,6 @@ export interface TabsTriggerBindings {
         'data-orientation': 'horizontal' | 'vertical'
         tabindex: 0 | -1
         onClick: () => void
-        onKeydown: (event: KeyboardEvent) => void
     }
 }
 

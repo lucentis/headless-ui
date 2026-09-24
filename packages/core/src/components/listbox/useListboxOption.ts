@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted, watch, reactive } from 'vue'
+import { computed, onMounted, onUnmounted, reactive } from 'vue'
 import { useListboxContext } from './ListboxContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'

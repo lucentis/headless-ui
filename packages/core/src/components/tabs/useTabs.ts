@@ -1,4 +1,4 @@
-import { computed, ref, toValue, watch, reactive} from 'vue'
+import { computed, toValue, watch, reactive} from 'vue'
 import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
@@ -21,9 +21,9 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     const listId = useId('tabs-list')
 
     const { registry, register, unregister, getItem } = useRegistry<TabsRegistryItem>()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry, { loop: true })
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted } = useHighlight(registry, { loop: true })
 
-    highlightValue.value = value.value
+    highlightValue.value = value.value || ''
 
     watch(highlightValue, (newHighlight) => {
         if (newHighlight === null) return
@@ -41,7 +41,7 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
 
     const state = reactive<TabsState>({
         get value() { return value.value },
-        get highlightValue() { return highlightValue.value },
+        get highlightValue() { return highlightValue.value! },
         get orientation() { return orientation.value },
         get activation() { return activation.value },
         get isDisabled() { return isDisabled.value },

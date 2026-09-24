@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted, watch } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useId } from '../../utils/useId'
 import { useMenuContext } from './MenuContext'
 import { composeHandlers } from '../../utils/eventHandler'
@@ -8,7 +8,7 @@ import { MenuInternalKey } from '../../keys/internal-keys'
 
 export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
     const menuApi = menu ?? useMenuContext()
-    const { registerItem, unregisterItem, updateItem } = menuApi[MenuInternalKey]
+    const { registerItem, unregisterItem } = menuApi[MenuInternalKey]
     const isDisabled = useDisabled(props.disabled)
 
     const itemId = useId('menu-item')

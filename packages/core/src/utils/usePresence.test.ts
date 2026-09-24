@@ -2,9 +2,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { defineComponent, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { usePresence } from './usePresence'
-import { provideConfig } from '../config'
 
-function createHost(initialOpen: boolean, animationDuration = 0) {
+function createHost(initialOpen: boolean) {
     const isOpen = ref(initialOpen)
     let exposed: ReturnType<typeof usePresence>
 
@@ -27,21 +26,6 @@ function createHost(initialOpen: boolean, animationDuration = 0) {
     return { wrapper, isOpen, get isPresent() { return exposed } }
 }
 
-// minimal host that injects a custom animationDuration via provideConfig
-function createHostWithDuration(initialOpen: boolean, duration: number) {
-    const isOpen = ref(initialOpen)
-    let exposed: ReturnType<typeof usePresence>
-
-    const Host = defineComponent({
-        setup() {
-            exposed = usePresence(isOpen, duration)
-        },
-        template: '<div />',
-    })
-
-    const wrapper = mount(Host)
-    return { wrapper, isOpen, get isPresent() { return exposed } }
-}
 
 describe('usePresence', () => {
     beforeEach(() => vi.useFakeTimers())

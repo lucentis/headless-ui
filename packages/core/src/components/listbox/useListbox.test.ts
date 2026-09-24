@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
-import { defineComponent, nextTick, ref } from 'vue'
+import { defineComponent, nextTick, ref, computed} from 'vue'
 import { mount } from '@vue/test-utils'
 import { useListbox } from './useListbox'
 import { useListboxOption } from './useListboxOption'
-import { provideListboxContext, useListboxContext } from './ListboxContext'
+import { useListboxContext } from './ListboxContext'
 import { ListboxInternalKey } from '../../keys/internal-keys'
 
 function createListboxHost(props: Parameters<typeof useListbox>[0] = {}) {
@@ -19,7 +19,7 @@ function createListboxHost(props: Parameters<typeof useListbox>[0] = {}) {
         get state() { return exposed.state },
         get actions() { return exposed.actions },
         get bindings() { return exposed.bindings },
-        registerOption: (value: string) => exposed[ListboxInternalKey].registerOption({ value, id: `listbox-option-${value}`, disabled: false }),
+        registerOption: (value: string) => exposed[ListboxInternalKey].registerOption({ value, id: `listbox-option-${value}`, disabled: computed(() => false) }),
         unregisterOption: (value: string) => exposed[ListboxInternalKey].unregisterOption(value),
         get api() { return exposed },
     }
@@ -389,14 +389,14 @@ describe('useListboxOption', () => {
 
         it('onClick toggles option', async () => {
             const { state, bindings } = createOptionHost({}, { value: 'option-1' })
-            bindings.root.onClick()
+            bindings.root.onClick(new MouseEvent('click'))
             await nextTick()
             expect(state.isSelected).toBe(true)
         })
 
         it('onClick does nothing when disabled', async () => {
             const { state, bindings } = createOptionHost({}, { value: 'option-1', disabled: true })
-            bindings.root.onClick()
+            bindings.root.onClick(new MouseEvent('click'))
             await nextTick()
             expect(state.isSelected).toBe(false)
         })

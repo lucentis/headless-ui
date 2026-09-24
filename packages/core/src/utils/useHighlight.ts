@@ -16,8 +16,13 @@ export interface UseHighlightReturn {
     clearHighlight: () => void
 }
 
+export interface HighlightItem {
+    value: string
+    disabled?: ComputedRef<boolean>
+}
+
 export function useHighlight(
-    registry: Ref<{ value: string; disabled?: ComputedRef<boolean> }[]>,
+    registry: Ref<HighlightItem[]>,
     options: UseHighlightOptions = {}
 ): UseHighlightReturn {
     const { loop = false } = options

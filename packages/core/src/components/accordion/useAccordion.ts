@@ -1,4 +1,4 @@
-import { computed, toValue, reactive} from 'vue'
+import { computed, reactive} from 'vue'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
 import type { UseAccordionProps, AccordionApi, AccordionState , AccordionActions} from './types'

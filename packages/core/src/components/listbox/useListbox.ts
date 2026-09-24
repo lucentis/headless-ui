@@ -35,7 +35,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         get listboxId() { return listboxId },
     })
 
-    const actions: ListaboxActions = {
+    const actions: ListboxActions = {
         highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
 
         select: (optionValue: string) => {

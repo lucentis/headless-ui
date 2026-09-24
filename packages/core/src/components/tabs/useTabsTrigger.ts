@@ -19,10 +19,9 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
     const panelId = useId('tabs-panel')
     const triggerRef = ref<HTMLElement | null>(null)
 
-    onMounted(() => linkTrigger({ value: props.value, triggerId, panelId, triggerRef, isdisabled: isDisabled }))
+    onMounted(() => linkTrigger({ value: props.value, triggerId, panelId, triggerRef, disabled: isDisabled }))
     onUnmounted(() => unlinkTrigger(props.value))
 
-    const test: string = 123
     const state = reactive<TabsTriggerState>({
         get isSelected() { return isSelected.value },
         get isHighlighted() { return isHighlighted.value },

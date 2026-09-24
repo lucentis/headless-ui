@@ -2,7 +2,7 @@ import { computed, reactive } from 'vue'
 import { useOpenState } from '../../utils/useOpenState'
 import { useDisabled } from '../../utils/useDisabled'
 import { useId } from '../../utils/useId'
-import { UseCollapsibleProps, CollapsibleApi, CollapsibleState, CollapsibleActions, CollapsibleBindings } from './types'
+import type { UseCollapsibleProps, CollapsibleApi, CollapsibleState, CollapsibleActions, CollapsibleBindings } from './types'
 
 export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi {
     const { isOpen, isPresent, open, close, toggle } = useOpenState({

@@ -1,10 +1,16 @@
 import { describe, it, expect } from 'vitest'
-import { defineComponent, nextTick, ref } from 'vue'
+import { defineComponent, nextTick, shallowRef, computed, type ComputedRef } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useHighlight } from './useHighlight'
 
-function createHost(items: { value: string; disabled?: boolean }[] = []) {
-    const registry = ref(items)
+
+type HighlightItem = {
+    value: string
+    disabled?: ComputedRef<boolean>
+}
+
+function createHost(items: HighlightItem[] = []) {
+    const registry = shallowRef<HighlightItem[]>(items)
     let exposed: ReturnType<typeof useHighlight>
 
     const Host = defineComponent({
@@ -51,7 +57,7 @@ describe('useHighlight', () => {
 
         it('skips disabled items', () => {
             const { highlightFirst, highlightValue } = createHost([
-                { value: 'a', disabled: true },
+                { value: 'a', disabled: computed(() => true) },
                 { value: 'b' },
             ])
             highlightFirst()
@@ -60,7 +66,7 @@ describe('useHighlight', () => {
 
         it('does nothing when all items disabled', () => {
             const { highlightFirst, highlightValue } = createHost([
-                { value: 'a', disabled: true },
+                { value: 'a', disabled: computed(() => true) },
             ])
             highlightFirst()
             expect(highlightValue.value).toBeNull()
@@ -77,7 +83,7 @@ describe('useHighlight', () => {
         it('skips disabled items', () => {
             const { highlightLast, highlightValue } = createHost([
                 { value: 'a' },
-                { value: 'b', disabled: true },
+                { value: 'b', disabled: computed(() => true) },
             ])
             highlightLast()
             expect(highlightValue.value).toBe('a')
@@ -108,7 +114,7 @@ describe('useHighlight', () => {
         it('skips disabled items', () => {
             const { highlight, highlightNext, highlightValue } = createHost([
                 { value: 'a' },
-                { value: 'b', disabled: true },
+                { value: 'b', disabled: computed(() => true) },
                 { value: 'c' },
             ])
             highlight('a')
@@ -153,7 +159,7 @@ describe('useHighlight', () => {
         it('skips disabled items', () => {
             const { highlight, highlightPrev, highlightValue } = createHost([
                 { value: 'a' },
-                { value: 'b', disabled: true },
+                { value: 'b', disabled: computed(() => true) },
                 { value: 'c' },
             ])
             highlight('c')

@@ -22,7 +22,7 @@ describe('composeHandlers', () => {
 
     it('does not call internalHandler when event.preventDefault() was called by userHandler', () => {
         const internalHandler = vi.fn()
-        const userHandler = (event?: MouseEvent) => event?.preventDefault()
+        const userHandler = (event: MouseEvent) => event.preventDefault()
 
         const composed = composeHandlers(userHandler, internalHandler)
         const event = new MouseEvent('click', { cancelable: true })

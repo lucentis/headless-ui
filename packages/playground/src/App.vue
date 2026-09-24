@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useSelect, useSelectOption } from '@lucentis/headless-ui-core'
 import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover, useMenu, useMenuItem, useListbox, useListboxOption } from '@lucentis/headless-ui-core'
-import { ref } from 'vue';
-import { dffdf } from 'vue'
+import { ref } from 'vue'
+
 const isLoading = ref(false)
 const { bindings } = useButton({ disabled: isLoading })
 

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { defineComponent, nextTick, ref } from 'vue'
+import { defineComponent, nextTick, ref, computed } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useSelect } from './useSelect'
 import { useSelectOption } from './useSelectOption'
-import { provideSelectContext, useSelectContext } from './SelectContext'
+import { useSelectContext } from './SelectContext'
 import { SelectInternalKey } from '../../keys/internal-keys'
 
 function createSelectHost(props: Parameters<typeof useSelect>[0] = {}) {
@@ -20,7 +20,7 @@ function createSelectHost(props: Parameters<typeof useSelect>[0] = {}) {
         get state() { return exposed.state },
         get actions() { return exposed.actions },
         get bindings() { return exposed.bindings },
-        registerOption: (value: string, label: string) => exposed[SelectInternalKey].registerOption({ value, id: `select-option-${value}`, disabled: false, label }),
+        registerOption: (value: string, label: string) => exposed[SelectInternalKey].registerOption({ value, id: `select-option-${value}`, disabled: computed(() => false), label }),
         unregisterOption: (value: string) => exposed[SelectInternalKey].unregisterOption(value),
         get api() { return exposed },
     }
@@ -397,7 +397,7 @@ describe('useSelectOption', () => {
 
         it('onClick selects option and closes', async () => {
             const { bindings, select } = createOptionHost({ defaultOpen: true }, { value: 'fr', label: 'French' })
-            bindings.root.onClick()
+            bindings.root.onClick(new MouseEvent('click'))
             await nextTick()
             expect(select.state.value).toBe('fr')
             expect(select.state.isOpen).toBe(false)
@@ -405,7 +405,7 @@ describe('useSelectOption', () => {
 
         it('onClick does nothing when disabled', async () => {
             const { bindings, select } = createOptionHost({ defaultOpen: true }, { value: 'fr', label: 'French', disabled: true })
-            bindings.root.onClick()
+            bindings.root.onClick(new MouseEvent('click'))
             await nextTick()
             expect(select.state.value).toBe('')
             expect(select.state.isOpen).toBe(true)
@@ -413,7 +413,7 @@ describe('useSelectOption', () => {
 
         it('onMouseenter highlights option', async () => {
             const { bindings, select } = createOptionHost({}, { value: 'fr', label: 'French' })
-            bindings.root.onMouseenter()
+            bindings.root.onMouseenter(new MouseEvent('mouseenter'))
             await nextTick()
             expect(select.state.highlightValue).toBe('fr')
         })

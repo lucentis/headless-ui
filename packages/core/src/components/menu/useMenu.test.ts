@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { defineComponent, nextTick, ref } from 'vue'
+import { defineComponent, nextTick, ref, computed } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useMenu } from './useMenu'
 import { provideMenuContext, useMenuContext } from './MenuContext'
@@ -21,7 +21,7 @@ function createHost(props: Parameters<typeof useMenu>[0] = {}) {
         get bindings() { return exposed.bindings },
         get triggerRef() { return exposed.triggerRef },
         get contentRef() { return exposed.contentRef },
-        registerItem: (value: string) => exposed[MenuInternalKey].registerItem({ value, id: `menu-item-${value}`, disabled: false }),
+        registerItem: (value: string) => exposed[MenuInternalKey].registerItem({ value, id: `menu-item-${value}`, disabled: computed(() => false) }),
         unregisterItem: (value: string) => exposed[MenuInternalKey].unregisterItem(value),
     }
 }
@@ -313,7 +313,7 @@ describe('useMenu', () => {
         })
 
         it('aria-activedescendant reflects highlightValue', async () => {
-            const { bindings, actions, state, wrapper, registerItem } = createHost()
+            const { bindings, actions, wrapper, registerItem } = createHost()
             registerItem('item-1')
             expect(bindings.content['aria-activedescendant']).toBeUndefined()
             actions.highlight('item-1')

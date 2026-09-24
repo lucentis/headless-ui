@@ -11,7 +11,6 @@ export interface ListboxRegistryItem {
 export interface ListboxInternals {
     registerOption: (item: ListboxRegistryItem) => void
     unregisterOption: (value: string) => void
-    rootRef: Ref<HTMLElement | null>,
 }
 
 export interface UseListboxProps {

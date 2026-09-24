@@ -13,8 +13,6 @@ export interface SelectInternals {
     registerOption: (item: SelectRegistryItem) => void
     unregisterOption: (value: string) => void
     updateOption: (value: string, patch: Partial<Omit<SelectRegistryItem, 'value'>>) => void
-    triggerRef: Ref<HTMLElement | null>
-    contentRef: Ref<HTMLElement | null>
 }
 
 export interface UseSelectProps {

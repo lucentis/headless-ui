@@ -11,6 +11,5 @@ export type {
     ListboxOptionState,
     ListboxOptionActions,
     ListboxOptionBindings,
-    ListboxOptionUserProps,
     ListboxOptionApi,
 } from './types'
