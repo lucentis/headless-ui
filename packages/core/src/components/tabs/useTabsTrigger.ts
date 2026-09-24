@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, reactive } from 'vue'
 import { useId } from '../../utils/useId'
 import { useDisabled } from '../../utils/useDisabled'
 import { useTabsContext } from './TabsContext'
@@ -19,9 +19,10 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
     const panelId = useId('tabs-panel')
     const triggerRef = ref<HTMLElement | null>(null)
 
-    onMounted(() => linkTrigger({ value: props.value, triggerId, panelId, triggerRef, isDisabled }))
+    onMounted(() => linkTrigger({ value: props.value, triggerId, panelId, triggerRef, isdisabled: isDisabled }))
     onUnmounted(() => unlinkTrigger(props.value))
 
+    const test: string = 123
     const state = reactive<TabsTriggerState>({
         get isSelected() { return isSelected.value },
         get isHighlighted() { return isHighlighted.value },

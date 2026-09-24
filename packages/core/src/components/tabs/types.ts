@@ -6,7 +6,7 @@ export interface TabsRegistryItem {
     value: string
     triggerId: string
     panelId: string,
-    isDisabled: ComputedRef<boolean>
+    disabled: ComputedRef<boolean>
     triggerRef: Ref<HTMLElement | null>
 }
 
