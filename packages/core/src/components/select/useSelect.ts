@@ -20,6 +20,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         value: props.value,
         defaultValue: props.defaultValue ?? '',
         onChange: props.onValueChange,
+        animationDuration: config.animationDuration
     })
 
     const { isOpen, isPresent, open, close, toggle } = useOpenState({

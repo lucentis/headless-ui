@@ -13,6 +13,7 @@ export function useOutsideClick(options: UseOutsideClickOptions): void {
     function onClick(event: MouseEvent): void {
         const target = event.target as Node
         const isInside = targets.some(ref => ref.value?.contains(target))
+        
         if (!isInside) onOutsideClick()
     }
 

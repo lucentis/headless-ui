@@ -20,6 +20,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
             if (!value) clearHighlight()
             props.onOpenChange?.(value)
         },
+        animationDuration: config.animationDuration
     })
 
     watch(isOpen, (newOpen) => {

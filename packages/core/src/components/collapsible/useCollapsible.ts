@@ -9,6 +9,7 @@ export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi 
         open: props.open,
         defaultOpen: props.defaultOpen,
         onOpenChange: props.onOpenChange,
+        animationDuration: useConfig().animationDuration
     })
 
     const isDisabled = useDisabled(props.disabled)

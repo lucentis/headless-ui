@@ -13,6 +13,7 @@ export function usePopover(props: UsePopoverProps = {}): PopoverApi {
         open: props.open,
         defaultOpen: props.defaultOpen,
         onOpenChange: props.onOpenChange,
+        animationDuration: config.animationDuration
     })
 
     const triggerId = useId('popover-trigger')

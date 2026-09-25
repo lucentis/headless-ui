@@ -7,6 +7,7 @@ export function useAlert(props: UseAlertProps = {}): AlertApi {
         open: props.open,
         defaultOpen: props.defaultOpen ?? true,
         onOpenChange: props.onOpenChange,
+        animationDuration: useConfig().animationDuration
     })
 
     const role = computed(() => toValue(props.role) ?? 'status')

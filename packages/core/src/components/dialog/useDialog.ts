@@ -14,6 +14,7 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
         open: props.open,
         defaultOpen: props.defaultOpen,
         onOpenChange: props.onOpenChange,
+        animationDuration: config.animationDuration
     })
 
     const isModal = computed(() => toValue(props.modal) ?? true)
