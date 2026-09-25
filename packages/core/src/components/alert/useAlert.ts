@@ -1,5 +1,6 @@
 import { computed, toValue, reactive } from 'vue'
 import { useOpenState } from '../../utils/useOpenState'
+import { useConfig } from '../../config'
 import type { UseAlertProps, AlertApi, AlertState, AlertActions, AlertBindings } from './types'
 
 export function useAlert(props: UseAlertProps = {}): AlertApi {
