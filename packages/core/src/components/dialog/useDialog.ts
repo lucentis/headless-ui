@@ -23,7 +23,7 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
     const descriptionId = useId('dialog-description')
     const contentRef = ref<HTMLElement | null>(null)
 
-    const { lock, unlock } = useScrollLock()
+    const { lock, unlock } = useScrollLock(config.scrollLock)
     
     watch(
         () => isOpen.value && isModal.value && config.scrollLock !== 'none',

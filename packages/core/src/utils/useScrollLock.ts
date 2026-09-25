@@ -1,5 +1,4 @@
 import { onUnmounted } from 'vue'
-import { useConfig } from '../config'
 
 // module-level — shared across all instances
 let lockCount = 0
@@ -33,8 +32,7 @@ function restoreLock(): void {
     document.body.style.marginRight = originalMarginRight
 }
 
-export function useScrollLock() {
-    const config = useConfig()
+export function useScrollLock(mode: 'padding' | 'margin' | 'none' = 'padding') {
     let instanceLocked = false
 
     function lock(): void {
@@ -44,7 +42,7 @@ export function useScrollLock() {
         lockCount++
 
         if (lockCount === 1) {
-            applyLock(config.scrollLock)
+            applyLock(mode)
         }
     }
 
