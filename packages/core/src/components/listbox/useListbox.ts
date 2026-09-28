@@ -27,12 +27,11 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
     const rootRef = ref<HTMLElement | null>(null)
 
     const state = reactive<ListboxState>({
-        get value() { return value.value },
-        get highlightValue() { return highlightValue.value },
-        get isDisabled() { return isDisabled.value },
-        get multiple() { return multiple.value },
-        get orientation() { return orientation.value },
-        get listboxId() { return listboxId },
+        value,
+        highlightValue,
+        isDisabled,
+        multiple,
+        orientation,
     })
 
     const actions: ListboxActions = {
@@ -71,10 +70,10 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
 
     const { onKeydown } = useArrowNavigation({
         orientation,
-        onNext: actions.highlightNext,
-        onPrev: actions.highlightPrev,
-        onFirst: actions.highlightFirst,
-        onLast: actions.highlightLast,
+        onNext: highlightNext,
+        onPrev: highlightPrev,
+        onFirst: highlightFirst,
+        onLast: highlightLast,
         onEnter: () => { if (highlightValue.value !== null) actions.toggle(highlightValue.value) },
         onSpace: () => { if (highlightValue.value !== null) actions.toggle(highlightValue.value) },
     })

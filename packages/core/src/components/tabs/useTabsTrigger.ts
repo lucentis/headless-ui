@@ -23,9 +23,9 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
     onUnmounted(() => unlinkTrigger(props.value))
 
     const state = reactive<TabsTriggerState>({
-        get isSelected() { return isSelected.value },
-        get isHighlighted() { return isHighlighted.value },
-        get isDisabled() { return isDisabled.value },
+        isDisabled,
+        isHighlighted,
+        isSelected
     })
 
     const actions: TabsTriggerApi['actions'] = {

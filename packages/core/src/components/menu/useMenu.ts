@@ -65,10 +65,10 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     }))
 
     const { onKeydown: onArrowKeydown } = useArrowNavigation({
-        onNext: actions.highlightNext,
-        onPrev: actions.highlightPrev,
-        onFirst: actions.highlightFirst,
-        onLast: actions.highlightLast,
+        onNext: highlightNext,
+        onPrev: highlightPrev,
+        onFirst: highlightFirst,
+        onLast: highlightLast,
     })
 
     const contentBindings = computed(() => ({

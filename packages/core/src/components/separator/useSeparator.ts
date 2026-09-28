@@ -6,8 +6,8 @@ export function useSeparator(props: UseSeparatorProps = {}): SeparatorApi {
     const isDecorative = computed(() => toValue(props.decorative) ?? false)
 
     const state = reactive<SeparatorState>({
-        get orientation() { return orientation.value },
-        get isDecorative() { return isDecorative.value },
+        orientation,
+        isDecorative
     })
 
     const bindings: SeparatorBindings = {

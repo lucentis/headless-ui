@@ -14,8 +14,8 @@ export function useAlert(props: UseAlertProps = {}): AlertApi {
     const role = computed(() => toValue(props.role) ?? 'status')
 
     const state = reactive<AlertState>({
-        get isOpen() { return isOpen.value },
-        get isPresent() { return isPresent.value },
+        isOpen,
+        isPresent
     })
 
     const actions: AlertActions = { open, close }

@@ -6,7 +6,7 @@ export function useButton(props: UseButtonProps = {}): ButtonApi {
     const isDisabled = useDisabled(props.disabled)
 
     const state = reactive<ButtonState>({
-        get isDisabled() { return isDisabled.value },
+        isDisabled
     })
 
     const bindings: ButtonBindings = {

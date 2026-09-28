@@ -15,10 +15,8 @@ export function useAccordionItem(props: UseAccordionItemProps, accordion?: Accor
     const contentId = useId('accordion-content')
 
     const state = reactive<AccordionItemState>({
-        get isExpanded() { return isExpanded.value },
-        get isDisabled() { return isDisabled.value },
-        get triggerId() { return triggerId },
-        get contentId() { return contentId },
+        isExpanded,
+        isDisabled,
     })
 
     const actions: AccordionItemActions = {

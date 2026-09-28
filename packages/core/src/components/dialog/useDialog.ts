@@ -44,11 +44,9 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
     })
 
     const state = reactive<DialogState>({
-        get isOpen() { return isOpen.value },
-        get isPresent() { return isPresent.value },
-        get isModal() { return isModal.value },
-        get titleId() { return titleId },
-        get descriptionId() { return descriptionId },
+        isOpen,
+        isPresent,
+        isModal
     })
 
     const actions: DialogActions = { open, close }

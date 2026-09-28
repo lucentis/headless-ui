@@ -19,11 +19,9 @@ export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi 
     const contentId = useId('collapsible-content')
 
     const state = reactive<CollapsibleState>({
-        get isOpen() { return isOpen.value },
-        get isPresent() { return isPresent.value },
-        get isDisabled() { return isDisabled.value },
-        get triggerId() { return triggerId },
-        get contentId() { return contentId },
+        isDisabled,
+        isOpen,
+        isPresent
     })
 
     const actions: CollapsibleActions = { open, close, toggle }

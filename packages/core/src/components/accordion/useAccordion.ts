@@ -16,9 +16,9 @@ export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
     })
 
     const state = reactive<AccordionState>({
-        get value() { return value.value },
-        get isDisabled() { return isDisabled.value },
-        get type() { return type.value },
+        value,
+        isDisabled,
+        type
     })
 
     const actions: AccordionActions = {

@@ -23,7 +23,7 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     const { registry, register, unregister, getItem } = useRegistry<TabsRegistryItem>()
     const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted } = useHighlight(registry, { loop: true })
 
-    highlightValue.value = value.value || ''
+    highlightValue.value = value.value || null
 
     watch(highlightValue, (newHighlight) => {
         if (newHighlight === null) return
@@ -40,12 +40,11 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     }, { flush: 'post' })
 
     const state = reactive<TabsState>({
-        get value() { return value.value },
-        get highlightValue() { return highlightValue.value! },
-        get orientation() { return orientation.value },
-        get activation() { return activation.value },
-        get isDisabled() { return isDisabled.value },
-        get listId() { return listId },
+        value,
+        highlightValue,
+        orientation,
+        activation,
+        isDisabled
     })
 
     const actions: TabsActions = {
@@ -63,10 +62,10 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
 
     const { onKeydown: onArrowKeydown } = useArrowNavigation({
         orientation,
-        onNext: actions.highlightNext,
-        onPrev: actions.highlightPrev,
-        onFirst: actions.highlightFirst,
-        onLast: actions.highlightLast,
+        onNext: highlightNext,
+        onPrev: highlightPrev,
+        onFirst: highlightFirst,
+        onLast: highlightLast,
     })
 
     const listBindings = computed(() => ({

@@ -28,7 +28,7 @@ export interface UseTabsProps {
 
 export interface TabsState {
     value: string
-    highlightValue: string
+    highlightValue: string | null
     orientation: 'horizontal' | 'vertical'
     activation: 'automatic' | 'manual'
     isDisabled: boolean
