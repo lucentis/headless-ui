@@ -3,8 +3,7 @@ import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
 import { useOpenState } from '../../utils/useOpenState'
-import { useEscape } from '../../utils/useEscape'
-import { useOutsideClick } from '../../utils/useOutsideClick'
+import { useDismiss } from '../../utils/useDismiss'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
@@ -16,11 +15,16 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     const config = useConfig()
     const isDisabled = useDisabled(props.disabled)
 
+    const triggerId = useId('select-trigger')
+    const contentId = useId('select-content')
+
+    const triggerRef = ref<HTMLElement | null>(null)
+    const contentRef = ref<HTMLElement | null>(null)
+
     const { value, setValue } = useControllableState<string>({
         value: props.value,
         defaultValue: props.defaultValue ?? '',
         onChange: props.onValueChange,
-        animationDuration: config.animationDuration
     })
 
     const { isOpen, isPresent, open, close, toggle } = useOpenState({
@@ -30,52 +34,38 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
             if (!val) clearHighlight()
             props.onOpenChange?.(val)
         },
+        animationDuration: config.animationDuration,
     })
 
-    const triggerRef = ref<HTMLElement | null>(null)
-    const contentRef = ref<HTMLElement | null>(null)
+    const { registry, register, unregister, updateItem, getItem } = useRegistry<SelectRegistryItem>()
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
+    
+    const selectedLabel = computed(() => {
+        const v = value.value
+        return v ? getItem(v)?.label ?? null : null
+    })
+
+    useDismiss({
+        active: isOpen,
+        targets: [triggerRef, contentRef],
+        onDismiss: close,
+        escape: config.closeOnEscape,
+        outsideClick: config.closeOnOutsideClick,
+    })
 
     watch(isOpen, (newOpen) => {
         if (!newOpen) return
         contentRef.value?.focus()
     }, { flush: 'post' })
 
-    const { registry, register, unregister, updateItem, getItem } = useRegistry<SelectRegistryItem>()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
-
-    const triggerId = useId('select-trigger')
-    const contentId = useId('select-content')
-
-    const selectedLabel = computed(() => {
-        const v = value.value
-        return v ? getItem(v)?.label ?? null : null
-    })
-
-    useEscape({
-        active: isOpen,
-        onEscape: () => {
-            if (config.closeOnEscape) actions.close()
-        },
-    })
-
-    useOutsideClick({
-        targets: [triggerRef, contentRef],
-        active: isOpen,
-        onOutsideClick: () => {
-            if (config.closeOnOutsideClick) actions.close()
-        },
-    })
-
     const state = reactive<SelectState>({
-        get value() { return value.value },
-        get selectedLabel() { return selectedLabel.value },
-        get highlightValue() { return highlightValue.value },
-        get isOpen() { return isOpen.value },
-        get isPresent() { return isPresent.value },
-        get isDisabled() { return isDisabled.value },
-        get placeholder() { return props.placeholder },
-        get triggerId() { return triggerId },
-        get contentId() { return contentId },
+        value,
+        selectedLabel,
+        highlightValue,
+        isOpen,
+        isPresent,
+        isDisabled,
+        placeholder: props.placeholder,    
     })
 
     const actions: SelectActions = {
@@ -107,10 +97,10 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     }))
 
     const { onKeydown: onArrowKeydown } = useArrowNavigation({
-        onNext: actions.highlightNext,
-        onPrev: actions.highlightPrev,
-        onFirst: actions.highlightFirst,
-        onLast: actions.highlightLast,
+        onNext: highlightNext,
+        onPrev: highlightPrev,
+        onFirst: highlightFirst,
+        onLast: highlightLast,
         onEnter: () => { if (highlightValue.value !== null) actions.select(highlightValue.value) },
         onSpace: () => { if (highlightValue.value !== null) actions.select(highlightValue.value) },
     })

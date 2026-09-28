@@ -1,13 +1,18 @@
 import { computed, ref, reactive } from 'vue'
 import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
-import { useEscape } from '../../utils/useEscape'
-import { useOutsideClick } from '../../utils/useOutsideClick'
+import { useDismiss } from '../../utils/useDismiss'
 import { useConfig } from '../../config'
 import type { UsePopoverProps, PopoverApi, PopoverState, PopoverActions, PopoverBindings } from './types'
 
 export function usePopover(props: UsePopoverProps = {}): PopoverApi {
     const config = useConfig()
+
+    const triggerId = useId('popover-trigger')
+    const contentId = useId('popover-content')
+    
+    const triggerRef = ref<HTMLElement | null>(null)
+    const contentRef = ref<HTMLElement | null>(null)
 
     const { isOpen, isPresent, open, close, toggle } = useOpenState({
         open: props.open,
@@ -16,33 +21,17 @@ export function usePopover(props: UsePopoverProps = {}): PopoverApi {
         animationDuration: config.animationDuration
     })
 
-    const triggerId = useId('popover-trigger')
-    const contentId = useId('popover-content')
-
-    const triggerRef = ref<HTMLElement | null>(null)
-    const contentRef = ref<HTMLElement | null>(null)
-
-    
-    useEscape({
+    useDismiss({
         active: isOpen,
-        onEscape: () => {
-            if (config.closeOnEscape) actions.close()
-        },
-    })
-
-    useOutsideClick({
         targets: [triggerRef, contentRef],
-        active: isOpen,
-        onOutsideClick: () => {
-            if (config.closeOnOutsideClick) actions.close()
-        },
+        onDismiss: close,
+        escape: config.closeOnEscape,
+        outsideClick: config.closeOnOutsideClick,
     })
 
     const state = reactive<PopoverState>({
-        get isOpen() { return isOpen.value },
-        get isPresent() { return isPresent.value },
-        get triggerId() { return triggerId },
-        get contentId() { return contentId },
+        isOpen,
+        isPresent,
     })
 
     const actions: PopoverActions = { open, close, toggle }

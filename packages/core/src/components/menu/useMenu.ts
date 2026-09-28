@@ -1,11 +1,10 @@
 import { computed, ref, reactive, watch } from 'vue'
 import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
-import { useEscape } from '../../utils/useEscape'
-import { useOutsideClick } from '../../utils/useOutsideClick'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
+import { useDismiss } from '../../utils/useDismiss'
 import { useConfig } from '../../config'
 import type { UseMenuProps, MenuApi, MenuRegistryItem, MenuInternals, MenuState, MenuActions, MenuBindings } from './types'
 import { MenuInternalKey } from '../../keys/internal-keys'
@@ -13,6 +12,12 @@ import { MenuInternalKey } from '../../keys/internal-keys'
 export function useMenu(props: UseMenuProps = {}): MenuApi {
     const config = useConfig()
 
+    const triggerId = useId('menu-trigger')
+    const contentId = useId('menu-content')
+
+    const triggerRef = ref<HTMLElement | null>(null)
+    const contentRef = ref<HTMLElement | null>(null)
+    
     const { isOpen, isPresent, open, close, toggle } = useOpenState({
         open: props.open,
         defaultOpen: props.defaultOpen,
@@ -23,6 +28,14 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         animationDuration: config.animationDuration
     })
 
+    useDismiss({
+        active: isOpen,
+        targets: [triggerRef, contentRef],
+        onDismiss: close,
+        escape: config.closeOnEscape,
+        outsideClick: config.closeOnOutsideClick,
+    })
+
     watch(isOpen, (newOpen) => {
         if (!newOpen) return
         contentRef.value?.focus()
@@ -31,33 +44,10 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     const { registry, register, unregister, updateItem, getItem } = useRegistry<MenuRegistryItem>()
     const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
 
-    const triggerId = useId('menu-trigger')
-    const contentId = useId('menu-content')
-
-    const triggerRef = ref<HTMLElement | null>(null)
-    const contentRef = ref<HTMLElement | null>(null)
-
-    useEscape({
-        active: isOpen,
-        onEscape: () => {
-            if (config.closeOnEscape) actions.close()
-        },
-    })
-
-    useOutsideClick({
-        targets: [triggerRef, contentRef],
-        active: isOpen,
-        onOutsideClick: () => {
-            if (config.closeOnOutsideClick) actions.close()
-        },
-    })
-
     const state = reactive<MenuState>({
-        get isOpen() { return isOpen.value },
-        get isPresent() { return isPresent.value },
-        get highlightValue() { return highlightValue.value },
-        get triggerId() { return triggerId },
-        get contentId() { return contentId },
+        isOpen,
+        isPresent,
+        highlightValue,
     })
 
     const actions: MenuActions = {

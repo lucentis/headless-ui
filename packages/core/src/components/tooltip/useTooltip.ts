@@ -3,21 +3,23 @@ import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
 import { useDisabled } from '../../utils/useDisabled'
 import { useEscape } from '../../utils/useEscape'
+import { useConfig } from '../../config'
 import type { UseTooltipProps, TooltipApi, TooltipState, TooltipActions, TooltipBindings } from './types'
 
 const DEFAULT_DELAY = 700
 const CLOSE_DELAY = 100
 
 export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
+    const config = useConfig()
     const isDisabled = useDisabled(props.disabled)
+    const contentId = useId('tooltip-content')
 
     const { isOpen, isPresent, open: openState, close: closeState } = useOpenState({
         open: props.open,
         defaultOpen: props.defaultOpen,
         onOpenChange: props.onOpenChange,
+        animationDuration: config.animationDuration,
     })
-
-    const contentId = useId('tooltip-content')
 
     let openTimer: ReturnType<typeof setTimeout> | null = null
     let closeTimer: ReturnType<typeof setTimeout> | null = null
@@ -48,10 +50,9 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
     }
 
     const state = reactive<TooltipState>({
-        get isOpen() { return isOpen.value },
-        get isPresent() { return isPresent.value },
-        get isDisabled() { return isDisabled.value },
-        get contentId() { return contentId },
+        isOpen,
+        isPresent,
+        isDisabled,
     })
 
     const actions: TooltipActions = {
