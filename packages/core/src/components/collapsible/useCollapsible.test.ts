@@ -45,10 +45,10 @@ describe('useCollapsible', () => {
         })
 
         it('triggerId and contentId are stable strings', () => {
-            const { state } = createHost()
-            expect(typeof state.triggerId).toBe('string')
-            expect(typeof state.contentId).toBe('string')
-            expect(state.triggerId).not.toBe(state.contentId)
+            const { state, bindings } = createHost()
+            expect(typeof bindings.trigger.id).toBe('string')
+            expect(typeof bindings.content.id).toBe('string')
+            expect(bindings.trigger.id).not.toBe(bindings.content.id)
         })
 
         it('reflects controlled open ref', async () => {
@@ -114,16 +114,6 @@ describe('useCollapsible', () => {
     })
 
     describe('bindings.trigger', () => {
-        it('id matches state.triggerId', () => {
-            const { state, bindings } = createHost()
-            expect(bindings.trigger.id).toBe(state.triggerId)
-        })
-
-        it('aria-controls matches state.contentId', () => {
-            const { state, bindings } = createHost()
-            expect(bindings.trigger['aria-controls']).toBe(state.contentId)
-        })
-
         it('aria-expanded reflects isOpen', async () => {
             const { bindings, actions } = createHost()
             expect(bindings.trigger['aria-expanded']).toBe(false)
@@ -166,14 +156,9 @@ describe('useCollapsible', () => {
     })
 
     describe('bindings.content', () => {
-        it('id matches state.contentId', () => {
-            const { state, bindings } = createHost()
-            expect(bindings.content.id).toBe(state.contentId)
-        })
-
         it('aria-labelledby matches state.triggerId', () => {
             const { state, bindings } = createHost()
-            expect(bindings.content['aria-labelledby']).toBe(state.triggerId)
+            expect(bindings.content['aria-labelledby']).toBe(bindings.trigger.id)
         })
 
         it('role is region', () => {

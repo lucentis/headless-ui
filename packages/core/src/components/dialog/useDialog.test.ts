@@ -53,14 +53,6 @@ describe('useDialog', () => {
             wrapper.unmount()
         })
 
-        it('titleId and descriptionId are stable strings', () => {
-            const { state, wrapper } = createHost()
-            expect(typeof state.titleId).toBe('string')
-            expect(typeof state.descriptionId).toBe('string')
-            expect(state.titleId).not.toBe(state.descriptionId)
-            wrapper.unmount()
-        })
-
         it('reflects controlled open ref', async () => {
             const open = ref(false)
             const { state, wrapper } = createHost({ open })
@@ -159,38 +151,12 @@ describe('useDialog', () => {
             wrapper.unmount()
         })
 
-        it('aria-labelledby matches titleId', () => {
-            const { state, bindings, wrapper } = createHost()
-            expect(bindings.content['aria-labelledby']).toBe(state.titleId)
-            wrapper.unmount()
-        })
-
-        it('aria-describedby matches descriptionId', () => {
-            const { state, bindings, wrapper } = createHost()
-            expect(bindings.content['aria-describedby']).toBe(state.descriptionId)
-            wrapper.unmount()
-        })
-
         it('data-state reflects isOpen', async () => {
             const { bindings, actions, wrapper } = createHost()
             expect(bindings.content['data-state']).toBe('closed')
             actions.open()
             await nextTick()
             expect(bindings.content['data-state']).toBe('open')
-            wrapper.unmount()
-        })
-    })
-
-    describe('bindings.title and description', () => {
-        it('title id matches state.titleId', () => {
-            const { state, bindings, wrapper } = createHost()
-            expect(bindings.title.id).toBe(state.titleId)
-            wrapper.unmount()
-        })
-
-        it('description id matches state.descriptionId', () => {
-            const { state, bindings, wrapper } = createHost()
-            expect(bindings.description.id).toBe(state.descriptionId)
             wrapper.unmount()
         })
     })

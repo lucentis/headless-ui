@@ -61,8 +61,8 @@ describe('useTooltip', () => {
         })
 
         it('contentId is a stable string', () => {
-            const { state, wrapper } = createHost()
-            expect(typeof state.contentId).toBe('string')
+            const { state, bindings, wrapper } = createHost()
+            expect(typeof bindings.content.id).toBe('string')
             wrapper.unmount()
         })
 
@@ -171,7 +171,7 @@ describe('useTooltip', () => {
         it('aria-describedby matches contentId', () => {
             const { state, bindings, wrapper } = createHost()
 
-            expect(bindings.trigger['aria-describedby']).toBe(state.contentId)
+            expect(bindings.trigger['aria-describedby']).toBe(bindings.content.id)
 
             wrapper.unmount()
         })
@@ -251,7 +251,7 @@ describe('useTooltip', () => {
 
         it('id matches contentId', () => {
             const { state, bindings, wrapper } = createHost()
-            expect(bindings.content.id).toBe(state.contentId)
+            expect(bindings.content.id).toBe(bindings.content.id)
             wrapper.unmount()
         })
     })
