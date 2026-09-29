@@ -28,27 +28,34 @@ export function useHighlight(
     const { loop = false } = options
     const highlightValue = ref<string | null>(null)
 
-    function getEnabled(): { value: string; disabled?: ComputedRef<boolean> }[] {
+    function getEnabled(): HighlightItem[] {
         return registry.value.filter(item => !toValue(item.disabled))
     }
 
     function highlight(value: string): void {
+        const item = registry.value.find(item => item.value === value)
+
+        if (!item || toValue(item.disabled)) return
+
         highlightValue.value = value
     }
 
     function highlightFirst(): void {
         const first = getEnabled()[0]
+
         if (first) highlightValue.value = first.value
     }
 
     function highlightLast(): void {
         const enabled = getEnabled()
         const last = enabled[enabled.length - 1]
+
         if (last) highlightValue.value = last.value
     }
 
     function highlightNext(): void {
         const enabled = getEnabled()
+
         if (enabled.length === 0) return
 
         if (highlightValue.value === null) {
@@ -56,8 +63,9 @@ export function useHighlight(
             return
         }
 
-        const index = enabled.findIndex(i => i.value === highlightValue.value)
-        if (index === -1) return  // stale highlight — no-op
+        const index = enabled.findIndex(item => item.value === highlightValue.value)
+
+        if (index === -1) return
 
         if (index === enabled.length - 1) {
             if (loop) highlightValue.value = enabled[0].value
@@ -68,6 +76,7 @@ export function useHighlight(
 
     function highlightPrev(): void {
         const enabled = getEnabled()
+
         if (enabled.length === 0) return
 
         if (highlightValue.value === null) {
@@ -75,8 +84,9 @@ export function useHighlight(
             return
         }
 
-        const index = enabled.findIndex(i => i.value === highlightValue.value)
-        if (index === -1) return  // stale highlight — no-op
+        const index = enabled.findIndex(item => item.value === highlightValue.value)
+
+        if (index === -1) return
 
         if (index === 0) {
             if (loop) highlightValue.value = enabled[enabled.length - 1].value

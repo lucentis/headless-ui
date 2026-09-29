@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { defineComponent, nextTick, shallowRef, computed, type ComputedRef } from 'vue'
+import { defineComponent, nextTick, shallowRef, computed, ref, type ComputedRef } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useHighlight } from './useHighlight'
 
@@ -45,6 +45,20 @@ describe('useHighlight', () => {
             const { highlight, highlightValue } = createHost([{ value: 'a' }])
             highlight('a')
             expect(highlightValue.value).toBe('a')
+        })
+
+        it('does not highlight a disabled item', () => {
+            const disabled = computed(() => true)
+            const registry = ref([
+                { value: 'a', disabled },
+                { value: 'b' },
+            ])
+        
+            const { highlight, highlightValue } = useHighlight(registry)
+        
+            highlight('a')
+        
+            expect(highlightValue.value).toBeNull()
         })
     })
 
