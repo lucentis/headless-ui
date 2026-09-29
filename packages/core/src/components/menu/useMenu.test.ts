@@ -51,7 +51,7 @@ describe('useMenu', () => {
         })
 
         it('triggerId and contentId are stable strings', () => {
-            const { state, bindings, wrapper } = createHost()
+            const { bindings, wrapper } = createHost()
             expect(typeof bindings.trigger.id).toBe('string')
             expect(typeof bindings.content.id).toBe('string')
             expect(bindings.trigger.id).not.toBe(bindings.content.id)

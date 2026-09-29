@@ -1,4 +1,4 @@
-import type { MaybeRef, ComputedRef } from 'vue'
+import type { MaybeRef } from 'vue'
 import type { ComponentApi } from '../../types'
 
 export interface UseTooltipProps {

@@ -370,7 +370,7 @@ describe('useListboxOption', () => {
         })
 
         it('optionId matches listbox aria-activedescendant when highlighted', async () => {
-            const { state, bindings, listbox } = createOptionHost({}, { value: 'option-1' })
+            const { bindings, listbox } = createOptionHost({}, { value: 'option-1' })
             await nextTick() // wait for onMounted registration
             listbox.actions.highlight('option-1')
             await nextTick()

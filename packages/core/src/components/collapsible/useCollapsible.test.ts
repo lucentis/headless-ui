@@ -45,7 +45,7 @@ describe('useCollapsible', () => {
         })
 
         it('triggerId and contentId are stable strings', () => {
-            const { state, bindings } = createHost()
+            const { bindings } = createHost()
             expect(typeof bindings.trigger.id).toBe('string')
             expect(typeof bindings.content.id).toBe('string')
             expect(bindings.trigger.id).not.toBe(bindings.content.id)
@@ -157,7 +157,7 @@ describe('useCollapsible', () => {
 
     describe('bindings.content', () => {
         it('aria-labelledby matches state.triggerId', () => {
-            const { state, bindings } = createHost()
+            const { bindings } = createHost()
             expect(bindings.content['aria-labelledby']).toBe(bindings.trigger.id)
         })
 

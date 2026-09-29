@@ -12,8 +12,6 @@ export interface CollapsibleState {
     isOpen: boolean
     isPresent: boolean
     isDisabled: boolean
-    triggerId: string
-    contentId: string
 }
 
 export interface CollapsibleActions {

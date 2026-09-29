@@ -177,7 +177,7 @@ describe('useAccordion', () => {
 describe('useAccordionItem', () => {
     describe('state', () => {
         it('isExpanded reflects accordion state', async () => {
-            const { state, bindings, accordion } = createItemHost({}, { value: 'item-1' })
+            const { state, accordion } = createItemHost({}, { value: 'item-1' })
             expect(state.isExpanded).toBe(false)
             accordion.actions.expand('item-1')
             await nextTick()
@@ -195,7 +195,7 @@ describe('useAccordionItem', () => {
         })
 
         it('triggerId and contentId are stable strings', () => {
-            const { state, bindings } = createItemHost({}, { value: 'item-1' })
+            const { bindings } = createItemHost({}, { value: 'item-1' })
             expect(typeof bindings.trigger.id).toBe('string')
             expect(typeof bindings.content.id).toBe('string')
             expect(bindings.trigger.id).not.toBe(bindings.content.id)
@@ -234,12 +234,12 @@ describe('useAccordionItem', () => {
         })
 
         it('content aria-labelledby matches trigger id', () => {
-            const { state, bindings } = createItemHost({}, { value: 'item-1' })
+            const { bindings } = createItemHost({}, { value: 'item-1' })
             expect(bindings.content['aria-labelledby']).toBe(bindings.trigger.id)
         })
 
         it('trigger aria-controls matches content id', () => {
-            const { state, bindings } = createItemHost({}, { value: 'item-1' })
+            const { bindings } = createItemHost({}, { value: 'item-1' })
             expect(bindings.trigger['aria-controls']).toBe(bindings.content.id)
         })
     })

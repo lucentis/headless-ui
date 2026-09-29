@@ -42,7 +42,7 @@ describe('usePopover', () => {
         })
 
         it('triggerId and contentId are stable strings', () => {
-            const { state, bindings, wrapper } = createHost()
+            const { bindings, wrapper } = createHost()
             expect(typeof bindings.trigger.id).toBe('string')
             expect(typeof bindings.content.id).toBe('string')
             expect(bindings.trigger.id).not.toBe(bindings.content.id)
@@ -122,7 +122,7 @@ describe('usePopover', () => {
         })
 
         it('aria-controls matches contentId', () => {
-            const { state, bindings, wrapper } = createHost()
+            const { bindings, wrapper } = createHost()
             expect(bindings.trigger['aria-controls']).toBe(bindings.content.id)
             wrapper.unmount()
         })
@@ -153,7 +153,7 @@ describe('usePopover', () => {
         })
 
         it('aria-labelledby matches triggerId', () => {
-            const { state, bindings, wrapper } = createHost()
+            const { bindings, wrapper } = createHost()
             expect(bindings.content['aria-labelledby']).toBe(bindings.trigger.id)
             wrapper.unmount()
         })
