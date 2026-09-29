@@ -22,10 +22,10 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
     onMounted(() => linkTrigger({ value: props.value, triggerId, panelId, triggerRef, disabled: isDisabled }))
     onUnmounted(() => unlinkTrigger(props.value))
 
-    const state = reactive<TabsTriggerState>({
-        isDisabled,
+    const state: TabsTriggerState = reactive({
+        isSelected,
         isHighlighted,
-        isSelected
+        isDisabled,
     })
 
     const actions: TabsTriggerApi['actions'] = {

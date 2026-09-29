@@ -8,18 +8,18 @@ import type { UsePopoverProps, PopoverApi, PopoverState, PopoverActions, Popover
 export function usePopover(props: UsePopoverProps = {}): PopoverApi {
     const config = useConfig()
 
-    const triggerId = useId('popover-trigger')
-    const contentId = useId('popover-content')
-    
-    const triggerRef = ref<HTMLElement | null>(null)
-    const contentRef = ref<HTMLElement | null>(null)
-
     const { isOpen, isPresent, open, close, toggle } = useOpenState({
         open: props.open,
         defaultOpen: props.defaultOpen,
         onOpenChange: props.onOpenChange,
         animationDuration: config.animationDuration
     })
+
+    const triggerId = useId('popover-trigger')
+    const contentId = useId('popover-content')
+
+    const triggerRef = ref<HTMLElement | null>(null)
+    const contentRef = ref<HTMLElement | null>(null)
 
     useDismiss({
         active: isOpen,
@@ -29,9 +29,11 @@ export function usePopover(props: UsePopoverProps = {}): PopoverApi {
         outsideClick: config.closeOnOutsideClick,
     })
 
-    const state = reactive<PopoverState>({
+    const state: PopoverState = reactive({
         isOpen,
         isPresent,
+        triggerId,
+        contentId,
     })
 
     const actions: PopoverActions = { open, close, toggle }

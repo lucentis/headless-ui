@@ -1,6 +1,5 @@
 import { ref, watch, onUnmounted } from 'vue'
 import type { ComputedRef, Ref } from 'vue'
-import { useConfig } from '../config'
 
 export function usePresence(isOpen: ComputedRef<boolean> | Ref<boolean>, animationDuration: number = 0): Ref<boolean> {
     const isPresent = ref(isOpen.value)

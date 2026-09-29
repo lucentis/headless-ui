@@ -23,7 +23,7 @@ export interface UseSelectProps {
     open?: MaybeRef<boolean>
     onOpenChange?: (value: boolean) => void
     disabled?: MaybeRef<boolean>
-    placeholder?: string
+    placeholder?: MaybeRef<string>
 }
 
 export interface SelectState {

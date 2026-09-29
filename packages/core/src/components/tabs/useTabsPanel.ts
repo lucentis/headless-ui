@@ -9,8 +9,8 @@ export function useTabsPanel(props: UseTabsPanelProps, tabs?: TabsApi): TabsPane
 
     const isSelected = computed(() => tabsApi.actions.isSelected(props.value))
 
-    const state = reactive<TabsPanelState>({
-        isSelected
+    const state: TabsPanelState = reactive({
+        isSelected,
     })
 
     const panelBindings = computed(() => ({

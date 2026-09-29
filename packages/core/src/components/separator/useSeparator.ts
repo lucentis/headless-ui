@@ -5,9 +5,9 @@ export function useSeparator(props: UseSeparatorProps = {}): SeparatorApi {
     const orientation = computed(() => toValue(props.orientation) ?? 'horizontal')
     const isDecorative = computed(() => toValue(props.decorative) ?? false)
 
-    const state = reactive<SeparatorState>({
+    const state: SeparatorState = reactive({
         orientation,
-        isDecorative
+        isDecorative,
     })
 
     const bindings: SeparatorBindings = {

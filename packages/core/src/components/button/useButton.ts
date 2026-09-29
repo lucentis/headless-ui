@@ -5,8 +5,8 @@ import type { UseButtonProps, ButtonApi, ButtonState, ButtonBindings } from './t
 export function useButton(props: UseButtonProps = {}): ButtonApi {
     const isDisabled = useDisabled(props.disabled)
 
-    const state = reactive<ButtonState>({
-        isDisabled
+    const state: ButtonState = reactive({
+        isDisabled,
     })
 
     const bindings: ButtonBindings = {

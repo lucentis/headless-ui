@@ -12,7 +12,6 @@ const CLOSE_DELAY = 100
 export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
     const config = useConfig()
     const isDisabled = useDisabled(props.disabled)
-    const contentId = useId('tooltip-content')
 
     const { isOpen, isPresent, open: openState, close: closeState } = useOpenState({
         open: props.open,
@@ -20,6 +19,8 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
         onOpenChange: props.onOpenChange,
         animationDuration: config.animationDuration,
     })
+
+    const contentId = useId('tooltip-content')
 
     let openTimer: ReturnType<typeof setTimeout> | null = null
     let closeTimer: ReturnType<typeof setTimeout> | null = null
@@ -49,10 +50,11 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
         closeTimer = setTimeout(actions.close, CLOSE_DELAY)
     }
 
-    const state = reactive<TooltipState>({
+    const state: TooltipState = reactive({
         isOpen,
         isPresent,
         isDisabled,
+        contentId,
     })
 
     const actions: TooltipActions = {

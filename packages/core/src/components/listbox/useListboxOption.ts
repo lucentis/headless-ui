@@ -20,10 +20,11 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
     onMounted(() => registerOption({ value: props.value, id: optionId, disabled: isDisabled }))
     onUnmounted(() => unregisterOption(props.value))
 
-    const state = reactive<ListboxOptionState>({
+    const state: ListboxOptionState = reactive({
         isSelected,
         isHighlighted,
-        isDisabled
+        isDisabled,
+        optionId,
     })
 
     const optionBindings = computed(() => ({

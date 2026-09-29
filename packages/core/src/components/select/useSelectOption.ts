@@ -21,10 +21,10 @@ export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi)
     onUnmounted(() => unregisterOption(props.value))
 
     const state: SelectOptionApi['state'] = reactive({
-        get isSelected() { return isSelected.value },
-        get isHighlighted() { return isHighlighted.value },
-        get isDisabled() { return isDisabled.value },
-        get optionId() { return optionId },
+        isSelected,
+        isHighlighted,
+        isDisabled,
+        optionId,
     })
 
     const optionBindings = computed(() => ({

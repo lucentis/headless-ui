@@ -1,10 +1,10 @@
 import { computed, ref, reactive, watch } from 'vue'
 import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
+import { useDismiss } from '../../utils/useDismiss'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
-import { useDismiss } from '../../utils/useDismiss'
 import { useConfig } from '../../config'
 import type { UseMenuProps, MenuApi, MenuRegistryItem, MenuInternals, MenuState, MenuActions, MenuBindings } from './types'
 import { MenuInternalKey } from '../../keys/internal-keys'
@@ -12,12 +12,6 @@ import { MenuInternalKey } from '../../keys/internal-keys'
 export function useMenu(props: UseMenuProps = {}): MenuApi {
     const config = useConfig()
 
-    const triggerId = useId('menu-trigger')
-    const contentId = useId('menu-content')
-
-    const triggerRef = ref<HTMLElement | null>(null)
-    const contentRef = ref<HTMLElement | null>(null)
-    
     const { isOpen, isPresent, open, close, toggle } = useOpenState({
         open: props.open,
         defaultOpen: props.defaultOpen,
@@ -28,14 +22,6 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         animationDuration: config.animationDuration
     })
 
-    useDismiss({
-        active: isOpen,
-        targets: [triggerRef, contentRef],
-        onDismiss: close,
-        escape: config.closeOnEscape,
-        outsideClick: config.closeOnOutsideClick,
-    })
-
     watch(isOpen, (newOpen) => {
         if (!newOpen) return
         contentRef.value?.focus()
@@ -44,10 +30,26 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     const { registry, register, unregister, updateItem, getItem } = useRegistry<MenuRegistryItem>()
     const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
 
-    const state = reactive<MenuState>({
+    const triggerId = useId('menu-trigger')
+    const contentId = useId('menu-content')
+
+    const triggerRef = ref<HTMLElement | null>(null)
+    const contentRef = ref<HTMLElement | null>(null)
+
+    useDismiss({
+        active: isOpen,
+        targets: [triggerRef, contentRef],
+        onDismiss: close,
+        escape: config.closeOnEscape,
+        outsideClick: config.closeOnOutsideClick,
+    })
+
+    const state: MenuState = reactive({
         isOpen,
         isPresent,
         highlightValue,
+        triggerId,
+        contentId,
     })
 
     const actions: MenuActions = {
@@ -65,10 +67,10 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     }))
 
     const { onKeydown: onArrowKeydown } = useArrowNavigation({
-        onNext: highlightNext,
-        onPrev: highlightPrev,
-        onFirst: highlightFirst,
-        onLast: highlightLast,
+        onNext: actions.highlightNext,
+        onPrev: actions.highlightPrev,
+        onFirst: actions.highlightFirst,
+        onLast: actions.highlightLast,
     })
 
     const contentBindings = computed(() => ({

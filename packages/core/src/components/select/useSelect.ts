@@ -1,4 +1,4 @@
-import { computed, ref, watch, reactive } from 'vue'
+import { computed, ref, watch, reactive, toValue } from 'vue'
 import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
@@ -14,12 +14,6 @@ import { SelectInternalKey } from '../../keys/internal-keys'
 export function useSelect(props: UseSelectProps = {}): SelectApi {
     const config = useConfig()
     const isDisabled = useDisabled(props.disabled)
-
-    const triggerId = useId('select-trigger')
-    const contentId = useId('select-content')
-
-    const triggerRef = ref<HTMLElement | null>(null)
-    const contentRef = ref<HTMLElement | null>(null)
 
     const { value, setValue } = useControllableState<string>({
         value: props.value,
@@ -37,9 +31,22 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         animationDuration: config.animationDuration,
     })
 
+    const triggerRef = ref<HTMLElement | null>(null)
+    const contentRef = ref<HTMLElement | null>(null)
+
+    watch(isOpen, (newOpen) => {
+        if (!newOpen) return
+        contentRef.value?.focus()
+    }, { flush: 'post' })
+
     const { registry, register, unregister, updateItem, getItem } = useRegistry<SelectRegistryItem>()
     const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
-    
+
+    const triggerId = useId('select-trigger')
+    const contentId = useId('select-content')
+
+    const placeholder = computed(() => toValue(props.placeholder))
+
     const selectedLabel = computed(() => {
         const v = value.value
         return v ? getItem(v)?.label ?? null : null
@@ -53,19 +60,16 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         outsideClick: config.closeOnOutsideClick,
     })
 
-    watch(isOpen, (newOpen) => {
-        if (!newOpen) return
-        contentRef.value?.focus()
-    }, { flush: 'post' })
-
-    const state = reactive<SelectState>({
+    const state: SelectState = reactive({
         value,
         selectedLabel,
         highlightValue,
         isOpen,
         isPresent,
         isDisabled,
-        placeholder: props.placeholder,    
+        placeholder,
+        triggerId,
+        contentId,
     })
 
     const actions: SelectActions = {
@@ -97,10 +101,10 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     }))
 
     const { onKeydown: onArrowKeydown } = useArrowNavigation({
-        onNext: highlightNext,
-        onPrev: highlightPrev,
-        onFirst: highlightFirst,
-        onLast: highlightLast,
+        onNext: actions.highlightNext,
+        onPrev: actions.highlightPrev,
+        onFirst: actions.highlightFirst,
+        onLast: actions.highlightLast,
         onEnter: () => { if (highlightValue.value !== null) actions.select(highlightValue.value) },
         onSpace: () => { if (highlightValue.value !== null) actions.select(highlightValue.value) },
     })

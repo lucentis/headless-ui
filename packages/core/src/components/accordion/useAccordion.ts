@@ -15,10 +15,10 @@ export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
         onChange: props.onValueChange,
     })
 
-    const state = reactive<AccordionState>({
+    const state: AccordionState = reactive({
         value,
         isDisabled,
-        type
+        type,
     })
 
     const actions: AccordionActions = {

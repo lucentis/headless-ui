@@ -1,4 +1,4 @@
-import type { MaybeRef } from 'vue'
+import type { MaybeRef, ComputedRef } from 'vue'
 import type { ComponentApi } from '../../types'
 
 export interface UseAccordionProps {
@@ -10,8 +10,8 @@ export interface UseAccordionProps {
 }
 
 export interface AccordionState {
-    value: string | string[]
-    isDisabled: boolean
+    value: ComputedRef<string | string[]>
+    isDisabled: ComputedRef<boolean>
     type: 'single' | 'multiple'
 }
 
@@ -34,10 +34,8 @@ export interface UseAccordionItemProps {
 }
 
 export interface AccordionItemState {
-    isExpanded: boolean
-    isDisabled: boolean
-    triggerId: string
-    contentId: string
+    isExpanded: ComputedRef<boolean>
+    isDisabled: ComputedRef<boolean>
 }
 
 export interface AccordionItemActions {

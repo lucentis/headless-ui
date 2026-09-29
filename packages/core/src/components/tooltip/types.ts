@@ -1,4 +1,4 @@
-import type { MaybeRef } from 'vue'
+import type { MaybeRef, ComputedRef } from 'vue'
 import type { ComponentApi } from '../../types'
 
 export interface UseTooltipProps {
@@ -13,7 +13,6 @@ export interface TooltipState {
     isOpen: boolean
     isPresent: boolean
     isDisabled: boolean
-    contentId: string
 }
 
 export interface TooltipActions {
