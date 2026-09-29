@@ -34,8 +34,6 @@ export interface SelectState {
     isPresent: boolean
     isDisabled: boolean
     placeholder: string | undefined
-    triggerId: string
-    contentId: string
 }
 
 export interface SelectActions {
@@ -95,7 +93,6 @@ export interface SelectOptionState {
     isSelected: boolean
     isHighlighted: boolean
     isDisabled: boolean
-    optionId: string
 }
 
 export type SelectOptionActions = Record<never, never>

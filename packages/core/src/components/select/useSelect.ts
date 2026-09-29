@@ -68,8 +68,6 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         isPresent,
         isDisabled,
         placeholder,
-        triggerId,
-        contentId,
     })
 
     const actions: SelectActions = {

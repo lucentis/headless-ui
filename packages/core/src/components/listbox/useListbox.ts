@@ -32,7 +32,6 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         isDisabled,
         multiple,
         orientation,
-        listboxId,
     })
 
     const actions: ListboxActions = {

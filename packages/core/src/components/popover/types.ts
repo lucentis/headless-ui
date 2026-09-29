@@ -10,8 +10,6 @@ export interface UsePopoverProps {
 export interface PopoverState {
     isOpen: boolean
     isPresent: boolean
-    triggerId: string
-    contentId: string
 }
 
 export interface PopoverActions {

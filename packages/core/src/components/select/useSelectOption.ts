@@ -24,7 +24,6 @@ export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi)
         isSelected,
         isHighlighted,
         isDisabled,
-        optionId,
     })
 
     const optionBindings = computed(() => ({

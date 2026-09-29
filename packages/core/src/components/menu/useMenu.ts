@@ -48,8 +48,6 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         isOpen,
         isPresent,
         highlightValue,
-        triggerId,
-        contentId,
     })
 
     const actions: MenuActions = {

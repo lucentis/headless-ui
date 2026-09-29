@@ -24,8 +24,6 @@ export interface MenuState {
     isOpen: boolean
     isPresent: boolean
     highlightValue: string | null
-    triggerId: string
-    contentId: string
 }
 
 export interface MenuActions {

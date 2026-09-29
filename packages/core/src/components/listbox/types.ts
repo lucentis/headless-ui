@@ -28,7 +28,6 @@ export interface ListboxState {
     isDisabled: boolean
     multiple: boolean
     orientation: 'horizontal' | 'vertical'
-    listboxId: string
 }
 
 export interface ListboxActions {
@@ -74,7 +73,6 @@ export interface ListboxOptionState {
     isSelected: boolean
     isHighlighted: boolean
     isDisabled: boolean
-    optionId: string
 }
 
 export type ListboxOptionActions = Record<never, never>

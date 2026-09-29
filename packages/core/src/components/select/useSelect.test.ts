@@ -363,8 +363,8 @@ describe('useSelectOption', () => {
         })
 
         it('optionId is a stable string', () => {
-            const { state } = createOptionHost({}, { value: 'fr', label: 'French' })
-            expect(typeof state.optionId).toBe('string')
+            const { bindings } = createOptionHost({}, { value: 'fr', label: 'French' })
+            expect(typeof bindings.root.id).toBe('string')
         })
 
         it('registers label on mount', async () => {

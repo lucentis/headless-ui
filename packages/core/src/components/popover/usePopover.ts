@@ -32,8 +32,6 @@ export function usePopover(props: UsePopoverProps = {}): PopoverApi {
     const state: PopoverState = reactive({
         isOpen,
         isPresent,
-        triggerId,
-        contentId,
     })
 
     const actions: PopoverActions = { open, close, toggle }

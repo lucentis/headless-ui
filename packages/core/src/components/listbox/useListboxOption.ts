@@ -24,7 +24,6 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         isSelected,
         isHighlighted,
         isDisabled,
-        optionId,
     })
 
     const optionBindings = computed(() => ({
