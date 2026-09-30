@@ -1,4 +1,5 @@
 import { onUnmounted } from 'vue'
+import { isClient } from './isClient'
 
 // module-level — shared across all instances
 let lockCount = 0
@@ -36,7 +37,7 @@ export function useScrollLock(mode: 'padding' | 'margin' | 'none' = 'padding') {
     let instanceLocked = false
 
     function lock(): void {
-        if (instanceLocked) return
+        if (!isClient || instanceLocked) return
 
         instanceLocked = true
         lockCount++

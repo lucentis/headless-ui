@@ -1,5 +1,6 @@
 import { watch, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
+import { isClient } from './isClient'
 
 const FOCUSABLE_SELECTOR = [
     'a[href]',
@@ -73,6 +74,8 @@ export function useFocusTrap(options: UseFocusTrapOptions): void {
     }
 
     function activate(): void {
+        if (!isClient) return
+
         const el = container.value
         if (!el) return
 
@@ -85,6 +88,8 @@ export function useFocusTrap(options: UseFocusTrapOptions): void {
     }
 
     function deactivate(): void {
+        if (!isClient) return
+
         document.removeEventListener('keydown', onKeydown)
 
         if (previousFocus && document.contains(previousFocus)) {

@@ -1,5 +1,6 @@
 import { watch, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
+import { isClient } from './isClient'
 
 export interface UseOutsideClickOptions {
     targets: Ref<HTMLElement | null>[]
@@ -18,9 +19,10 @@ export function useOutsideClick(options: UseOutsideClickOptions): void {
     }
 
     watch(active, (isActive) => {
+        if (!isClient) return
         if (isActive) document.addEventListener('mousedown', onClick)
         else document.removeEventListener('mousedown', onClick)
     }, { immediate: true })
 
-    onUnmounted(() => document.removeEventListener('mousedown', onClick))
+    onUnmounted(() => { if (isClient) document.removeEventListener('mousedown', onClick) })
 }

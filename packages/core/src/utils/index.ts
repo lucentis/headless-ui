@@ -1,4 +1,5 @@
 export { useId } from './useId'
+export { isClient } from './isClient'
 export { useScrollLock } from './useScrollLock'
 export { useFocusTrap } from './useFocusTrap'
 export { useEscape } from './useEscape'
