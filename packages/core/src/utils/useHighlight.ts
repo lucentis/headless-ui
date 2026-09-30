@@ -18,7 +18,6 @@ export interface UseHighlightReturn {
 
 export interface HighlightItem {
     value: string
-    disabled?: ComputedRef<boolean>
 }
 
 export function useHighlight(
@@ -28,70 +27,55 @@ export function useHighlight(
     const { loop = false } = options
     const highlightValue = ref<string | null>(null)
 
-    function getEnabled(): HighlightItem[] {
-        return registry.value.filter(item => !toValue(item.disabled))
-    }
 
     function highlight(value: string): void {
         const item = registry.value.find(item => item.value === value)
 
-        if (!item || toValue(item.disabled)) return
+        if (!item) return
 
         highlightValue.value = value
     }
 
     function highlightFirst(): void {
-        const first = getEnabled()[0]
-
-        if (first) highlightValue.value = first.value
+        highlightValue.value = registry.value[0].value
     }
 
     function highlightLast(): void {
-        const enabled = getEnabled()
-        const last = enabled[enabled.length - 1]
+        highlightValue.value = registry.value[registry.value.length -1].value
 
-        if (last) highlightValue.value = last.value
     }
 
     function highlightNext(): void {
-        const enabled = getEnabled()
-
-        if (enabled.length === 0) return
-
         if (highlightValue.value === null) {
-            highlightValue.value = enabled[0].value
+            highlightValue.value = registry.value[0].value
             return
         }
 
-        const index = enabled.findIndex(item => item.value === highlightValue.value)
+        const index = registry.value.findIndex(item => item.value === highlightValue.value)
 
         if (index === -1) return
 
-        if (index === enabled.length - 1) {
-            if (loop) highlightValue.value = enabled[0].value
+        if (index === registry.value.length - 1) {
+            if (loop) highlightValue.value = registry.value[0].value
         } else {
-            highlightValue.value = enabled[index + 1].value
+            highlightValue.value = registry.value[index + 1].value
         }
     }
 
     function highlightPrev(): void {
-        const enabled = getEnabled()
-
-        if (enabled.length === 0) return
-
         if (highlightValue.value === null) {
-            highlightValue.value = enabled[enabled.length - 1].value
+            highlightValue.value = registry.value[registry.length - 1].value
             return
         }
 
-        const index = enabled.findIndex(item => item.value === highlightValue.value)
+        const index = registry.value.findIndex(item => item.value === highlightValue.value)
 
         if (index === -1) return
 
         if (index === 0) {
-            if (loop) highlightValue.value = enabled[enabled.length - 1].value
+            if (loop) highlightValue.value = registry.value[registry.value.length - 1].value
         } else {
-            highlightValue.value = enabled[index - 1].value
+            highlightValue.value = registry.value[index - 1].value
         }
     }
 
