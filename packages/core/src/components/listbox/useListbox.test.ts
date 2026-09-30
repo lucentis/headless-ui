@@ -191,7 +191,8 @@ describe('useListbox', () => {
 
     describe('actions — navigation', () => {
         it('highlight sets highlightValue', async () => {
-            const { state, actions } = createListboxHost()
+            const { state, actions, registerOption } = createListboxHost()
+            registerOption('option-1')
             actions.highlight('option-1')
             await nextTick()
             expect(state.highlightValue).toBe('option-1')

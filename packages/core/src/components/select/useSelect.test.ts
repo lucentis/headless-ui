@@ -175,7 +175,8 @@ describe('useSelect', () => {
         })
 
         it('isHighlighted returns true for highlighted value', async () => {
-            const { actions, wrapper } = createSelectHost()
+            const { actions, wrapper, registerOption } = createSelectHost()
+            registerOption('fr', 'French')
             actions.highlight('fr')
             await nextTick()
             expect(actions.isHighlighted('fr')).toBe(true)

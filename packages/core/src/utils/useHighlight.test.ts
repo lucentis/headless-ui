@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { defineComponent, nextTick, shallowRef, computed, ref, type ComputedRef } from 'vue'
+import { defineComponent, nextTick, shallowRef, computed, type ComputedRef } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useHighlight } from './useHighlight'
 
@@ -49,7 +49,7 @@ describe('useHighlight', () => {
 
         it('does not highlight a disabled item', () => {
             const disabled = computed(() => true)
-            const registry = ref([
+            const registry = shallowRef([
                 { value: 'a', disabled },
                 { value: 'b' },
             ])

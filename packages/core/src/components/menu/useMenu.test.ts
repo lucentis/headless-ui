@@ -97,7 +97,8 @@ describe('useMenu', () => {
         })
 
         it('close resets highlightValue to null', async () => {
-            const { state, actions, wrapper } = createHost({ defaultOpen: true })
+            const { state, actions, wrapper, registerItem } = createHost({ defaultOpen: true })
+            registerItem('item-1')
             actions.highlight('item-1')
             await nextTick()
             expect(state.highlightValue).toBe('item-1')
@@ -127,7 +128,8 @@ describe('useMenu', () => {
 
     describe('actions — navigation', () => {
         it('highlight sets highlightValue', async () => {
-            const { state, actions, wrapper } = createHost()
+            const { state, actions, wrapper, registerItem } = createHost()
+            registerItem('item-1')
             actions.highlight('item-1')
             await nextTick()
             expect(state.highlightValue).toBe('item-1')
@@ -135,7 +137,8 @@ describe('useMenu', () => {
         })
 
         it('isHighlight returns true for highlighted item', async () => {
-            const { actions, wrapper } = createHost()
+            const { actions, wrapper, registerItem } = createHost()
+            registerItem('item-1')
             actions.highlight('item-1')
             await nextTick()
             expect(actions.isHighlighted('item-1')).toBe(true)
