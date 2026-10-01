@@ -15,13 +15,15 @@ const item1 = useAccordionItem({ value: 'item-1' }, accordion)
 const item2 = useAccordionItem({ value: 'item-2' }, accordion)
 const item3 = useAccordionItem({ value: 'item-3' }, accordion)
 
-const tabs = useTabs({ defaultValue: 'tab-1' })
+const tabs = useTabs({ defaultValue: 'tab-1', activation: 'manual' })
 const trigger1 = useTabsTrigger({ value: 'tab-1' }, tabs)
 const trigger2 = useTabsTrigger({ value: 'tab-2' }, tabs)
-const trigger3 = useTabsTrigger({ value: 'tab-3' }, tabs)
+const trigger3 = useTabsTrigger({ value: 'tab-3', disabled: true }, tabs)
+const trigger4 = useTabsTrigger({ value: 'tab-4' }, tabs)
 const panel1 = useTabsPanel({ value: 'tab-1' }, tabs)
 const panel2 = useTabsPanel({ value: 'tab-2' }, tabs)
 const panel3 = useTabsPanel({ value: 'tab-3' }, tabs)
+const panel4 = useTabsPanel({ value: 'tab-4' }, tabs)
 
 const dialog = useDialog()
 
@@ -117,6 +119,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
             <button v-bind="trigger1.bindings.trigger" :ref="trigger1.triggerRef">Tab 1</button>
             <button v-bind="trigger2.bindings.trigger" :ref="trigger2.triggerRef">Tab 2</button>
             <button v-bind="trigger3.bindings.trigger" :ref="trigger3.triggerRef">Tab 3</button>
+            <button v-bind="trigger4.bindings.trigger" :ref="trigger4.triggerRef">Tab 4</button>
         </div>
 
         <div v-if="panel1.state.isSelected" v-bind="panel1.bindings.panel">
@@ -129,6 +132,10 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
 
         <div v-if="panel3.state.isSelected" v-bind="panel3.bindings.panel">
             Content 3
+        </div>
+
+        <div v-if="panel4.state.isSelected" v-bind="panel4.bindings.panel">
+            Content 4
         </div>
     </div>
 

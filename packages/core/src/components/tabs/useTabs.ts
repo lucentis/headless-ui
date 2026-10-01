@@ -21,7 +21,7 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     const listId = useId('tabs-list')
 
     const { registry, register, unregister, getItem } = useRegistry<TabsRegistryItem>()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted } = useHighlight(registry, { loop: true })
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted } = useHighlight(registry, { loop: true, })
 
     highlightValue.value = value.value || null
 
