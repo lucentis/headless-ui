@@ -32,7 +32,7 @@ const tooltip = useTooltip({ delayDuration: 500 })
 const popover = usePopover()
 
 const menu = useMenu({onOpenChange(value) {
-    console.log(value)
+    console.log('menu is open:', value)
 },})
 const editItem = useMenuItem({ value: 'edit', onClick: () => console.log('edit') }, menu)
 const deleteItem = useMenuItem({ value: 'delete', onClick: () => console.log('delete') }, menu)

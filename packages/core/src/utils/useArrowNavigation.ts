@@ -45,8 +45,7 @@ export function useArrowNavigation(options: UseArrowNavigationOptions): {
                 break
             case Keys.Space:
                 if (options.onSpace) {
-                    event.preventDefault()
-                    options.onSpace()
+                    options.onSpace(event)
                 }
                 break
         }

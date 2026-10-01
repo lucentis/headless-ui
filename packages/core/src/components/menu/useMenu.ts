@@ -5,6 +5,7 @@ import { useDismiss } from '../../utils/useDismiss'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
+import { composeHandlers } from '../../utils/eventHandler'
 import { useConfig } from '../../config'
 import type { UseMenuProps, MenuApi, MenuRegistryItem, MenuInternals, MenuState, MenuActions, MenuBindings } from './types'
 import { MenuInternalKey } from '../../keys/internal-keys'
@@ -28,7 +29,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     }, { flush: 'post' })
 
     const { registry, register, unregister, updateItem, getItem } = useRegistry<MenuRegistryItem>()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry, { loop: true })
 
     const triggerId = useId('menu-trigger')
     const contentId = useId('menu-content')
@@ -69,6 +70,12 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         onPrev: actions.highlightPrev,
         onFirst: actions.highlightFirst,
         onLast: actions.highlightLast,
+        onSpace: composeHandlers(
+            () => getItem(highlightValue.value).onClick(new MouseEvent('click')),
+            () => {
+                if (!getItem(highlightValue.value).disabled.value) actions.close()
+            }
+        ),
     })
 
     const contentBindings = computed(() => ({
