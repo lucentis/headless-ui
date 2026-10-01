@@ -6,6 +6,7 @@ export interface MenuRegistryItem {
     value: string
     id: string
     disabled: ComputedRef<boolean>
+    onClick?: (event: MouseEvent) => void
 }
 
 export interface MenuInternals {

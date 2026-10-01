@@ -9,7 +9,7 @@ export interface UseArrowNavigationOptions {
     onFirst: () => void
     onLast: () => void
     onEnter?: () => void
-    onSpace?: () => void
+    onSpace?: (event: MouseEvent) => void
 }
 
 export function useArrowNavigation(options: UseArrowNavigationOptions): {
@@ -45,7 +45,7 @@ export function useArrowNavigation(options: UseArrowNavigationOptions): {
                 break
             case Keys.Space:
                 if (options.onSpace) {
-                    options.onSpace(event)
+                    options.onSpace(new MouseEvent('click'))
                 }
                 break
         }

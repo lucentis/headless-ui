@@ -29,7 +29,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     }, { flush: 'post' })
 
     const { registry, register, unregister, updateItem, getItem } = useRegistry<MenuRegistryItem>()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry, { loop: true })
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
 
     const triggerId = useId('menu-trigger')
     const contentId = useId('menu-content')
@@ -71,9 +71,9 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         onFirst: actions.highlightFirst,
         onLast: actions.highlightLast,
         onSpace: composeHandlers(
-            () => getItem(highlightValue.value).onClick(new MouseEvent('click')),
+            () => getItem(highlightValue.value!)!.onClick?.(new MouseEvent('click')),
             () => {
-                if (!getItem(highlightValue.value).disabled.value) actions.close()
+                if (!getItem(highlightValue.value!)!.disabled.value) actions.close()
             }
         ),
     })
