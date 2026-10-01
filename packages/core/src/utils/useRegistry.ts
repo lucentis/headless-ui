@@ -1,8 +1,8 @@
-import { ref } from 'vue'
-import type { Ref } from 'vue'
+import { shallowRef } from 'vue'
+import type { ShallowRef } from 'vue'
 
 export interface UseRegistryReturn<T extends { value: string }> {
-    registry: Ref<T[]>
+    registry: ShallowRef<T[]>
     register: (item: T) => void
     unregister: (value: string) => void
     updateItem: (value: string, patch: Partial<Omit<T, 'value'>>) => void
@@ -10,7 +10,7 @@ export interface UseRegistryReturn<T extends { value: string }> {
 }
 
 export function useRegistry<T extends { value: string }>(): UseRegistryReturn<T> {
-    const registry = ref<T[]>([]) as Ref<T[]>
+    const registry = shallowRef<T[]>([]) as ShallowRef<T[]>
 
     function register(item: T): void {
         if (!registry.value.some(i => i.value === item.value)) {

@@ -1,5 +1,5 @@
-import { ref, toValue } from 'vue'
-import type { Ref, ComputedRef } from 'vue'
+import { ref } from 'vue'
+import type { Ref } from 'vue'
 
 export interface UseHighlightOptions {
     loop?: boolean
@@ -37,15 +37,24 @@ export function useHighlight(
     }
 
     function highlightFirst(): void {
-        highlightValue.value = registry.value[0].value
+        const first = registry.value[0]
+
+        if (!first) return
+
+        highlightValue.value = first.value
     }
 
     function highlightLast(): void {
-        highlightValue.value = registry.value[registry.value.length -1].value
+        const last = registry.value[registry.value.length - 1]
 
+        if (!last) return
+    
+        highlightValue.value = last.value
     }
 
     function highlightNext(): void {
+        if (registry.value.length === 0) return
+
         if (highlightValue.value === null) {
             highlightValue.value = registry.value[0].value
             return
@@ -63,8 +72,10 @@ export function useHighlight(
     }
 
     function highlightPrev(): void {
+        if (registry.value.length === 0) return
+        
         if (highlightValue.value === null) {
-            highlightValue.value = registry.value[registry.length - 1].value
+            highlightValue.value = registry.value[registry.value.length - 1].value
             return
         }
 
