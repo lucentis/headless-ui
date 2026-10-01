@@ -45,6 +45,7 @@ const listbox = useListbox({ defaultValue: 'option-1', onValueChange(value) {
 const option1 = useListboxOption({ value: 'option-1' }, listbox)
 const option2 = useListboxOption({ value: 'option-2' }, listbox)
 const option3 = useListboxOption({ value: 'option-3' }, listbox)
+const option4 = useListboxOption({ value: 'option-4', disabled: true}, listbox)
 
 
 
@@ -251,6 +252,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
         <div v-bind="option1.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-1') ? { background: '#e0e7ff' } : {}">Option 1</div>
         <div v-bind="option2.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-2') ? { background: '#e0e7ff' } : {}">Option 2</div>
         <div v-bind="option3.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-3') ? { background: '#e0e7ff' } : {}">Option 3</div>
+        <div v-bind="option4.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-4') ? { background: '#e0e7ff' } : {}">Option 4</div>
     </div>
 
     <!-- select -->

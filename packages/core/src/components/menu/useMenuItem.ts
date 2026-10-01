@@ -27,7 +27,7 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
             () => { if (!isDisabled.value) menuApi.actions.close() }
         ),
         onMouseenter: () => {
-            if (!isDisabled.value) menuApi.actions.highlight(props.value)
+            menuApi.actions.highlight(props.value)
         },
     }))
 

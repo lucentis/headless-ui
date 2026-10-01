@@ -45,7 +45,7 @@ export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi)
             }
         ),
         onMouseenter: () => {
-            if (!isDisabled.value) selectApi.actions.highlight(props.value)
+            selectApi.actions.highlight(props.value)
         },
     }))
 

@@ -45,7 +45,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
             }
         ),
         onMouseenter: () => {
-            if (!isDisabled.value) listboxApi.actions.highlight(props.value)
+            listboxApi.actions.highlight(props.value)
         },
     }))
 
