@@ -5,7 +5,6 @@ import { useDismiss } from '../../utils/useDismiss'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
-import { composeHandlers } from '../../utils/eventHandler'
 import { useConfig } from '../../config'
 import type { UseMenuProps, MenuApi, MenuRegistryItem, MenuInternals, MenuState, MenuActions, MenuBindings } from './types'
 import { MenuInternalKey } from '../../keys/internal-keys'
@@ -70,12 +69,11 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         onPrev: actions.highlightPrev,
         onFirst: actions.highlightFirst,
         onLast: actions.highlightLast,
-        onSpace: composeHandlers(
-            () => getItem(highlightValue.value!)!.onClick?.(new MouseEvent('click')),
-            () => {
-                if (!getItem(highlightValue.value!)!.disabled.value) actions.close()
-            }
-        ),
+        onSpace: () => {
+            const item = getItem(highlightValue.value!)
+            
+            item?.onClick?.(new MouseEvent('click'))
+        }
     })
 
     const contentBindings = computed(() => ({

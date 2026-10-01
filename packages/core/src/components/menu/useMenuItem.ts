@@ -13,7 +13,17 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
 
     const itemId = useId('menu-item')
 
-    onMounted(() => registerItem({ value: props.value, id: itemId, disabled: isDisabled, onClick: props.onClick }))
+
+    const onClick = composeHandlers(
+        props.onClick,
+        () => {
+            if (!isDisabled.value) {
+                menuApi.actions.close()
+            }
+        }
+    )
+
+    onMounted(() => registerItem({ value: props.value, id: itemId, disabled: isDisabled, onClick }))
     onUnmounted(() => unregisterItem(props.value))
 
     const menuItemBindings = computed(() => ({
@@ -22,10 +32,7 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-highlighted': menuApi.actions.isHighlighted(props.value) ? ('' as const) : undefined,
-        onClick: composeHandlers(
-            props.onClick,
-            () => { if (!isDisabled.value) menuApi.actions.close() }
-        ),
+        onClick,
         onMouseenter: () => {
             menuApi.actions.highlight(props.value)
         },
