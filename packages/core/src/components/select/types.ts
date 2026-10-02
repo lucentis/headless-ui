@@ -76,7 +76,7 @@ export interface SelectBindings {
 
 export interface SelectApi extends ComponentApi<SelectState, SelectActions, SelectBindings> {
     triggerRef: Ref<HTMLElement | null>
-    contentRef: Ref<HTMLElement | null>,
+    contentRef: Ref<HTMLElement | null>
     readonly [SelectInternalKey]: SelectInternals
 }
 

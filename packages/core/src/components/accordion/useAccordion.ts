@@ -1,7 +1,7 @@
-import { computed, reactive} from 'vue'
+import { computed, reactive } from 'vue'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
-import type { UseAccordionProps, AccordionApi, AccordionState , AccordionActions} from './types'
+import type { UseAccordionProps, AccordionApi, AccordionState, AccordionActions } from './types'
 
 export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
     const type = computed(() => props.type ?? 'single')
@@ -24,9 +24,7 @@ export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
     const actions: AccordionActions = {
         isExpanded(itemValue: string): boolean {
             const current = value.value
-            return Array.isArray(current)
-                ? current.includes(itemValue)
-                : current === itemValue
+            return Array.isArray(current) ? current.includes(itemValue) : current === itemValue
         },
 
         expand(itemValue: string): void {
@@ -47,7 +45,7 @@ export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
 
             if (type.value === 'multiple') {
                 const arr = Array.isArray(current) ? current : [current]
-                setValue(arr.filter(v => v !== itemValue))
+                setValue(arr.filter((v) => v !== itemValue))
             } else {
                 if (current === itemValue) setValue('')
             }

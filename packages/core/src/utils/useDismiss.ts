@@ -12,13 +12,9 @@ export interface UseDismissOptions {
 }
 
 export function useDismiss(options: UseDismissOptions): void {
-    const escapeActive = computed(() =>
-        toValue(options.active) && toValue(options.escape ?? true)
-    )
+    const escapeActive = computed(() => toValue(options.active) && toValue(options.escape ?? true))
 
-    const outsideClickActive = computed(() =>
-        toValue(options.active) && toValue(options.outsideClick ?? true)
-    )
+    const outsideClickActive = computed(() => toValue(options.active) && toValue(options.outsideClick ?? true))
 
     useEscape({
         active: escapeActive,

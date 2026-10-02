@@ -23,9 +23,14 @@ function createHost(initialOpen: boolean) {
         },
     })
 
-    return { wrapper, isOpen, get isPresent() { return exposed } }
+    return {
+        wrapper,
+        isOpen,
+        get isPresent() {
+            return exposed
+        },
+    }
 }
-
 
 describe('usePresence', () => {
     beforeEach(() => vi.useFakeTimers())
@@ -104,7 +109,7 @@ describe('usePresence', () => {
                 },
                 template: '<div />',
             })
-            
+
             const wrapper = mount(Host)
             isOpen.value = false
             await nextTick()

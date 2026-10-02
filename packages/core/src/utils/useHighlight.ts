@@ -22,21 +22,16 @@ export interface HighlightItem {
     disabled?: ComputedRef<boolean>
 }
 
-export function useHighlight(
-    registry: Ref<HighlightItem[]>,
-    options: UseHighlightOptions = {}
-): UseHighlightReturn {
+export function useHighlight(registry: Ref<HighlightItem[]>, options: UseHighlightOptions = {}): UseHighlightReturn {
     const { loop = false, skipDisabled = false } = options
     const highlightValue = ref<string | null>(null)
 
     function getNavigable(): HighlightItem[] {
-        return skipDisabled
-            ? registry.value.filter(item => !toValue(item.disabled))
-            : registry.value
+        return skipDisabled ? registry.value.filter((item) => !toValue(item.disabled)) : registry.value
     }
 
     function highlight(value: string): void {
-        const item = registry.value.find(item => item.value === value)
+        const item = registry.value.find((item) => item.value === value)
 
         if (!item) return
         if (skipDisabled && toValue(item.disabled)) return
@@ -67,7 +62,7 @@ export function useHighlight(
             return
         }
 
-        const index = items.findIndex(item => item.value === highlightValue.value)
+        const index = items.findIndex((item) => item.value === highlightValue.value)
 
         if (index === -1) return
 
@@ -87,7 +82,7 @@ export function useHighlight(
             return
         }
 
-        const index = items.findIndex(item => item.value === highlightValue.value)
+        const index = items.findIndex((item) => item.value === highlightValue.value)
 
         if (index === -1) return
 

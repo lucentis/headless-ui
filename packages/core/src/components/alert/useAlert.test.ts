@@ -15,9 +15,15 @@ function createHost(props: Parameters<typeof useAlert>[0] = {}) {
 
     mount(Host)
     return {
-        get state() { return exposed.state },
-        get actions() { return exposed.actions },
-        get bindings() { return exposed.bindings },
+        get state() {
+            return exposed.state
+        },
+        get actions() {
+            return exposed.actions
+        },
+        get bindings() {
+            return exposed.bindings
+        },
     }
 }
 

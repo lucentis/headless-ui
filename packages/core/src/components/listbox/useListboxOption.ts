@@ -3,7 +3,13 @@ import { useListboxContext } from './ListboxContext'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useDisabled } from '../../utils/useDisabled'
 import { useId } from '../../utils/useId'
-import type { UseListboxOptionProps, ListboxOptionApi, ListboxApi, ListboxOptionState, ListboxOptionBindings } from './types'
+import type {
+    UseListboxOptionProps,
+    ListboxOptionApi,
+    ListboxApi,
+    ListboxOptionState,
+    ListboxOptionBindings,
+} from './types'
 import { ListboxInternalKey } from '../../keys/internal-keys'
 
 export function useListboxOption(props: UseListboxOptionProps, listbox?: ListboxApi): ListboxOptionApi {
@@ -35,22 +41,21 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
         'data-highlighted': isHighlighted.value ? ('' as const) : undefined,
         'data-selected': isSelected.value ? ('' as const) : undefined,
         onMousedown: (event: MouseEvent) => event.preventDefault(),
-        onClick: composeHandlers(
-            props.onClick,
-            () => {
-                if (!isDisabled.value) {
-                    listboxApi.rootRef.value?.focus()
-                    listboxApi.actions.toggle(props.value)
-                }
+        onClick: composeHandlers(props.onClick, () => {
+            if (!isDisabled.value) {
+                listboxApi.rootRef.value?.focus()
+                listboxApi.actions.toggle(props.value)
             }
-        ),
+        }),
         onMouseenter: () => {
             listboxApi.actions.highlight(props.value)
         },
     }))
 
     const bindings: ListboxOptionBindings = {
-        get root() { return optionBindings.value },
+        get root() {
+            return optionBindings.value
+        },
     }
 
     return { state, actions: {}, bindings }

@@ -13,24 +13,24 @@ export function useRegistry<T extends { value: string }>(): UseRegistryReturn<T>
     const registry = shallowRef<T[]>([]) as ShallowRef<T[]>
 
     function register(item: T): void {
-        if (!registry.value.some(i => i.value === item.value)) {
+        if (!registry.value.some((i) => i.value === item.value)) {
             registry.value.push(item)
         }
     }
 
     function unregister(value: string): void {
-        registry.value = registry.value.filter(i => i.value !== value)
+        registry.value = registry.value.filter((i) => i.value !== value)
     }
 
     function updateItem(value: string, patch: Partial<Omit<T, 'value'>>): void {
-        const index = registry.value.findIndex(i => i.value === value)
+        const index = registry.value.findIndex((i) => i.value === value)
         if (index !== -1) {
             registry.value[index] = { ...registry.value[index], ...patch }
         }
     }
 
     function getItem(value: string): T | undefined {
-        return registry.value.find(i => i.value === value)
+        return registry.value.find((i) => i.value === value)
     }
 
     return { registry, register, unregister, updateItem, getItem }

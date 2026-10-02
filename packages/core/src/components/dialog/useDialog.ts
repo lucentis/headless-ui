@@ -14,7 +14,7 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
         open: props.open,
         defaultOpen: props.defaultOpen,
         onOpenChange: props.onOpenChange,
-        animationDuration: config.animationDuration
+        animationDuration: config.animationDuration,
     })
 
     const isModal = computed(() => toValue(props.modal) ?? true)
@@ -24,11 +24,11 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
     const contentRef = ref<HTMLElement | null>(null)
 
     const { lock, unlock } = useScrollLock(config.scrollLock)
-    
+
     watch(
         () => isOpen.value && isModal.value && config.scrollLock !== 'none',
-        (shouldLock) => shouldLock ? lock() : unlock(),
-        { immediate: true }
+        (shouldLock) => (shouldLock ? lock() : unlock()),
+        { immediate: true },
     )
 
     useFocusTrap({
@@ -70,10 +70,18 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
     }))
 
     const bindings: DialogBindings = {
-        get overlay() { return overlayBindings.value },
-        get content() { return contentBindings.value },
-        get title() { return { id: titleId } },
-        get description() { return { id: descriptionId } },
+        get overlay() {
+            return overlayBindings.value
+        },
+        get content() {
+            return contentBindings.value
+        },
+        get title() {
+            return { id: titleId }
+        },
+        get description() {
+            return { id: descriptionId }
+        },
     }
 
     return { state, actions, bindings, contentRef }

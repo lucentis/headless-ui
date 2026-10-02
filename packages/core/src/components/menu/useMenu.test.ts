@@ -9,19 +9,32 @@ function createHost(props: Parameters<typeof useMenu>[0] = {}) {
     let exposed: ReturnType<typeof useMenu>
 
     const Host = defineComponent({
-        setup() { exposed = useMenu(props) },
+        setup() {
+            exposed = useMenu(props)
+        },
         template: '<div />',
     })
 
     const wrapper = mount(Host, { attachTo: document.body })
     return {
         wrapper,
-        get state() { return exposed.state },
-        get actions() { return exposed.actions },
-        get bindings() { return exposed.bindings },
-        get triggerRef() { return exposed.triggerRef },
-        get contentRef() { return exposed.contentRef },
-        registerItem: (value: string) => exposed[MenuInternalKey].registerItem({ value, id: `menu-item-${value}`, disabled: computed(() => false) }),
+        get state() {
+            return exposed.state
+        },
+        get actions() {
+            return exposed.actions
+        },
+        get bindings() {
+            return exposed.bindings
+        },
+        get triggerRef() {
+            return exposed.triggerRef
+        },
+        get contentRef() {
+            return exposed.contentRef
+        },
+        registerItem: (value: string) =>
+            exposed[MenuInternalKey].registerItem({ value, id: `menu-item-${value}`, disabled: computed(() => false) }),
         unregisterItem: (value: string) => exposed[MenuInternalKey].unregisterItem(value),
     }
 }
@@ -395,7 +408,9 @@ describe('useMenu', () => {
     describe('context', () => {
         it('useMenuContext throws outside provider', () => {
             const Host = defineComponent({
-                setup() { useMenuContext() },
+                setup() {
+                    useMenuContext()
+                },
                 template: '<div />',
             })
             expect(() => mount(Host)).toThrow('[headless-ui] useMenuContext must be used within a Menu')
@@ -405,7 +420,9 @@ describe('useMenu', () => {
             let innerApi: ReturnType<typeof useMenuContext> | undefined
 
             const Child = defineComponent({
-                setup() { innerApi = useMenuContext() },
+                setup() {
+                    innerApi = useMenuContext()
+                },
                 template: '<div />',
             })
 

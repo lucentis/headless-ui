@@ -14,7 +14,14 @@ function createHost(props: Parameters<typeof useSeparator>[0] = {}) {
     })
 
     mount(Host)
-    return { get state() { return exposed.state }, get bindings() { return exposed.bindings } }
+    return {
+        get state() {
+            return exposed.state
+        },
+        get bindings() {
+            return exposed.bindings
+        },
+    }
 }
 
 describe('useSeparator', () => {

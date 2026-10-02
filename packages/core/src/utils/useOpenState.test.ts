@@ -7,18 +7,32 @@ function createHost(options: Parameters<typeof useOpenState>[0] = {}) {
     let exposed: ReturnType<typeof useOpenState>
 
     const Host = defineComponent({
-        setup() { exposed = useOpenState(options) },
+        setup() {
+            exposed = useOpenState(options)
+        },
         template: '<div />',
     })
 
     mount(Host)
     return {
-        get isOpen() { return exposed.isOpen },
-        get isPresent() { return exposed.isPresent },
-        get open() { return exposed.open },
-        get close() { return exposed.close },
-        get toggle() { return exposed.toggle },
-        get setOpen() { return exposed.setOpen },
+        get isOpen() {
+            return exposed.isOpen
+        },
+        get isPresent() {
+            return exposed.isPresent
+        },
+        get open() {
+            return exposed.open
+        },
+        get close() {
+            return exposed.close
+        },
+        get toggle() {
+            return exposed.toggle
+        },
+        get setOpen() {
+            return exposed.setOpen
+        },
     }
 }
 

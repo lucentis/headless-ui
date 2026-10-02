@@ -3,11 +3,13 @@ import { defineComponent, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useFocusTrap } from './useFocusTrap'
 
-function createHost(options: {
-    active?: boolean
-    html?: string
-    initialFocus?: HTMLElement | null
-} = {}) {
+function createHost(
+    options: {
+        active?: boolean
+        html?: string
+        initialFocus?: HTMLElement | null
+    } = {},
+) {
     const active = ref(options.active ?? false)
     const container = ref<HTMLElement | null>(null)
     const initialFocus = ref(options.initialFocus ?? null)
@@ -16,7 +18,9 @@ function createHost(options: {
         setup() {
             useFocusTrap({ container, active, initialFocus })
         },
-        template: options.html ?? `
+        template:
+            options.html ??
+            `
             <div ref="el">
                 <button id="btn1">Button 1</button>
                 <button id="btn2">Button 2</button>
@@ -26,7 +30,7 @@ function createHost(options: {
     })
 
     const wrapper = mount(Host, { attachTo: document.body })
-    container.value = wrapper.element.querySelector('div') ?? wrapper.element as HTMLElement
+    container.value = wrapper.element.querySelector('div') ?? (wrapper.element as HTMLElement)
 
     return { wrapper, active, container, initialFocus }
 }

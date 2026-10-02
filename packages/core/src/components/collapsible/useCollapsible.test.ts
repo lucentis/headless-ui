@@ -16,9 +16,15 @@ function createHost(props: Parameters<typeof useCollapsible>[0] = {}) {
 
     mount(Host)
     return {
-        get state() { return exposed.state },
-        get actions() { return exposed.actions },
-        get bindings() { return exposed.bindings },
+        get state() {
+            return exposed.state
+        },
+        get actions() {
+            return exposed.actions
+        },
+        get bindings() {
+            return exposed.bindings
+        },
     }
 }
 
@@ -178,7 +184,9 @@ describe('useCollapsible', () => {
     describe('context', () => {
         it('useCollapsibleContext throws outside provider', () => {
             const Host = defineComponent({
-                setup() { useCollapsibleContext() },
+                setup() {
+                    useCollapsibleContext()
+                },
                 template: '<div />',
             })
             expect(() => mount(Host)).toThrow('[headless-ui] useCollapsibleContext must be used within a Collapsible')
@@ -188,7 +196,9 @@ describe('useCollapsible', () => {
             let innerApi: ReturnType<typeof useCollapsibleContext> | undefined
 
             const Child = defineComponent({
-                setup() { innerApi = useCollapsibleContext() },
+                setup() {
+                    innerApi = useCollapsibleContext()
+                },
                 template: '<div />',
             })
 

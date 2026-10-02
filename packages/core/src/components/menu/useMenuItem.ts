@@ -13,15 +13,11 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
 
     const itemId = useId('menu-item')
 
-
-    const onClick = composeHandlers(
-        props.onClick,
-        () => {
-            if (!isDisabled.value) {
-                menuApi.actions.close()
-            }
+    const onClick = composeHandlers(props.onClick, () => {
+        if (!isDisabled.value) {
+            menuApi.actions.close()
         }
-    )
+    })
 
     onMounted(() => registerItem({ value: props.value, id: itemId, disabled: isDisabled, onClick }))
     onUnmounted(() => unregisterItem(props.value))
@@ -39,7 +35,9 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi) {
     }))
 
     const bindings: MenuItemBindings = {
-        get root() { return menuItemBindings.value },
+        get root() {
+            return menuItemBindings.value
+        },
     }
 
     return { bindings }

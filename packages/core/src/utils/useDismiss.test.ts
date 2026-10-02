@@ -3,11 +3,13 @@ import { defineComponent, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useDismiss } from './useDismiss'
 
-function createHost(options: {
-    active?: boolean
-    escape?: boolean
-    outsideClick?: boolean
-} = {}) {
+function createHost(
+    options: {
+        active?: boolean
+        escape?: boolean
+        outsideClick?: boolean
+    } = {},
+) {
     const activeRef = ref(options.active ?? true)
     const escapeRef = ref(options.escape ?? true)
     const outsideClickRef = ref(options.outsideClick ?? true)
@@ -25,7 +27,8 @@ function createHost(options: {
                 outsideClick: outsideClickRef,
             })
         },
-        template: '<div><button ref="triggerEl">Trigger</button><div ref="contentEl"><button id="inside">Inside</button></div></div>',
+        template:
+            '<div><button ref="triggerEl">Trigger</button><div ref="contentEl"><button id="inside">Inside</button></div></div>',
     })
 
     const wrapper = mount(Host, { attachTo: document.body })

@@ -54,7 +54,9 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
     }))
 
     const bindings: TabsTriggerApi['bindings'] = {
-        get trigger() { return triggerBindings.value },
+        get trigger() {
+            return triggerBindings.value
+        },
     }
 
     return { state, actions, bindings, triggerRef }

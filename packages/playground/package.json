@@ -4,14 +4,14 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-      "dev": "vite",
-      "build": "vite build",
-      "typecheck": "vue-tsc --build"
+        "dev": "vite",
+        "build": "vite build",
+        "typecheck": "vue-tsc --build"
     },
     "dependencies": {
-      "@lucentis/headless-ui-core": "*"
+        "@lucentis/headless-ui-core": "*"
     },
     "devDependencies": {
-      "@vitejs/plugin-vue": "^6.0.6"
+        "@vitejs/plugin-vue": "^6.0.6"
     }
-  }
+}

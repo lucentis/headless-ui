@@ -15,8 +15,12 @@ function createHost<T>(options: Parameters<typeof useControllableState<T>>[0]) {
 
     mount(Host)
     return {
-        get value() { return exposed.value },
-        get setValue() { return exposed.setValue },
+        get value() {
+            return exposed.value
+        },
+        get setValue() {
+            return exposed.setValue
+        },
     }
 }
 

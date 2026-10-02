@@ -2,7 +2,14 @@ import { computed, reactive } from 'vue'
 import { useId } from '../../utils/useId'
 import { useDisabled } from '../../utils/useDisabled'
 import { useAccordionContext } from './AccordionContext'
-import type { UseAccordionItemProps, AccordionItemApi, AccordionApi, AccordionItemState, AccordionItemActions, AccordionItemBindings } from './types'
+import type {
+    UseAccordionItemProps,
+    AccordionItemApi,
+    AccordionApi,
+    AccordionItemState,
+    AccordionItemActions,
+    AccordionItemBindings,
+} from './types'
 
 export function useAccordionItem(props: UseAccordionItemProps, accordion?: AccordionApi): AccordionItemApi {
     const accordionApi = accordion ?? useAccordionContext()
@@ -46,8 +53,12 @@ export function useAccordionItem(props: UseAccordionItemProps, accordion?: Accor
     }))
 
     const bindings: AccordionItemBindings = {
-        get trigger() { return triggerBindings.value },
-        get content() { return contentBindings.value },
+        get trigger() {
+            return triggerBindings.value
+        },
+        get content() {
+            return contentBindings.value
+        },
     }
 
     return { state, actions, bindings }

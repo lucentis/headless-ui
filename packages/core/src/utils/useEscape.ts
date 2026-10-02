@@ -17,11 +17,17 @@ export function useEscape(options: UseEscapeOptions): void {
         }
     }
 
-    watch(active, (isActive) => {
-        if (!isClient) return
-        if (isActive) document.addEventListener('keydown', onKeydown)
-        else document.removeEventListener('keydown', onKeydown)
-    }, { immediate: true })
+    watch(
+        active,
+        (isActive) => {
+            if (!isClient) return
+            if (isActive) document.addEventListener('keydown', onKeydown)
+            else document.removeEventListener('keydown', onKeydown)
+        },
+        { immediate: true },
+    )
 
-    onUnmounted(() => { if (isClient) document.removeEventListener('keydown', onKeydown) })
+    onUnmounted(() => {
+        if (isClient) document.removeEventListener('keydown', onKeydown)
+    })
 }

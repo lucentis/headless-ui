@@ -10,15 +10,23 @@ function createTabsHost(props: Parameters<typeof useTabs>[0] = {}) {
     let exposed: ReturnType<typeof useTabs>
 
     const Host = defineComponent({
-        setup() { exposed = useTabs(props) },
+        setup() {
+            exposed = useTabs(props)
+        },
         template: '<div />',
     })
 
     mount(Host)
     return {
-        get state() { return exposed.state },
-        get actions() { return exposed.actions },
-        get api() { return exposed },
+        get state() {
+            return exposed.state
+        },
+        get actions() {
+            return exposed.actions
+        },
+        get api() {
+            return exposed
+        },
     }
 }
 
@@ -39,10 +47,18 @@ function createTriggerHost(
 
     mount(Host)
     return {
-        get tabs() { return exposedTabs },
-        get state() { return exposedTrigger.state },
-        get actions() { return exposedTrigger.actions },
-        get bindings() { return exposedTrigger.bindings },
+        get tabs() {
+            return exposedTabs
+        },
+        get state() {
+            return exposedTrigger.state
+        },
+        get actions() {
+            return exposedTrigger.actions
+        },
+        get bindings() {
+            return exposedTrigger.bindings
+        },
     }
 }
 
@@ -63,9 +79,15 @@ function createPanelHost(
 
     mount(Host)
     return {
-        get tabs() { return exposedTabs },
-        get state() { return exposedPanel.state },
-        get bindings() { return exposedPanel.bindings },
+        get tabs() {
+            return exposedTabs
+        },
+        get state() {
+            return exposedPanel.state
+        },
+        get bindings() {
+            return exposedPanel.bindings
+        },
     }
 }
 
@@ -139,20 +161,14 @@ describe('useTabs', () => {
         })
 
         it('focus updates focusedValue', async () => {
-            const { tabs } = createTriggerHost(
-                { activation: 'automatic' },
-                { value: 'tab-1' },
-            )
+            const { tabs } = createTriggerHost({ activation: 'automatic' }, { value: 'tab-1' })
             tabs.actions.highlight('tab-1')
             await nextTick()
             expect(tabs.state.highlightValue).toBe('tab-1')
         })
 
         it('focus also selects in automatic mode', async () => {
-            const { tabs } = createTriggerHost(
-                { activation: 'automatic' },
-                { value: 'tab-1' },
-            )
+            const { tabs } = createTriggerHost({ activation: 'automatic' }, { value: 'tab-1' })
             tabs.actions.highlight('tab-1')
             await nextTick()
             expect(tabs.state.value).toBe('tab-1')
@@ -292,7 +308,9 @@ describe('useTabsPanel', () => {
     describe('context', () => {
         it('useTabsContext throws outside provider', () => {
             const Host = defineComponent({
-                setup() { useTabsContext() },
+                setup() {
+                    useTabsContext()
+                },
                 template: '<div />',
             })
             expect(() => mount(Host)).toThrow('[headless-ui] useTabsContext must be used within a Tabs')
@@ -302,7 +320,9 @@ describe('useTabsPanel', () => {
             let innerApi: ReturnType<typeof useTabsContext> | undefined
 
             const Child = defineComponent({
-                setup() { innerApi = useTabsContext() },
+                setup() {
+                    innerApi = useTabsContext()
+                },
                 template: '<div />',
             })
 

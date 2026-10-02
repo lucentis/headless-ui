@@ -7,15 +7,21 @@ function createHost() {
     let exposed: ReturnType<typeof useScrollLock>
 
     const Host = defineComponent({
-        setup() { exposed = useScrollLock() },
+        setup() {
+            exposed = useScrollLock()
+        },
         template: '<div />',
     })
 
     const wrapper = mount(Host, { attachTo: document.body })
     return {
         wrapper,
-        get lock() { return exposed.lock },
-        get unlock() { return exposed.unlock },
+        get lock() {
+            return exposed.lock
+        },
+        get unlock() {
+            return exposed.unlock
+        },
     }
 }
 

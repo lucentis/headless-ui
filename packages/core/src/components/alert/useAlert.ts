@@ -8,7 +8,7 @@ export function useAlert(props: UseAlertProps = {}): AlertApi {
         open: props.open,
         defaultOpen: props.defaultOpen ?? true,
         onOpenChange: props.onOpenChange,
-        animationDuration: useConfig().animationDuration
+        animationDuration: useConfig().animationDuration,
     })
 
     const role = computed(() => toValue(props.role) ?? 'status')
@@ -28,7 +28,9 @@ export function useAlert(props: UseAlertProps = {}): AlertApi {
     }))
 
     const bindings: AlertBindings = {
-        get root() { return rootBindings.value },
+        get root() {
+            return rootBindings.value
+        },
     }
 
     return { state, actions, bindings }

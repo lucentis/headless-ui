@@ -13,7 +13,12 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
     const config = useConfig()
     const isDisabled = useDisabled(props.disabled)
 
-    const { isOpen, isPresent, open: openState, close: closeState } = useOpenState({
+    const {
+        isOpen,
+        isPresent,
+        open: openState,
+        close: closeState,
+    } = useOpenState({
         open: props.open,
         defaultOpen: props.defaultOpen,
         onOpenChange: props.onOpenChange,
@@ -91,8 +96,12 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
     }))
 
     const bindings: TooltipBindings = {
-        get trigger() { return triggerBindings.value },
-        get content() { return contentBindings.value },
+        get trigger() {
+            return triggerBindings.value
+        },
+        get content() {
+            return contentBindings.value
+        },
     }
 
     return { state, actions, bindings }

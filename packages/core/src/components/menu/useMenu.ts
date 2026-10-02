@@ -6,7 +6,15 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useConfig } from '../../config'
-import type { UseMenuProps, MenuApi, MenuRegistryItem, MenuInternals, MenuState, MenuActions, MenuBindings } from './types'
+import type {
+    UseMenuProps,
+    MenuApi,
+    MenuRegistryItem,
+    MenuInternals,
+    MenuState,
+    MenuActions,
+    MenuBindings,
+} from './types'
 import { MenuInternalKey } from '../../keys/internal-keys'
 
 export function useMenu(props: UseMenuProps = {}): MenuApi {
@@ -19,16 +27,29 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
             if (!value) clearHighlight()
             props.onOpenChange?.(value)
         },
-        animationDuration: config.animationDuration
+        animationDuration: config.animationDuration,
     })
 
-    watch(isOpen, (newOpen) => {
-        if (!newOpen) return
-        contentRef.value?.focus()
-    }, { flush: 'post' })
+    watch(
+        isOpen,
+        (newOpen) => {
+            if (!newOpen) return
+            contentRef.value?.focus()
+        },
+        { flush: 'post' },
+    )
 
     const { registry, register, unregister, updateItem, getItem } = useRegistry<MenuRegistryItem>()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
+    const {
+        highlightValue,
+        highlight,
+        highlightFirst,
+        highlightLast,
+        highlightNext,
+        highlightPrev,
+        isHighlighted,
+        clearHighlight,
+    } = useHighlight(registry)
 
     const triggerId = useId('menu-trigger')
     const contentId = useId('menu-content')
@@ -51,8 +72,15 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     })
 
     const actions: MenuActions = {
-        open, close, toggle,
-        highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
+        open,
+        close,
+        toggle,
+        highlight,
+        highlightFirst,
+        highlightLast,
+        highlightNext,
+        highlightPrev,
+        isHighlighted,
     }
 
     const triggerBindings = computed(() => ({
@@ -71,29 +99,34 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         onLast: actions.highlightLast,
         onSpace: () => {
             const item = getItem(highlightValue.value!)
-            
+
             item?.onClick?.(new MouseEvent('click'))
-        }
+        },
     })
 
     const contentBindings = computed(() => ({
         id: contentId,
         role: 'menu' as const,
         'aria-labelledby': triggerId,
-        'aria-activedescendant': highlightValue.value
-            ? getItem(highlightValue.value)?.id
-            : undefined,
+        'aria-activedescendant': highlightValue.value ? getItem(highlightValue.value)?.id : undefined,
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
         tabindex: -1 as const,
         onKeydown: (event: KeyboardEvent) => {
-            if (event.key === 'Tab') { actions.close(); return }
+            if (event.key === 'Tab') {
+                actions.close()
+                return
+            }
             onArrowKeydown(event)
         },
     }))
 
     const bindings: MenuBindings = {
-        get trigger() { return triggerBindings.value },
-        get content() { return contentBindings.value },
+        get trigger() {
+            return triggerBindings.value
+        },
+        get content() {
+            return contentBindings.value
+        },
     }
 
     const internals: MenuInternals = {
