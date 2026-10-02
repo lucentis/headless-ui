@@ -54,9 +54,8 @@ export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
         },
 
         toggle(itemValue: string): void {
-            actions.isExpanded(itemValue)
-                ? actions.collapse(itemValue)
-                : actions.expand(itemValue)
+            if (actions.isExpanded(itemValue)) actions.collapse(itemValue)
+            else actions.expand(itemValue)
         },
     }
 

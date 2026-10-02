@@ -58,7 +58,8 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         },
 
         toggle: (optionValue: string) => {
-            actions.isSelected(optionValue) ? actions.deselect(optionValue) : actions.select(optionValue)
+            if (actions.isSelected(optionValue)) actions.deselect(optionValue)
+            else actions.select(optionValue)
         },
 
         isSelected: (optionValue: string) => {
