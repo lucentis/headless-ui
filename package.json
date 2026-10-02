@@ -11,7 +11,9 @@
     "typecheck": "npm run typecheck --workspaces",
     "test": "vitest run",
     "dev": "npm run dev --workspace=packages/playground",
-    "lint": "eslint . --max-warnings 0"
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
