@@ -1,9 +1,10 @@
 import { toValue } from 'vue'
 import type { MaybeRef } from 'vue'
 import { Keys } from './keys'
+import type { AriaOrientation } from '../types/aria'
 
 export interface UseArrowNavigationOptions {
-    orientation?: MaybeRef<'horizontal' | 'vertical'>
+    orientation?: MaybeRef<AriaOrientation>
     onNext: () => void
     onPrev: () => void
     onFirst: () => void
@@ -45,6 +46,7 @@ export function useArrowNavigation(options: UseArrowNavigationOptions): {
                 break
             case Keys.Space:
                 if (options.onSpace) {
+                    event.preventDefault()
                     options.onSpace(new MouseEvent('click'))
                 }
                 break
