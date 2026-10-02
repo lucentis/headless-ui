@@ -9,14 +9,20 @@ function createAccordionHost(props: Parameters<typeof useAccordion>[0] = {}) {
     let exposed: ReturnType<typeof useAccordion>
 
     const Host = defineComponent({
-        setup() { exposed = useAccordion(props) },
+        setup() {
+            exposed = useAccordion(props)
+        },
         template: '<div />',
     })
 
     mount(Host)
     return {
-        get state() { return exposed.state },
-        get actions() { return exposed.actions },
+        get state() {
+            return exposed.state
+        },
+        get actions() {
+            return exposed.actions
+        },
     }
 }
 
@@ -37,10 +43,18 @@ function createItemHost(
 
     mount(Host)
     return {
-        get accordion() { return exposedAccordion },
-        get state() { return exposedItem.state },
-        get actions() { return exposedItem.actions },
-        get bindings() { return exposedItem.bindings },
+        get accordion() {
+            return exposedAccordion
+        },
+        get state() {
+            return exposedItem.state
+        },
+        get actions() {
+            return exposedItem.actions
+        },
+        get bindings() {
+            return exposedItem.bindings
+        },
     }
 }
 
@@ -247,7 +261,9 @@ describe('useAccordionItem', () => {
     describe('context', () => {
         it('useAccordionContext throws outside provider', () => {
             const Host = defineComponent({
-                setup() { useAccordionContext() },
+                setup() {
+                    useAccordionContext()
+                },
                 template: '<div />',
             })
             expect(() => mount(Host)).toThrow('[headless-ui] useAccordionContext must be used within an Accordion')

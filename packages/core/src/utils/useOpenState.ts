@@ -5,7 +5,7 @@ import { usePresence } from './usePresence'
 export interface UseOpenStateOptions {
     open?: MaybeRef<boolean>
     defaultOpen?: boolean
-    onOpenChange?: (value: boolean) => void,
+    onOpenChange?: (value: boolean) => void
     animationDuration?: number
 }
 

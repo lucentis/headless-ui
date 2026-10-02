@@ -180,7 +180,7 @@ describe('useTooltip', () => {
             const { state, bindings, wrapper } = createHost()
 
             bindings.trigger.onFocus()
-            
+
             expect(state.isOpen).toBe(false)
 
             vi.advanceTimersByTime(700)
@@ -263,9 +263,7 @@ describe('useTooltip', () => {
             actions.open()
             await nextTick()
 
-            document.dispatchEvent(
-                new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
-            )
+            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
 
             await nextTick()
 
@@ -284,9 +282,7 @@ describe('useTooltip', () => {
                 template: '<div />',
             })
 
-            expect(() => mount(Host)).toThrow(
-                '[headless-ui] useTooltipContext must be used within a Tooltip',
-            )
+            expect(() => mount(Host)).toThrow('[headless-ui] useTooltipContext must be used within a Tooltip')
         })
 
         it('useTooltipContext returns api inside provider', () => {

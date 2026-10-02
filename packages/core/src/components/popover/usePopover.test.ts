@@ -8,18 +8,30 @@ function createHost(props: Parameters<typeof usePopover>[0] = {}) {
     let exposed: ReturnType<typeof usePopover>
 
     const Host = defineComponent({
-        setup() { exposed = usePopover(props) },
+        setup() {
+            exposed = usePopover(props)
+        },
         template: '<div />',
     })
 
     const wrapper = mount(Host, { attachTo: document.body })
     return {
         wrapper,
-        get state() { return exposed.state },
-        get actions() { return exposed.actions },
-        get bindings() { return exposed.bindings },
-        get triggerRef() { return exposed.triggerRef },
-        get contentRef() { return exposed.contentRef },
+        get state() {
+            return exposed.state
+        },
+        get actions() {
+            return exposed.actions
+        },
+        get bindings() {
+            return exposed.bindings
+        },
+        get triggerRef() {
+            return exposed.triggerRef
+        },
+        get contentRef() {
+            return exposed.contentRef
+        },
     }
 }
 
@@ -228,7 +240,9 @@ describe('usePopover', () => {
     describe('context', () => {
         it('usePopoverContext throws outside provider', () => {
             const Host = defineComponent({
-                setup() { usePopoverContext() },
+                setup() {
+                    usePopoverContext()
+                },
                 template: '<div />',
             })
             expect(() => mount(Host)).toThrow('[headless-ui] usePopoverContext must be used within a Popover')
@@ -238,7 +252,9 @@ describe('usePopover', () => {
             let innerApi: ReturnType<typeof usePopoverContext> | undefined
 
             const Child = defineComponent({
-                setup() { innerApi = usePopoverContext() },
+                setup() {
+                    innerApi = usePopoverContext()
+                },
                 template: '<div />',
             })
 

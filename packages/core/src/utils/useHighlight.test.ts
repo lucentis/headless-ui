@@ -22,14 +22,30 @@ function createHost(items: HighlightItem[] = []) {
 
     return {
         registry,
-        get highlightValue() { return exposed.highlightValue },
-        get highlight() { return exposed.highlight },
-        get highlightFirst() { return exposed.highlightFirst },
-        get highlightLast() { return exposed.highlightLast },
-        get highlightNext() { return exposed.highlightNext },
-        get highlightPrev() { return exposed.highlightPrev },
-        get isHighlighted() { return exposed.isHighlighted },
-        get clearHighlight() { return exposed.clearHighlight },
+        get highlightValue() {
+            return exposed.highlightValue
+        },
+        get highlight() {
+            return exposed.highlight
+        },
+        get highlightFirst() {
+            return exposed.highlightFirst
+        },
+        get highlightLast() {
+            return exposed.highlightLast
+        },
+        get highlightNext() {
+            return exposed.highlightNext
+        },
+        get highlightPrev() {
+            return exposed.highlightPrev
+        },
+        get isHighlighted() {
+            return exposed.isHighlighted
+        },
+        get clearHighlight() {
+            return exposed.clearHighlight
+        },
     }
 }
 
@@ -44,9 +60,7 @@ describe('useHighlight', () => {
 
     describe('highlight', () => {
         it('sets highlightValue', () => {
-            const { highlight, highlightValue } = createHost([
-                { value: 'a' },
-            ])
+            const { highlight, highlightValue } = createHost([{ value: 'a' }])
 
             highlight('a')
 
@@ -54,9 +68,7 @@ describe('useHighlight', () => {
         })
 
         it('does nothing for an unknown value', () => {
-            const { highlight, highlightValue } = createHost([
-                { value: 'a' },
-            ])
+            const { highlight, highlightValue } = createHost([{ value: 'a' }])
 
             highlight('unknown')
 
@@ -66,10 +78,7 @@ describe('useHighlight', () => {
 
     describe('highlightFirst', () => {
         it('highlights first item', () => {
-            const { highlightFirst, highlightValue } = createHost([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const { highlightFirst, highlightValue } = createHost([{ value: 'a' }, { value: 'b' }])
 
             highlightFirst()
 
@@ -87,10 +96,7 @@ describe('useHighlight', () => {
 
     describe('highlightLast', () => {
         it('highlights last item', () => {
-            const { highlightLast, highlightValue } = createHost([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const { highlightLast, highlightValue } = createHost([{ value: 'a' }, { value: 'b' }])
 
             highlightLast()
 
@@ -108,10 +114,7 @@ describe('useHighlight', () => {
 
     describe('highlightNext', () => {
         it('highlights first item when highlightValue is null', () => {
-            const { highlightNext, highlightValue } = createHost([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const { highlightNext, highlightValue } = createHost([{ value: 'a' }, { value: 'b' }])
 
             highlightNext()
 
@@ -119,10 +122,7 @@ describe('useHighlight', () => {
         })
 
         it('moves to next item', () => {
-            const { highlight, highlightNext, highlightValue } = createHost([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const { highlight, highlightNext, highlightValue } = createHost([{ value: 'a' }, { value: 'b' }])
 
             highlight('a')
             highlightNext()
@@ -131,10 +131,7 @@ describe('useHighlight', () => {
         })
 
         it('does not go past last item when loop is disabled', () => {
-            const { highlight, highlightNext, highlightValue } = createHost([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const { highlight, highlightNext, highlightValue } = createHost([{ value: 'a' }, { value: 'b' }])
 
             highlight('b')
             highlightNext()
@@ -143,15 +140,9 @@ describe('useHighlight', () => {
         })
 
         it('moves to first item when loop is enabled', () => {
-            const registry = shallowRef<HighlightItem[]>([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const registry = shallowRef<HighlightItem[]>([{ value: 'a' }, { value: 'b' }])
 
-            const { highlightValue, highlight, highlightNext } = useHighlight(
-                registry,
-                { loop: true },
-            )
+            const { highlightValue, highlight, highlightNext } = useHighlight(registry, { loop: true })
 
             highlight('b')
             highlightNext()
@@ -168,10 +159,7 @@ describe('useHighlight', () => {
         })
 
         it('does nothing when highlight is stale', async () => {
-            const { highlight, highlightNext, highlightValue, registry } = createHost([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const { highlight, highlightNext, highlightValue, registry } = createHost([{ value: 'a' }, { value: 'b' }])
 
             highlight('b')
 
@@ -187,10 +175,7 @@ describe('useHighlight', () => {
 
     describe('highlightPrev', () => {
         it('highlights last item when highlightValue is null', () => {
-            const { highlightPrev, highlightValue } = createHost([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const { highlightPrev, highlightValue } = createHost([{ value: 'a' }, { value: 'b' }])
 
             highlightPrev()
 
@@ -198,10 +183,7 @@ describe('useHighlight', () => {
         })
 
         it('moves to previous item', () => {
-            const { highlight, highlightPrev, highlightValue } = createHost([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const { highlight, highlightPrev, highlightValue } = createHost([{ value: 'a' }, { value: 'b' }])
 
             highlight('b')
             highlightPrev()
@@ -210,10 +192,7 @@ describe('useHighlight', () => {
         })
 
         it('does not go past first item when loop is disabled', () => {
-            const { highlight, highlightPrev, highlightValue } = createHost([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const { highlight, highlightPrev, highlightValue } = createHost([{ value: 'a' }, { value: 'b' }])
 
             highlight('a')
             highlightPrev()
@@ -222,15 +201,9 @@ describe('useHighlight', () => {
         })
 
         it('moves to last item when loop is enabled', () => {
-            const registry = shallowRef<HighlightItem[]>([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const registry = shallowRef<HighlightItem[]>([{ value: 'a' }, { value: 'b' }])
 
-            const { highlightValue, highlight, highlightPrev } = useHighlight(
-                registry,
-                { loop: true },
-            )
+            const { highlightValue, highlight, highlightPrev } = useHighlight(registry, { loop: true })
 
             highlight('a')
             highlightPrev()
@@ -247,10 +220,7 @@ describe('useHighlight', () => {
         })
 
         it('does nothing when highlight is stale', async () => {
-            const { highlight, highlightPrev, highlightValue, registry } = createHost([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const { highlight, highlightPrev, highlightValue, registry } = createHost([{ value: 'a' }, { value: 'b' }])
 
             highlight('a')
 
@@ -266,9 +236,7 @@ describe('useHighlight', () => {
 
     describe('isHighlighted', () => {
         it('returns true for highlighted value', () => {
-            const { highlight, isHighlighted } = createHost([
-                { value: 'a' },
-            ])
+            const { highlight, isHighlighted } = createHost([{ value: 'a' }])
 
             highlight('a')
 
@@ -276,10 +244,7 @@ describe('useHighlight', () => {
         })
 
         it('returns false for non-highlighted value', () => {
-            const { highlight, isHighlighted } = createHost([
-                { value: 'a' },
-                { value: 'b' },
-            ])
+            const { highlight, isHighlighted } = createHost([{ value: 'a' }, { value: 'b' }])
 
             highlight('a')
 
@@ -289,9 +254,7 @@ describe('useHighlight', () => {
 
     describe('clearHighlight', () => {
         it('resets highlightValue to null', () => {
-            const { highlight, clearHighlight, highlightValue } = createHost([
-                { value: 'a' },
-            ])
+            const { highlight, clearHighlight, highlightValue } = createHost([{ value: 'a' }])
 
             highlight('a')
             clearHighlight()

@@ -63,4 +63,8 @@ export interface AccordionItemBindings {
     }
 }
 
-export interface AccordionItemApi extends ComponentApi<AccordionItemState, AccordionItemActions, AccordionItemBindings> {}
+export interface AccordionItemApi extends ComponentApi<
+    AccordionItemState,
+    AccordionItemActions,
+    AccordionItemBindings
+> {}

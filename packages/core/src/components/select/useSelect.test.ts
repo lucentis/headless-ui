@@ -10,19 +10,35 @@ function createSelectHost(props: Parameters<typeof useSelect>[0] = {}) {
     let exposed: ReturnType<typeof useSelect>
 
     const Host = defineComponent({
-        setup() { exposed = useSelect(props) },
+        setup() {
+            exposed = useSelect(props)
+        },
         template: '<div />',
     })
 
     const wrapper = mount(Host, { attachTo: document.body })
     return {
         wrapper,
-        get state() { return exposed.state },
-        get actions() { return exposed.actions },
-        get bindings() { return exposed.bindings },
-        registerOption: (value: string, label: string) => exposed[SelectInternalKey].registerOption({ value, id: `select-option-${value}`, disabled: computed(() => false), label }),
+        get state() {
+            return exposed.state
+        },
+        get actions() {
+            return exposed.actions
+        },
+        get bindings() {
+            return exposed.bindings
+        },
+        registerOption: (value: string, label: string) =>
+            exposed[SelectInternalKey].registerOption({
+                value,
+                id: `select-option-${value}`,
+                disabled: computed(() => false),
+                label,
+            }),
         unregisterOption: (value: string) => exposed[SelectInternalKey].unregisterOption(value),
-        get api() { return exposed },
+        get api() {
+            return exposed
+        },
     }
 }
 
@@ -43,9 +59,15 @@ function createOptionHost(
 
     mount(Host, { attachTo: document.body })
     return {
-        get select() { return exposedSelect },
-        get state() { return exposedOption.state },
-        get bindings() { return exposedOption.bindings },
+        get select() {
+            return exposedSelect
+        },
+        get state() {
+            return exposedOption.state
+        },
+        get bindings() {
+            return exposedOption.bindings
+        },
     }
 }
 
@@ -323,7 +345,9 @@ describe('useSelect', () => {
     describe('context', () => {
         it('useSelectContext throws outside provider', () => {
             const Host = defineComponent({
-                setup() { useSelectContext() },
+                setup() {
+                    useSelectContext()
+                },
                 template: '<div />',
             })
             expect(() => mount(Host)).toThrow('[headless-ui] useSelectContext must be used within a Select')
@@ -405,7 +429,10 @@ describe('useSelectOption', () => {
         })
 
         it('onClick does nothing when disabled', async () => {
-            const { bindings, select } = createOptionHost({ defaultOpen: true }, { value: 'fr', label: 'French', disabled: true })
+            const { bindings, select } = createOptionHost(
+                { defaultOpen: true },
+                { value: 'fr', label: 'French', disabled: true },
+            )
             bindings.root.onClick(new MouseEvent('click'))
             await nextTick()
             expect(select.state.value).toBe('')

@@ -5,7 +5,15 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useId } from '../../utils/useId'
-import type { UseListboxProps, ListboxApi, ListboxRegistryItem, ListboxInternals, ListboxState, ListboxActions, ListboxBindings } from './types'
+import type {
+    UseListboxProps,
+    ListboxApi,
+    ListboxRegistryItem,
+    ListboxInternals,
+    ListboxState,
+    ListboxActions,
+    ListboxBindings,
+} from './types'
 import { ListboxInternalKey } from '../../keys/internal-keys'
 
 export function useListbox(props: UseListboxProps = {}): ListboxApi {
@@ -21,7 +29,8 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
     })
 
     const { registry, register, unregister, getItem } = useRegistry<ListboxRegistryItem>()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted } = useHighlight(registry)
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted } =
+        useHighlight(registry)
 
     const listboxId = useId('listbox')
     const rootRef = ref<HTMLElement | null>(null)
@@ -35,7 +44,12 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
     })
 
     const actions: ListboxActions = {
-        highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
+        highlight,
+        highlightFirst,
+        highlightLast,
+        highlightNext,
+        highlightPrev,
+        isHighlighted,
 
         select: (optionValue: string) => {
             if (isDisabled.value) return
@@ -51,7 +65,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
             if (isDisabled.value) return
             if (multiple.value) {
                 const current = Array.isArray(value.value) ? value.value : []
-                setValue(current.filter(v => v !== optionValue))
+                setValue(current.filter((v) => v !== optionValue))
             } else {
                 if (value.value === optionValue) setValue('')
             }
@@ -63,9 +77,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         },
 
         isSelected: (optionValue: string) => {
-            return Array.isArray(value.value)
-                ? value.value.includes(optionValue)
-                : value.value === optionValue
+            return Array.isArray(value.value) ? value.value.includes(optionValue) : value.value === optionValue
         },
     }
 
@@ -75,8 +87,12 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         onPrev: actions.highlightPrev,
         onFirst: actions.highlightFirst,
         onLast: actions.highlightLast,
-        onEnter: () => { if (highlightValue.value !== null) actions.toggle(highlightValue.value) },
-        onSpace: () => { if (highlightValue.value !== null) actions.toggle(highlightValue.value) },
+        onEnter: () => {
+            if (highlightValue.value !== null) actions.toggle(highlightValue.value)
+        },
+        onSpace: () => {
+            if (highlightValue.value !== null) actions.toggle(highlightValue.value)
+        },
     })
 
     const rootBindings = computed(() => ({
@@ -91,7 +107,9 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
     }))
 
     const bindings: ListboxBindings = {
-        get root() { return rootBindings.value },
+        get root() {
+            return rootBindings.value
+        },
     }
 
     const internals: ListboxInternals = {

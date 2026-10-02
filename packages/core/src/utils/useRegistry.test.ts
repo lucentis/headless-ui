@@ -13,17 +13,29 @@ function createHost() {
     let exposed: ReturnType<typeof useRegistry<TestItem>>
 
     const Host = defineComponent({
-        setup() { exposed = useRegistry<TestItem>() },
+        setup() {
+            exposed = useRegistry<TestItem>()
+        },
         template: '<div />',
     })
 
     mount(Host)
     return {
-        get registry() { return exposed.registry },
-        get register() { return exposed.register },
-        get unregister() { return exposed.unregister },
-        get updateItem() { return exposed.updateItem },
-        get getItem() { return exposed.getItem },
+        get registry() {
+            return exposed.registry
+        },
+        get register() {
+            return exposed.register
+        },
+        get unregister() {
+            return exposed.unregister
+        },
+        get updateItem() {
+            return exposed.updateItem
+        },
+        get getItem() {
+            return exposed.getItem
+        },
     }
 }
 
@@ -41,7 +53,7 @@ describe('useRegistry', () => {
             register({ value: 'a', id: 'id-a', disabled: false })
             register({ value: 'b', id: 'id-b', disabled: false })
             register({ value: 'c', id: 'id-c', disabled: false })
-            expect(registry.value.map(i => i.value)).toEqual(['a', 'b', 'c'])
+            expect(registry.value.map((i) => i.value)).toEqual(['a', 'b', 'c'])
         })
 
         it('does not add duplicate values', () => {

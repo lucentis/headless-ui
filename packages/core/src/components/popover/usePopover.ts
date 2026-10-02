@@ -12,7 +12,7 @@ export function usePopover(props: UsePopoverProps = {}): PopoverApi {
         open: props.open,
         defaultOpen: props.defaultOpen,
         onOpenChange: props.onOpenChange,
-        animationDuration: config.animationDuration
+        animationDuration: config.animationDuration,
     })
 
     const triggerId = useId('popover-trigger')
@@ -53,8 +53,12 @@ export function usePopover(props: UsePopoverProps = {}): PopoverApi {
     }))
 
     const bindings: PopoverBindings = {
-        get trigger() { return triggerBindings.value },
-        get content() { return contentBindings.value },
+        get trigger() {
+            return triggerBindings.value
+        },
+        get content() {
+            return contentBindings.value
+        },
     }
 
     return { state, actions, bindings, triggerRef, contentRef }

@@ -57,7 +57,7 @@ export interface ListboxBindings {
 }
 
 export interface ListboxApi extends ComponentApi<ListboxState, ListboxActions, ListboxBindings> {
-    rootRef: Ref<HTMLElement | null>,
+    rootRef: Ref<HTMLElement | null>
     readonly [ListboxInternalKey]: ListboxInternals
 }
 
@@ -92,4 +92,8 @@ export interface ListboxOptionBindings {
     }
 }
 
-export interface ListboxOptionApi extends ComponentApi<ListboxOptionState, ListboxOptionActions, ListboxOptionBindings> {}
+export interface ListboxOptionApi extends ComponentApi<
+    ListboxOptionState,
+    ListboxOptionActions,
+    ListboxOptionBindings
+> {}

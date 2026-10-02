@@ -13,16 +13,22 @@ export function useOutsideClick(options: UseOutsideClickOptions): void {
 
     function onClick(event: MouseEvent): void {
         const target = event.target as Node
-        const isInside = targets.some(ref => ref.value?.contains(target))
-        
+        const isInside = targets.some((ref) => ref.value?.contains(target))
+
         if (!isInside) onOutsideClick()
     }
 
-    watch(active, (isActive) => {
-        if (!isClient) return
-        if (isActive) document.addEventListener('mousedown', onClick)
-        else document.removeEventListener('mousedown', onClick)
-    }, { immediate: true })
+    watch(
+        active,
+        (isActive) => {
+            if (!isClient) return
+            if (isActive) document.addEventListener('mousedown', onClick)
+            else document.removeEventListener('mousedown', onClick)
+        },
+        { immediate: true },
+    )
 
-    onUnmounted(() => { if (isClient) document.removeEventListener('mousedown', onClick) })
+    onUnmounted(() => {
+        if (isClient) document.removeEventListener('mousedown', onClick)
+    })
 }

@@ -12,4 +12,4 @@ export const Keys = {
     Backspace: 'Backspace',
 } as const
 
-export type Key = typeof Keys[keyof typeof Keys]
+export type Key = (typeof Keys)[keyof typeof Keys]

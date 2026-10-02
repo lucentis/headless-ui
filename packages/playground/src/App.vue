@@ -1,6 +1,22 @@
 <script setup lang="ts">
 import { useSelect, useSelectOption } from '@lucentis/headless-ui-core'
-import { useButton, useAlert, useCollapsible, useAccordion, useAccordionItem, useTabs, useTabsTrigger, useTabsPanel, useDialog, useTooltip, usePopover, useMenu, useMenuItem, useListbox, useListboxOption } from '@lucentis/headless-ui-core'
+import {
+    useButton,
+    useAlert,
+    useCollapsible,
+    useAccordion,
+    useAccordionItem,
+    useTabs,
+    useTabsTrigger,
+    useTabsPanel,
+    useDialog,
+    useTooltip,
+    usePopover,
+    useMenu,
+    useMenuItem,
+    useListbox,
+    useListboxOption,
+} from '@lucentis/headless-ui-core'
 import { ref } from 'vue'
 
 const isLoading = ref(false)
@@ -33,30 +49,41 @@ const tooltip = useTooltip({ delayDuration: 500 })
 
 const popover = usePopover()
 
-const menu = useMenu({onOpenChange(value) {
-    console.log('menu is open:', value)
-},})
+const menu = useMenu({
+    onOpenChange(value) {
+        console.log('menu is open:', value)
+    },
+})
 const editItem = useMenuItem({ value: 'edit', onClick: () => console.log('edit') }, menu)
 const deleteItem = useMenuItem({ value: 'delete', onClick: () => console.log('delete') }, menu)
-const disabledItem = useMenuItem({ value: 'share', disabled: true, onClick: (event: MouseEvent) => {console.log('share clicked via props', event)} }, menu)
+const disabledItem = useMenuItem(
+    {
+        value: 'share',
+        disabled: true,
+        onClick: (event: MouseEvent) => {
+            console.log('share clicked via props', event)
+        },
+    },
+    menu,
+)
 
-const listbox = useListbox({ defaultValue: 'option-1', onValueChange(value) {
-    console.log(value)
-}, })
+const listbox = useListbox({
+    defaultValue: 'option-1',
+    onValueChange(value) {
+        console.log(value)
+    },
+})
 
 const option1 = useListboxOption({ value: 'option-1' }, listbox)
 const option2 = useListboxOption({ value: 'option-2' }, listbox)
 const option3 = useListboxOption({ value: 'option-3' }, listbox)
-const option4 = useListboxOption({ value: 'option-4', disabled: true}, listbox)
-
-
+const option4 = useListboxOption({ value: 'option-4', disabled: true }, listbox)
 
 const select = useSelect({ placeholder: 'Select a language' })
 
 const optFr = useSelectOption({ value: 'fr', label: 'French' }, select)
 const optEn = useSelectOption({ value: 'en', label: 'English' }, select)
 const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
-
 </script>
 
 <template>
@@ -72,7 +99,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     <!-- collapsible -->
     <div>
         <button v-bind="collapsible.bindings.trigger" @click="() => console.log('collapsible trigger clicked in app')">
-        {{ collapsible.state.isOpen ? 'Close' : 'Open' }} section
+            {{ collapsible.state.isOpen ? 'Close' : 'Open' }} section
         </button>
 
         <div v-if="collapsible.state.isPresent" v-bind="collapsible.bindings.content">
@@ -122,21 +149,13 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
             <button v-bind="trigger4.bindings.trigger" :ref="trigger4.triggerRef">Tab 4</button>
         </div>
 
-        <div v-if="panel1.state.isSelected" v-bind="panel1.bindings.panel">
-            Content 1
-        </div>
+        <div v-if="panel1.state.isSelected" v-bind="panel1.bindings.panel">Content 1</div>
 
-        <div v-if="panel2.state.isSelected" v-bind="panel2.bindings.panel">
-            Content 2
-        </div>
+        <div v-if="panel2.state.isSelected" v-bind="panel2.bindings.panel">Content 2</div>
 
-        <div v-if="panel3.state.isSelected" v-bind="panel3.bindings.panel">
-            Content 3
-        </div>
+        <div v-if="panel3.state.isSelected" v-bind="panel3.bindings.panel">Content 3</div>
 
-        <div v-if="panel4.state.isSelected" v-bind="panel4.bindings.panel">
-            Content 4
-        </div>
+        <div v-if="panel4.state.isSelected" v-bind="panel4.bindings.panel">Content 4</div>
     </div>
 
     <!-- dialog -->
@@ -148,14 +167,25 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
                 <!-- overlay -->
                 <div
                     v-bind="dialog.bindings.overlay"
-                    style="position:fixed;inset:0;background:rgba(0,0,0,0.5)"
+                    style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5)"
                 />
 
                 <!-- content -->
                 <div
-                    :ref="el => { dialog.contentRef.value = el as HTMLElement | null }"
+                    :ref="
+                        (el) => {
+                            dialog.contentRef.value = el as HTMLElement | null
+                        }
+                    "
                     v-bind="dialog.bindings.content"
-                    style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:24px"
+                    style="
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: white;
+                        padding: 24px;
+                    "
                 >
                     <h2 v-bind="dialog.bindings.title">Dialog Title</h2>
                     <p v-bind="dialog.bindings.description">Dialog description for screen readers.</p>
@@ -170,14 +200,25 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
                                 <!-- overlay -->
                                 <div
                                     v-bind="dialog2.bindings.overlay"
-                                    style="position:fixed;inset:0;background:rgba(0,0,0,0.5)"
+                                    style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5)"
                                 />
 
                                 <!-- content -->
                                 <div
-                                    :ref="el => { dialog2.contentRef.value = el as HTMLElement | null }"
+                                    :ref="
+                                        (el) => {
+                                            dialog2.contentRef.value = el as HTMLElement | null
+                                        }
+                                    "
                                     v-bind="dialog2.bindings.content"
-                                    style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:24px"
+                                    style="
+                                        position: fixed;
+                                        top: 50%;
+                                        left: 50%;
+                                        transform: translate(-50%, -50%);
+                                        background: white;
+                                        padding: 24px;
+                                    "
                                 >
                                     <h2 v-bind="dialog2.bindings.title">Dialog Title</h2>
                                     <p v-bind="dialog2.bindings.description">Dialog description for screen readers.</p>
@@ -194,14 +235,22 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
 
     <!-- tooltip -->
     <div style="position: relative; display: inline-block">
-        <button v-bind="tooltip.bindings.trigger">
-        Hover me
-        </button>
+        <button v-bind="tooltip.bindings.trigger">Hover me</button>
 
         <div
             v-if="tooltip.state.isPresent"
             v-bind="tooltip.bindings.content"
-            style="position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:4px 8px;border-radius:4px;white-space:nowrap"
+            style="
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #333;
+                color: #fff;
+                padding: 4px 8px;
+                border-radius: 4px;
+                white-space: nowrap;
+            "
         >
             This is a tooltip
         </div>
@@ -209,9 +258,13 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
 
     <!-- popover -->
 
-    <div class="relative" style="position: relative;">
+    <div class="relative" style="position: relative">
         <button
-            :ref="el => { popover.triggerRef.value = el as HTMLElement }"
+            :ref="
+                (el) => {
+                    popover.triggerRef.value = el as HTMLElement
+                }
+            "
             v-bind="popover.bindings.trigger"
         >
             Open Popover
@@ -221,18 +274,29 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
             v-if="popover.state.isPresent"
             ref="contentElPopover"
             v-bind="popover.bindings.content"
-            style="position:absolute;left:50%;bottom:100%;background:white;border:1px solid #ccc;padding:16px;border-radius:8px"
+            style="
+                position: absolute;
+                left: 50%;
+                bottom: 100%;
+                background: white;
+                border: 1px solid #ccc;
+                padding: 16px;
+                border-radius: 8px;
+            "
         >
             <p>Popover content</p>
             <button @click="popover.actions.close">Close</button>
         </div>
     </div>
 
-
     <!-- menu -->
-    <div class="" style="position: relative;display:inline-block">
+    <div class="" style="position: relative; display: inline-block">
         <button
-            :ref="el => { menu.triggerRef.value = el as HTMLElement }"
+            :ref="
+                (el) => {
+                    menu.triggerRef.value = el as HTMLElement
+                }
+            "
             v-bind="menu.bindings.trigger"
         >
             Options
@@ -240,59 +304,117 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
 
         <div
             v-if="menu.state.isPresent"
-            :ref="el => { menu.contentRef.value = el as HTMLElement }"
+            :ref="
+                (el) => {
+                    menu.contentRef.value = el as HTMLElement
+                }
+            "
             v-bind="menu.bindings.content"
-            style="position:fixed;top:100px;left:100px;background:white;border:1px solid #ccc;border-radius:4px"
+            style="
+                position: fixed;
+                top: 100px;
+                left: 100px;
+                background: white;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            "
         >
-            <div v-bind="editItem.bindings.root" @click.prevent="console.log('edit clicked')" style="padding:8px 16px;cursor:pointer">Edit</div>
-            <div v-bind="deleteItem.bindings.root" style="padding:8px 16px;cursor:pointer">Delete</div>
-            <div v-bind="disabledItem.bindings.root" @click.prevent="console.log('share clicked')" style="padding:8px 16px;opacity:0.5">Share</div>
+            <div
+                v-bind="editItem.bindings.root"
+                @click.prevent="console.log('edit clicked')"
+                style="padding: 8px 16px; cursor: pointer"
+            >
+                Edit
+            </div>
+            <div v-bind="deleteItem.bindings.root" style="padding: 8px 16px; cursor: pointer">Delete</div>
+            <div
+                v-bind="disabledItem.bindings.root"
+                @click.prevent="console.log('share clicked')"
+                style="padding: 8px 16px; opacity: 0.5"
+            >
+                Share
+            </div>
         </div>
     </div>
 
     <!-- listbox -->
     <div
-        :ref="el => { listbox.rootRef.value = el as HTMLElement }"
+        :ref="
+            (el) => {
+                listbox.rootRef.value = el as HTMLElement
+            }
+        "
         v-bind="listbox.bindings.root"
-        style="border:1px solid #ccc;width:200px"
+        style="border: 1px solid #ccc; width: 200px"
     >
-        <div v-bind="option1.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-1') ? { background: '#e0e7ff' } : {}">Option 1</div>
-        <div v-bind="option2.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-2') ? { background: '#e0e7ff' } : {}">Option 2</div>
-        <div v-bind="option3.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-3') ? { background: '#e0e7ff' } : {}">Option 3</div>
-        <div v-bind="option4.bindings.root" style="padding:8px 16px;cursor:pointer" :style="listbox.actions.isSelected('option-4') ? { background: '#e0e7ff' } : {}">Option 4</div>
+        <div
+            v-bind="option1.bindings.root"
+            style="padding: 8px 16px; cursor: pointer"
+            :style="listbox.actions.isSelected('option-1') ? { background: '#e0e7ff' } : {}"
+        >
+            Option 1
+        </div>
+        <div
+            v-bind="option2.bindings.root"
+            style="padding: 8px 16px; cursor: pointer"
+            :style="listbox.actions.isSelected('option-2') ? { background: '#e0e7ff' } : {}"
+        >
+            Option 2
+        </div>
+        <div
+            v-bind="option3.bindings.root"
+            style="padding: 8px 16px; cursor: pointer"
+            :style="listbox.actions.isSelected('option-3') ? { background: '#e0e7ff' } : {}"
+        >
+            Option 3
+        </div>
+        <div
+            v-bind="option4.bindings.root"
+            style="padding: 8px 16px; cursor: pointer"
+            :style="listbox.actions.isSelected('option-4') ? { background: '#e0e7ff' } : {}"
+        >
+            Option 4
+        </div>
     </div>
 
     <!-- select -->
     <div style="position: relative; display: inline-block">
-        <button
-            :ref="select.triggerRef"
-            v-bind="select.bindings.trigger"
-        >
+        <button :ref="select.triggerRef" v-bind="select.bindings.trigger">
             {{ select.state.selectedLabel ?? select.state.placeholder ?? 'Select...' }}
         </button>
 
-
         <div
             v-if="select.state.isPresent"
-            :ref="el => { select.contentRef.value = el as HTMLElement }"
+            :ref="
+                (el) => {
+                    select.contentRef.value = el as HTMLElement
+                }
+            "
             v-bind="select.bindings.content"
-            style="position:fixed;top:100px;left:100px;background:white;border:1px solid #ccc;border-radius:4px;width:200px"
+            style="
+                position: fixed;
+                top: 100px;
+                left: 100px;
+                background: white;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                width: 200px;
+            "
         >
-            <div v-bind="optFr.bindings.root" style="padding:8px 16px;cursor:pointer">French</div>
-            <div v-bind="optEn.bindings.root" style="padding:8px 16px;cursor:pointer">English</div>
-            <div v-bind="optEs.bindings.root" style="padding:8px 16px;cursor:pointer">Spanish</div>
+            <div v-bind="optFr.bindings.root" style="padding: 8px 16px; cursor: pointer">French</div>
+            <div v-bind="optEn.bindings.root" style="padding: 8px 16px; cursor: pointer">English</div>
+            <div v-bind="optEs.bindings.root" style="padding: 8px 16px; cursor: pointer">Spanish</div>
         </div>
     </div>
-
 </template>
 
 <style scoped>
 div {
-    padding: 5px 10px
+    padding: 5px 10px;
 }
 
 #listbox:focus {
-    border: 2px solid red
+    border: 2px solid red;
 }
 
 [data-highlighted] {

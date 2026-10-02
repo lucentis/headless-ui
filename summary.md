@@ -99,7 +99,7 @@ Advanced consumers can use the composables directly.
 
 ```ts
 const api = useCollapsible({
-  defaultOpen: false,
+    defaultOpen: false,
 })
 ```
 
@@ -110,10 +110,7 @@ They own the rendered DOM.
   Toggle
 </button>
 
-<div
-  v-if="api.state.isPresent"
-  v-bind="api.bindings.content"
->
+<div v-if="api.state.isPresent" v-bind="api.bindings.content">
   Content
 </div>
 ```
@@ -244,19 +241,19 @@ The purpose is architectural encapsulation, not security.
 
 # 4. Naming conventions
 
-| Thing             | Convention                    | Example              |
-| ----------------- | ----------------------------- | -------------------- |
-| Component files   | PascalCase                    | `Dialog.vue`         |
-| Composable files  | camelCase + `use` prefix      | `useDialog.ts`       |
-| Context files     | PascalCase + `Context` suffix | `DialogContext.ts`   |
-| Test files        | match source file             | `useDialog.test.ts`  |
-| Barrel files      | lowercase                     | `index.ts`           |
-| Props interface   | `UseXProps`                   | `UseDialogProps`     |
-| State interface   | `XState`                      | `DialogState`        |
-| Actions interface | `XActions`                    | `DialogActions`      |
-| Bindings          | `XBindings`                   | `DialogBindings`     |
-| API interface     | `XApi`                        | `DialogApi`          |
-| Registry item     | `XRegistryItem`               | `TabsRegistryItem`   |
+| Thing             | Convention                    | Example                            |
+| ----------------- | ----------------------------- | ---------------------------------- |
+| Component files   | PascalCase                    | `Dialog.vue`                       |
+| Composable files  | camelCase + `use` prefix      | `useDialog.ts`                     |
+| Context files     | PascalCase + `Context` suffix | `DialogContext.ts`                 |
+| Test files        | match source file             | `useDialog.test.ts`                |
+| Barrel files      | lowercase                     | `index.ts`                         |
+| Props interface   | `UseXProps`                   | `UseDialogProps`                   |
+| State interface   | `XState`                      | `DialogState`                      |
+| Actions interface | `XActions`                    | `DialogActions`                    |
+| Bindings          | `XBindings`                   | `DialogBindings`                   |
+| API interface     | `XApi`                        | `DialogApi`                        |
+| Registry item     | `XRegistryItem`               | `TabsRegistryItem`                 |
 | Internal keys     | `XInternals` + `XInternalKey` | `MenuInternals`, `MenuInternalKey` |
 
 ---
@@ -267,9 +264,9 @@ Every public component API follows the same conceptual shape:
 
 ```ts
 interface ComponentApi<TState, TActions, TBindings> {
-  state: Readonly<TState>
-  actions: TActions
-  bindings: TBindings
+    state: Readonly<TState>
+    actions: TActions
+    bindings: TBindings
 }
 ```
 
@@ -338,11 +335,11 @@ bindings.root
 
 Each element receives one object that contains:
 
-* DOM attributes
-* ARIA attributes
-* IDs
-* `data-*` attributes
-* event handlers
+- DOM attributes
+- ARIA attributes
+- IDs
+- `data-*` attributes
+- event handlers
 
 The consumer should normally perform one spread per element.
 
@@ -361,12 +358,11 @@ No additional accessibility wiring should be required for behavior already owned
 Components that expose values use generics.
 
 ```ts
-interface ListboxApi<TValue>
-  extends ComponentApi<
+interface ListboxApi<TValue> extends ComponentApi<
     ListboxState<TValue>,
     ListboxActions<TValue>,
     ListboxBindings<TValue>
-  > {}
+> {}
 ```
 
 The value type must flow through the complete API.
@@ -417,10 +413,10 @@ Behavioral and controllable props accept Vue `MaybeRef` where reactivity is mean
 
 ```ts
 interface UseCollapsibleProps {
-  open?: MaybeRef<boolean>
-  defaultOpen?: boolean
-  onOpenChange?: (value: boolean) => void
-  disabled?: MaybeRef<boolean>
+    open?: MaybeRef<boolean>
+    defaultOpen?: boolean
+    onOpenChange?: (value: boolean) => void
+    disabled?: MaybeRef<boolean>
 }
 ```
 
@@ -454,9 +450,9 @@ Example:
 
 ```ts
 interface UseOpenStateProps {
-  open?: MaybeRef<boolean>
-  defaultOpen?: boolean
-  onOpenChange?: (value: boolean) => void
+    open?: MaybeRef<boolean>
+    defaultOpen?: boolean
+    onOpenChange?: (value: boolean) => void
 }
 ```
 
@@ -485,23 +481,20 @@ Cross-component state patterns are extracted into reusable primitives.
 Foundation for controlled/uncontrolled state.
 
 ```ts
-const {
-  value,
-  setValue,
-} = useControllableState({
-  value: props.open,
-  defaultValue: false,
-  onChange: props.onOpenChange,
+const { value, setValue } = useControllableState({
+    value: props.open,
+    defaultValue: false,
+    onChange: props.onOpenChange,
 })
 ```
 
 Rules:
 
-* controlled/uncontrolled mode is determined at setup time
-* mode must not switch at runtime
-* setting the current value is a no-op
-* callbacks are not fired for unchanged values
-* generic `T` handles arbitrary state types
+- controlled/uncontrolled mode is determined at setup time
+- mode must not switch at runtime
+- setting the current value is a no-op
+- callbacks are not fired for unchanged values
+- generic `T` handles arbitrary state types
 
 ---
 
@@ -567,10 +560,10 @@ The duration is an explicit parameter (default `0`). `usePresence` never reads g
 
 State is:
 
-* read-only
-* reactive
-* intended for rendering and inspection
-* never directly mutated by consumers
+- read-only
+- reactive
+- intended for rendering and inspection
+- never directly mutated by consumers
 
 Boolean state uses the `isX` convention.
 
@@ -591,11 +584,11 @@ Example:
 
 ```ts
 interface CollapsibleState {
-  isOpen: boolean
-  isPresent: boolean
-  isDisabled: boolean
-  triggerId: string
-  contentId: string
+    isOpen: boolean
+    isPresent: boolean
+    isDisabled: boolean
+    triggerId: string
+    contentId: string
 }
 ```
 
@@ -771,23 +764,23 @@ Keyboard values live in one shared constant.
 
 ```ts
 export const Keys = {
-  ArrowUp: 'ArrowUp',
-  ArrowDown: 'ArrowDown',
-  ArrowLeft: 'ArrowLeft',
-  ArrowRight: 'ArrowRight',
-  Home: 'Home',
-  End: 'End',
-  Enter: 'Enter',
-  Space: ' ',
-  Escape: 'Escape',
-  Tab: 'Tab',
-  Backspace: 'Backspace',
-  Delete: 'Delete',
-  PageUp: 'PageUp',
-  PageDown: 'PageDown',
+    ArrowUp: 'ArrowUp',
+    ArrowDown: 'ArrowDown',
+    ArrowLeft: 'ArrowLeft',
+    ArrowRight: 'ArrowRight',
+    Home: 'Home',
+    End: 'End',
+    Enter: 'Enter',
+    Space: ' ',
+    Escape: 'Escape',
+    Tab: 'Tab',
+    Backspace: 'Backspace',
+    Delete: 'Delete',
+    PageUp: 'PageUp',
+    PageDown: 'PageDown',
 } as const
 
-export type Key = typeof Keys[keyof typeof Keys]
+export type Key = (typeof Keys)[keyof typeof Keys]
 ```
 
 **Status:** `Delete`, `PageUp` and `PageDown` are not in the code yet. Add them when a component needs them.
@@ -820,8 +813,7 @@ Nothing additional is placed into the context.
 Example:
 
 ```ts
-const CollapsibleContextKey =
-  Symbol('CollapsibleContext')
+const CollapsibleContextKey = Symbol('CollapsibleContext')
 ```
 
 Provider:
@@ -880,11 +872,11 @@ implementation coordination
 
 Internal mechanisms may include:
 
-* child registration
-* internal stores
-* internal keys
-* component-specific coordination
-* hidden child-facing operations
+- child registration
+- internal stores
+- internal keys
+- component-specific coordination
+- hidden child-facing operations
 
 Internal visibility is an architectural boundary, not a security mechanism.
 
@@ -898,14 +890,14 @@ Element bindings are the DOM contract between the API layer and the consumer.
 
 Rules:
 
-* one object per logical element
-* DOM attributes and event handlers are merged
-* ARIA attributes are included
-* IDs are included
-* `data-*` state is included
-* no classes
-* no styles
-* no visual assumptions
+- one object per logical element
+- DOM attributes and event handlers are merged
+- ARIA attributes are included
+- IDs are included
+- `data-*` state is included
+- no classes
+- no styles
+- no visual assumptions
 
 Elements are named by role: `trigger`, `content`, `overlay`, `panel`, `list`, or `root` for single-element composables. The full shape of each bindings object is written in the composable itself, never assembled from a shared helper.
 
@@ -913,21 +905,21 @@ Example:
 
 ```ts
 interface CollapsibleBindings {
-  trigger: {
-    id: string
-    'aria-expanded': boolean
-    'aria-controls': string
-    'data-state': 'open' | 'closed'
-    onClick: (event: MouseEvent) => void
-    onKeydown: (event: KeyboardEvent) => void
-  }
+    trigger: {
+        id: string
+        'aria-expanded': boolean
+        'aria-controls': string
+        'data-state': 'open' | 'closed'
+        onClick: (event: MouseEvent) => void
+        onKeydown: (event: KeyboardEvent) => void
+    }
 
-  content: {
-    id: string
-    role: 'region'
-    'aria-labelledby': string
-    'data-state': 'open' | 'closed'
-  }
+    content: {
+        id: string
+        role: 'region'
+        'aria-labelledby': string
+        'data-state': 'open' | 'closed'
+    }
 }
 ```
 
@@ -938,10 +930,7 @@ Consumer:
   Toggle
 </button>
 
-<div
-  v-if="state.isPresent"
-  v-bind="bindings.content"
->
+<div v-if="state.isPresent" v-bind="bindings.content">
   Content
 </div>
 ```
@@ -995,10 +984,7 @@ loading
 Example:
 
 ```vue
-<div
-  v-if="state.isPresent"
-  v-bind="bindings.content"
-/>
+<div v-if="state.isPresent" v-bind="bindings.content" />
 ```
 
 The consumer can style:
@@ -1026,10 +1012,7 @@ The consumer handler runs first. The internal handler runs afterwards, unless th
 The library uses an internal utility (`utils/eventHandler.ts`):
 
 ```ts
-composeHandlers(
-  userHandler,
-  internalHandler,
-)
+composeHandlers(userHandler, internalHandler)
 ```
 
 It is not part of the public API. It is used by the Menu, Listbox and Select items.
@@ -1050,16 +1033,16 @@ The library owns behavioral accessibility.
 
 The library manages:
 
-* required roles
-* ARIA relationships
-* ARIA states
-* generated IDs
-* focus management
-* keyboard interactions
-* focus restoration
-* focus trapping
-* modal background hiding
-* live announcements where applicable
+- required roles
+- ARIA relationships
+- ARIA states
+- generated IDs
+- focus management
+- keyboard interactions
+- focus restoration
+- focus trapping
+- modal background hiding
+- live announcements where applicable
 
 **Status:** modal background hiding (`aria-hidden` on siblings) and live announcements are not implemented yet.
 
@@ -1069,10 +1052,10 @@ The consumer provides semantic information specific to their content.
 
 Examples:
 
-* meaningful labels
-* descriptions
-* page landmarks
-* application-specific accessible names
+- meaningful labels
+- descriptions
+- page landmarks
+- application-specific accessible names
 
 The library must not invent semantic meaning that only the consumer can know.
 
@@ -1167,7 +1150,7 @@ On close, focus is restored when the element still exists.
 
 ```ts
 target.focus({
-  preventScroll: true,
+    preventScroll: true,
 })
 ```
 
@@ -1214,7 +1197,7 @@ Each overlay owns its portal container.
 Containers are marked:
 
 ```html
-<div data-headless-portal>
+<div data-headless-portal></div>
 ```
 
 The library does not own visual stacking order.
@@ -1231,9 +1214,9 @@ Configuration is provided once at application level.
 
 ```ts
 app.use(
-  createHeadlessUI({
-    idPrefix: 'myapp',
-  }),
+    createHeadlessUI({
+        idPrefix: 'myapp',
+    }),
 )
 ```
 
@@ -1241,13 +1224,13 @@ Default values are available without installing the plugin.
 
 ```ts
 interface HeadlessUIConfig {
-  portalTarget?: string | HTMLElement
-  scrollLock?: 'padding' | 'margin' | 'none'
-  closeOnOutsideClick?: boolean
-  closeOnEscape?: boolean
-  animationDuration?: number
-  dir?: 'ltr' | 'rtl'
-  idPrefix?: string
+    portalTarget?: string | HTMLElement
+    scrollLock?: 'padding' | 'margin' | 'none'
+    closeOnOutsideClick?: boolean
+    closeOnEscape?: boolean
+    animationDuration?: number
+    dir?: 'ltr' | 'rtl'
+    idPrefix?: string
 }
 ```
 
@@ -1275,9 +1258,9 @@ Per-instance behavior belongs in component props.
 
 Configuration is read by component APIs, never by utilities.
 
-* **Utilities** (`useDismiss`, `usePresence`, `useScrollLock`, `useOpenState`, ...) are agnostic of configuration. They receive explicit parameters and carry their own standalone default.
-* **Component APIs** (`useDialog`, `usePopover`, `useMenu`, ...) call `useConfig()` and pass the values down explicitly.
-* **The component layer** exposes per-instance props that override configuration: `props.closeOnEscape ?? config.closeOnEscape`.
+- **Utilities** (`useDismiss`, `usePresence`, `useScrollLock`, `useOpenState`, ...) are agnostic of configuration. They receive explicit parameters and carry their own standalone default.
+- **Component APIs** (`useDialog`, `usePopover`, `useMenu`, ...) call `useConfig()` and pass the values down explicitly.
+- **The component layer** exposes per-instance props that override configuration: `props.closeOnEscape ?? config.closeOnEscape`.
 
 Example:
 
@@ -1285,18 +1268,18 @@ Example:
 const config = useConfig()
 
 const { isOpen, isPresent, close } = useOpenState({
-  open: props.open,
-  defaultOpen: props.defaultOpen,
-  onOpenChange: props.onOpenChange,
-  animationDuration: config.animationDuration,
+    open: props.open,
+    defaultOpen: props.defaultOpen,
+    onOpenChange: props.onOpenChange,
+    animationDuration: config.animationDuration,
 })
 
 useDismiss({
-  active: isOpen,
-  targets: [triggerRef, contentRef],
-  onDismiss: close,
-  escape: config.closeOnEscape,
-  outsideClick: config.closeOnOutsideClick,
+    active: isOpen,
+    targets: [triggerRef, contentRef],
+    onDismiss: close,
+    escape: config.closeOnEscape,
+    outsideClick: config.closeOnOutsideClick,
 })
 ```
 
@@ -1304,11 +1287,11 @@ Because utilities accept `MaybeRef`, a per-instance override requires no change 
 
 Current usage:
 
-| Component API                              | Reads                                                                     | Passes to                                                        |
-| ------------------------------------------ | ------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Component API                              | Reads                                                                     | Passes to                                                            |
+| ------------------------------------------ | ------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | `useDialog`                                | `animationDuration`, `scrollLock`, `closeOnEscape`, `closeOnOutsideClick` | `useOpenState`, `useScrollLock`, its own escape and overlay handlers |
-| `usePopover`, `useMenu`, `useSelect`       | `animationDuration`, `closeOnEscape`, `closeOnOutsideClick`               | `useOpenState`, `useDismiss`                                     |
-| `useAlert`, `useCollapsible`, `useTooltip` | `animationDuration`                                                       | `useOpenState`                                                   |
+| `usePopover`, `useMenu`, `useSelect`       | `animationDuration`, `closeOnEscape`, `closeOnOutsideClick`               | `useOpenState`, `useDismiss`                                         |
+| `useAlert`, `useCollapsible`, `useTooltip` | `animationDuration`                                                       | `useOpenState`                                                       |
 
 Pending: `useId` still falls back to `config.idPrefix`. Every call site passes an explicit prefix, so that branch is not reached today.
 
@@ -1367,10 +1350,7 @@ isPresent
 `isPresent` allows the consumer to keep an element mounted during exit animations.
 
 ```vue
-<div
-  v-if="state.isPresent"
-  v-bind="bindings.panel"
-/>
+<div v-if="state.isPresent" v-bind="bindings.panel" />
 ```
 
 With:
@@ -1389,27 +1369,27 @@ Utilities are introduced only when a real component requires them.
 
 No speculative utility layer is built upfront.
 
-| Utility                | Purpose                       | Public |
-| ---------------------- | ----------------------------- | ------ |
-| `useControllableState` | Controlled/uncontrolled state | Yes    |
-| `useOpenState`         | Open/close state              | Yes    |
-| `usePresence`          | Exit presence                 | Yes    |
-| `useId`                | Stable IDs                    | Yes    |
-| `useRegistry`          | Dynamic child registration    | Yes    |
-| `useHighlight`         | Highlighted item state        | Yes    |
-| `useScrollLock`        | Body scroll locking           | Yes    |
-| `useOutsideClick`      | Outside interaction           | Yes    |
-| `useEscape`            | Escape handling               | Yes    |
+| Utility                | Purpose                          | Public |
+| ---------------------- | -------------------------------- | ------ |
+| `useControllableState` | Controlled/uncontrolled state    | Yes    |
+| `useOpenState`         | Open/close state                 | Yes    |
+| `usePresence`          | Exit presence                    | Yes    |
+| `useId`                | Stable IDs                       | Yes    |
+| `useRegistry`          | Dynamic child registration       | Yes    |
+| `useHighlight`         | Highlighted item state           | Yes    |
+| `useScrollLock`        | Body scroll locking              | Yes    |
+| `useOutsideClick`      | Outside interaction              | Yes    |
+| `useEscape`            | Escape handling                  | Yes    |
 | `useDismiss`           | Escape + outside-click dismissal | Yes    |
-| `useDisabled`          | Disabled state unwrapping     | Yes    |
-| `useFocusTrap`         | Focus trapping                | Yes    |
-| `usePortal`            | Overlay portals               | Yes    |
-| `useArrowNavigation`   | Flat-list navigation          | Yes    |
-| `useRovingFocus`       | Roving tabindex               | Yes    |
-| `useTypeahead`         | Typeahead navigation          | Yes    |
-| `announce`             | Live announcements            | Yes    |
-| `Keys`                 | Keyboard constants            | Yes    |
-| `composeHandlers`      | Internal event composition    | No     |
+| `useDisabled`          | Disabled state unwrapping        | Yes    |
+| `useFocusTrap`         | Focus trapping                   | Yes    |
+| `usePortal`            | Overlay portals                  | Yes    |
+| `useArrowNavigation`   | Flat-list navigation             | Yes    |
+| `useRovingFocus`       | Roving tabindex                  | Yes    |
+| `useTypeahead`         | Typeahead navigation             | Yes    |
+| `announce`             | Live announcements               | Yes    |
+| `Keys`                 | Keyboard constants               | Yes    |
+| `composeHandlers`      | Internal event composition       | No     |
 
 A utility must have a concrete use case before becoming part of the core.
 
@@ -1421,11 +1401,11 @@ Wraps `useEscape` and `useOutsideClick` for anything that closes on Escape and o
 
 ```ts
 interface UseDismissOptions {
-  active: MaybeRef<boolean>
-  targets: Ref<HTMLElement | null>[]
-  onDismiss: () => void
-  escape?: MaybeRef<boolean>        // default true
-  outsideClick?: MaybeRef<boolean>  // default true
+    active: MaybeRef<boolean>
+    targets: Ref<HTMLElement | null>[]
+    onDismiss: () => void
+    escape?: MaybeRef<boolean> // default true
+    outsideClick?: MaybeRef<boolean> // default true
 }
 ```
 
@@ -1435,11 +1415,11 @@ Example (Popover):
 
 ```ts
 useDismiss({
-  active: isOpen,
-  targets: [triggerRef, contentRef],
-  onDismiss: close,
-  escape: config.closeOnEscape,
-  outsideClick: config.closeOnOutsideClick,
+    active: isOpen,
+    targets: [triggerRef, contentRef],
+    onDismiss: close,
+    escape: config.closeOnEscape,
+    outsideClick: config.closeOnOutsideClick,
 })
 ```
 
@@ -1447,8 +1427,8 @@ useDismiss({
 
 Used by Popover, Menu and Select. Not used by:
 
-* Dialog: it has no trigger and closes on a click on its own overlay, not on outside-click detection.
-* Tooltip: it only reacts to Escape and is not gated by configuration.
+- Dialog: it has no trigger and closes on a click on its own overlay, not on outside-click detection.
+- Tooltip: it only reacts to Escape and is not gated by configuration.
 
 `useDismiss` is covered by its own test suite (`useDismiss.test.ts`): Escape and outside click are tested independently, together, and reactively (each can be toggled on or off while active).
 
@@ -1482,22 +1462,11 @@ Children consume the API through context and/or narrowly scoped internal coordin
 Each component family exposes:
 
 ```ts
-export {
-  useCollapsible,
-}
+export { useCollapsible }
 
-export {
-  provideCollapsibleContext,
-  useCollapsibleContext,
-}
+export { provideCollapsibleContext, useCollapsibleContext }
 
-export type {
-  UseCollapsibleProps,
-  CollapsibleApi,
-  CollapsibleState,
-  CollapsibleActions,
-  CollapsibleBindings,
-}
+export type { UseCollapsibleProps, CollapsibleApi, CollapsibleState, CollapsibleActions, CollapsibleBindings }
 ```
 
 Public exports should expose intentional contracts, not implementation details.
@@ -1541,11 +1510,7 @@ on the same behavioral foundation.
 When shipped components expose slot props, they use the same conceptual API shape.
 
 ```vue
-<slot
-  :state="state"
-  :actions="actions"
-  :bindings="bindings"
-/>
+<slot :state="state" :actions="actions" :bindings="bindings" />
 ```
 
 No second state model is introduced for slots.
@@ -1560,10 +1525,10 @@ IDs are generated through the shared `useId` infrastructure.
 
 IDs must be:
 
-* stable
-* unique
-* deterministic within their instance
-* compatible with the configured `idPrefix`
+- stable
+- unique
+- deterministic within their instance
+- compatible with the configured `idPrefix`
 
 IDs are generated once per composable and used to build the bindings objects (`bindings.trigger.id`, `bindings.content['aria-labelledby']`, ...).
 
@@ -1626,10 +1591,10 @@ The dependency boundary exists to keep the API layer independently reusable.
 
 The package publishes:
 
-* ESM
-* declaration files
-* source maps
-* declaration maps
+- ESM
+- declaration files
+- source maps
+- declaration maps
 
 No CommonJS build.
 
@@ -1904,14 +1869,14 @@ Utilities
 
 Open items:
 
-* `useId` still reads `config.idPrefix` (that branch is not reached today).
-* `useDismiss` is now exported from the public index, with tests (`useDismiss.test.ts`). `useRegistry` and `useHighlight` remain internal by design (child-registration coordination, not a public contract).
-* Add `closeOnEscape` / `closeOnOutsideClick` (and scroll lock, animation) props to component APIs so the component layer can override configuration per instance.
-* Tooltip's Escape handling is not gated by configuration. Confirm intent.
-* Shared ARIA types (`AriaRole`, `AriaHasPopup`, `AriaOrientation`, `AriaLive`) are declared but unused.
-* `updateItem` / `updateOption` are still declared in Menu and Select internals. Nothing calls them.
-* `HighlightItem` is a fixed shape, not generic over each `XRegistryItem`.
-* Registry, highlight and arrow-navigation wiring is repeated across Listbox, Menu, Select and Tabs. Refactor only with a shape that keeps bindings in the composable.
-* Not implemented: `usePortal`, `useRovingFocus`, `useTypeahead`, `announce`, the `createHeadlessUI` plugin.
-* The `dir` and `portalTarget` config keys have no consumer yet.
-* ESLint, Prettier and `.editorconfig` are not set up. Type errors are checked with `vue-tsc` (the StackBlitz editor does not display them).
+- `useId` still reads `config.idPrefix` (that branch is not reached today).
+- `useDismiss` is now exported from the public index, with tests (`useDismiss.test.ts`). `useRegistry` and `useHighlight` remain internal by design (child-registration coordination, not a public contract).
+- Add `closeOnEscape` / `closeOnOutsideClick` (and scroll lock, animation) props to component APIs so the component layer can override configuration per instance.
+- Tooltip's Escape handling is not gated by configuration. Confirm intent.
+- Shared ARIA types (`AriaRole`, `AriaHasPopup`, `AriaOrientation`, `AriaLive`) are declared but unused.
+- `updateItem` / `updateOption` are still declared in Menu and Select internals. Nothing calls them.
+- `HighlightItem` is a fixed shape, not generic over each `XRegistryItem`.
+- Registry, highlight and arrow-navigation wiring is repeated across Listbox, Menu, Select and Tabs. Refactor only with a shape that keeps bindings in the composable.
+- Not implemented: `usePortal`, `useRovingFocus`, `useTypeahead`, `announce`, the `createHeadlessUI` plugin.
+- The `dir` and `portalTarget` config keys have no consumer yet.
+- ESLint, Prettier and `.editorconfig` are not set up. Type errors are checked with `vue-tsc` (the StackBlitz editor does not display them).

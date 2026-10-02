@@ -8,5 +8,5 @@ export type {
     MenuBindings,
     MenuApi,
     UseMenuItemProps,
-    MenuItemBindings
+    MenuItemBindings,
 } from './types'

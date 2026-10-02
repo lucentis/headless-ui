@@ -7,12 +7,18 @@ function createHost(disabled?: Parameters<typeof useDisabled>[0]) {
     let exposed: ReturnType<typeof useDisabled>
 
     const Host = defineComponent({
-        setup() { exposed = useDisabled(disabled) },
+        setup() {
+            exposed = useDisabled(disabled)
+        },
         template: '<div />',
     })
 
     mount(Host)
-    return { get result() { return exposed } }
+    return {
+        get result() {
+            return exposed
+        },
+    }
 }
 
 describe('useDisabled', () => {

@@ -23,7 +23,9 @@ export function useTabsPanel(props: UseTabsPanelProps, tabs?: TabsApi): TabsPane
     }))
 
     const bindings: TabsPanelBindings = {
-        get panel() { return panelBindings.value },
+        get panel() {
+            return panelBindings.value
+        },
     }
 
     return { state, actions: {}, bindings }

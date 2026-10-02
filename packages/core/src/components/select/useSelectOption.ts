@@ -35,22 +35,21 @@ export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi)
         'data-highlighted': isHighlighted.value ? ('' as const) : undefined,
         'data-selected': isSelected.value ? ('' as const) : undefined,
         onMousedown: (event: MouseEvent) => event.preventDefault(),
-        onClick: composeHandlers(
-            props.onClick,
-            () => {
-                if (!isDisabled.value) {
-                    selectApi.triggerRef.value?.focus()
-                    selectApi.actions.select(props.value)
-                }
+        onClick: composeHandlers(props.onClick, () => {
+            if (!isDisabled.value) {
+                selectApi.triggerRef.value?.focus()
+                selectApi.actions.select(props.value)
             }
-        ),
+        }),
         onMouseenter: () => {
             selectApi.actions.highlight(props.value)
         },
     }))
 
     const bindings: SelectOptionApi['bindings'] = {
-        get root() { return optionBindings.value },
+        get root() {
+            return optionBindings.value
+        },
     }
 
     return { state, actions: {}, bindings }

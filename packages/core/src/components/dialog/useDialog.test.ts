@@ -8,17 +8,27 @@ function createHost(props: Parameters<typeof useDialog>[0] = {}) {
     let exposed: ReturnType<typeof useDialog>
 
     const Host = defineComponent({
-        setup() { exposed = useDialog(props) },
+        setup() {
+            exposed = useDialog(props)
+        },
         template: '<div />',
     })
 
     const wrapper = mount(Host, { attachTo: document.body })
     return {
         wrapper,
-        get state() { return exposed.state },
-        get actions() { return exposed.actions },
-        get bindings() { return exposed.bindings },
-        get contentRef() { return exposed.contentRef },
+        get state() {
+            return exposed.state
+        },
+        get actions() {
+            return exposed.actions
+        },
+        get bindings() {
+            return exposed.bindings
+        },
+        get contentRef() {
+            return exposed.contentRef
+        },
     }
 }
 
@@ -202,7 +212,9 @@ describe('useDialog', () => {
     describe('context', () => {
         it('useDialogContext throws outside provider', () => {
             const Host = defineComponent({
-                setup() { useDialogContext() },
+                setup() {
+                    useDialogContext()
+                },
                 template: '<div />',
             })
             expect(() => mount(Host)).toThrow('[headless-ui] useDialogContext must be used within a Dialog')
@@ -212,7 +224,9 @@ describe('useDialog', () => {
             let innerApi: ReturnType<typeof useDialogContext> | undefined
 
             const Child = defineComponent({
-                setup() { innerApi = useDialogContext() },
+                setup() {
+                    innerApi = useDialogContext()
+                },
                 template: '<div />',
             })
 

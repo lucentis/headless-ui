@@ -1,11 +1,19 @@
-import { computed, toValue, watch, reactive} from 'vue'
+import { computed, toValue, watch, reactive } from 'vue'
 import { useId } from '../../utils/useId'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
-import type { UseTabsProps, TabsApi, TabsRegistryItem, TabsInternals, TabsState, TabsActions, TabsBindings } from './types'
+import type {
+    UseTabsProps,
+    TabsApi,
+    TabsRegistryItem,
+    TabsInternals,
+    TabsState,
+    TabsActions,
+    TabsBindings,
+} from './types'
 import { TabsInternalKey } from '../../keys/internal-keys'
 
 export function useTabs(props: UseTabsProps = {}): TabsApi {
@@ -21,23 +29,28 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     const listId = useId('tabs-list')
 
     const { registry, register, unregister, getItem } = useRegistry<TabsRegistryItem>()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted } = useHighlight(registry, { loop: true, })
+    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted } =
+        useHighlight(registry, { loop: true })
 
     highlightValue.value = value.value || null
 
-    watch(highlightValue, (newHighlight) => {
-        if (newHighlight === null) return
+    watch(
+        highlightValue,
+        (newHighlight) => {
+            if (newHighlight === null) return
 
-        const item = getItem(newHighlight)
+            const item = getItem(newHighlight)
 
-        if (item?.triggerRef) {
-            item.triggerRef.value?.focus()
-        }
+            if (item?.triggerRef) {
+                item.triggerRef.value?.focus()
+            }
 
-        if (activation.value === 'automatic') {
-            actions.select(newHighlight)
-        }
-    }, { flush: 'post' })
+            if (activation.value === 'automatic') {
+                actions.select(newHighlight)
+            }
+        },
+        { flush: 'post' },
+    )
 
     const state: TabsState = reactive({
         value,
@@ -49,7 +62,12 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     })
 
     const actions: TabsActions = {
-        highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
+        highlight,
+        highlightFirst,
+        highlightLast,
+        highlightNext,
+        highlightPrev,
+        isHighlighted,
 
         select(tabValue: string): void {
             if (isDisabled.value) return
@@ -79,7 +97,9 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     }))
 
     const bindings: TabsBindings = {
-        get list() { return listBindings.value },
+        get list() {
+            return listBindings.value
+        },
     }
 
     const internals: TabsInternals = {

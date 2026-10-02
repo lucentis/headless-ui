@@ -8,7 +8,15 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useConfig } from '../../config'
-import type { UseSelectProps, SelectApi, SelectRegistryItem, SelectInternals, SelectState, SelectActions, SelectBindings } from './types'
+import type {
+    UseSelectProps,
+    SelectApi,
+    SelectRegistryItem,
+    SelectInternals,
+    SelectState,
+    SelectActions,
+    SelectBindings,
+} from './types'
 import { SelectInternalKey } from '../../keys/internal-keys'
 
 export function useSelect(props: UseSelectProps = {}): SelectApi {
@@ -34,13 +42,26 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     const triggerRef = ref<HTMLElement | null>(null)
     const contentRef = ref<HTMLElement | null>(null)
 
-    watch(isOpen, (newOpen) => {
-        if (!newOpen) return
-        contentRef.value?.focus()
-    }, { flush: 'post' })
+    watch(
+        isOpen,
+        (newOpen) => {
+            if (!newOpen) return
+            contentRef.value?.focus()
+        },
+        { flush: 'post' },
+    )
 
     const { registry, register, unregister, updateItem, getItem } = useRegistry<SelectRegistryItem>()
-    const { highlightValue, highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted, clearHighlight } = useHighlight(registry)
+    const {
+        highlightValue,
+        highlight,
+        highlightFirst,
+        highlightLast,
+        highlightNext,
+        highlightPrev,
+        isHighlighted,
+        clearHighlight,
+    } = useHighlight(registry)
 
     const triggerId = useId('select-trigger')
     const contentId = useId('select-content')
@@ -49,7 +70,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
 
     const selectedLabel = computed(() => {
         const v = value.value
-        return v ? getItem(v)?.label ?? null : null
+        return v ? (getItem(v)?.label ?? null) : null
     })
 
     useDismiss({
@@ -71,8 +92,15 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     })
 
     const actions: SelectActions = {
-        open, close, toggle,
-        highlight, highlightFirst, highlightLast, highlightNext, highlightPrev, isHighlighted,
+        open,
+        close,
+        toggle,
+        highlight,
+        highlightFirst,
+        highlightLast,
+        highlightNext,
+        highlightPrev,
+        isHighlighted,
 
         select: (optionValue: string) => {
             if (isDisabled.value) return
@@ -103,8 +131,12 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         onPrev: actions.highlightPrev,
         onFirst: actions.highlightFirst,
         onLast: actions.highlightLast,
-        onEnter: () => { if (highlightValue.value !== null) actions.select(highlightValue.value) },
-        onSpace: () => { if (highlightValue.value !== null) actions.select(highlightValue.value) },
+        onEnter: () => {
+            if (highlightValue.value !== null) actions.select(highlightValue.value)
+        },
+        onSpace: () => {
+            if (highlightValue.value !== null) actions.select(highlightValue.value)
+        },
     })
 
     const contentBindings = computed(() => ({
@@ -115,14 +147,21 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
         tabindex: -1 as const,
         onKeydown: (event: KeyboardEvent) => {
-            if (event.key === 'Tab') { actions.close(); return }
+            if (event.key === 'Tab') {
+                actions.close()
+                return
+            }
             onArrowKeydown(event)
         },
     }))
 
     const bindings: SelectBindings = {
-        get trigger() { return triggerBindings.value },
-        get content() { return contentBindings.value },
+        get trigger() {
+            return triggerBindings.value
+        },
+        get content() {
+            return contentBindings.value
+        },
     }
 
     const internals: SelectInternals = {

@@ -18,13 +18,7 @@ export type AriaRole =
     | 'status'
     | 'alert'
 
-export type AriaHasPopup =
-    | boolean
-    | 'menu'
-    | 'listbox'
-    | 'tree'
-    | 'grid'
-    | 'dialog'
+export type AriaHasPopup = boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'
 
 export type AriaOrientation = 'horizontal' | 'vertical'
 

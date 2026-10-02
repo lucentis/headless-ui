@@ -3,14 +3,20 @@ import { useOpenState } from '../../utils/useOpenState'
 import { useDisabled } from '../../utils/useDisabled'
 import { useId } from '../../utils/useId'
 import { useConfig } from '../../config'
-import type { UseCollapsibleProps, CollapsibleApi, CollapsibleState, CollapsibleActions, CollapsibleBindings } from './types'
+import type {
+    UseCollapsibleProps,
+    CollapsibleApi,
+    CollapsibleState,
+    CollapsibleActions,
+    CollapsibleBindings,
+} from './types'
 
 export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi {
     const { isOpen, isPresent, open, close, toggle } = useOpenState({
         open: props.open,
         defaultOpen: props.defaultOpen,
         onOpenChange: props.onOpenChange,
-        animationDuration: useConfig().animationDuration
+        animationDuration: useConfig().animationDuration,
     })
 
     const isDisabled = useDisabled(props.disabled)
@@ -46,8 +52,12 @@ export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi 
     }))
 
     const bindings: CollapsibleBindings = {
-        get trigger() { return triggerBindings.value },
-        get content() { return contentBindings.value },
+        get trigger() {
+            return triggerBindings.value
+        },
+        get content() {
+            return contentBindings.value
+        },
     }
 
     return { state, actions, bindings }

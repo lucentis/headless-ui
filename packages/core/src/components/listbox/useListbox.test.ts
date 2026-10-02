@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { defineComponent, nextTick, ref, computed} from 'vue'
+import { defineComponent, nextTick, ref, computed } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useListbox } from './useListbox'
 import { useListboxOption } from './useListboxOption'
@@ -10,18 +10,33 @@ function createListboxHost(props: Parameters<typeof useListbox>[0] = {}) {
     let exposed: ReturnType<typeof useListbox>
 
     const Host = defineComponent({
-        setup() { exposed = useListbox(props) },
+        setup() {
+            exposed = useListbox(props)
+        },
         template: '<div />',
     })
 
     mount(Host)
     return {
-        get state() { return exposed.state },
-        get actions() { return exposed.actions },
-        get bindings() { return exposed.bindings },
-        registerOption: (value: string) => exposed[ListboxInternalKey].registerOption({ value, id: `listbox-option-${value}`, disabled: computed(() => false) }),
+        get state() {
+            return exposed.state
+        },
+        get actions() {
+            return exposed.actions
+        },
+        get bindings() {
+            return exposed.bindings
+        },
+        registerOption: (value: string) =>
+            exposed[ListboxInternalKey].registerOption({
+                value,
+                id: `listbox-option-${value}`,
+                disabled: computed(() => false),
+            }),
         unregisterOption: (value: string) => exposed[ListboxInternalKey].unregisterOption(value),
-        get api() { return exposed },
+        get api() {
+            return exposed
+        },
     }
 }
 
@@ -42,9 +57,15 @@ function createOptionHost(
 
     mount(Host)
     return {
-        get listbox() { return exposedListbox },
-        get state() { return exposedOption.state },
-        get bindings() { return exposedOption.bindings },
+        get listbox() {
+            return exposedListbox
+        },
+        get state() {
+            return exposedOption.state
+        },
+        get bindings() {
+            return exposedOption.bindings
+        },
     }
 }
 
@@ -185,7 +206,7 @@ describe('useListbox', () => {
             const { state, actions } = createListboxHost({ multiple: true, defaultValue: ['option-1'] })
             actions.select('option-1')
             await nextTick()
-            expect((state.value as string[]).filter(v => v === 'option-1').length).toBe(1)
+            expect((state.value as string[]).filter((v) => v === 'option-1').length).toBe(1)
         })
     })
 
@@ -334,7 +355,9 @@ describe('useListbox', () => {
     describe('context', () => {
         it('useListboxContext throws outside provider', () => {
             const Host = defineComponent({
-                setup() { useListboxContext() },
+                setup() {
+                    useListboxContext()
+                },
                 template: '<div />',
             })
             expect(() => mount(Host)).toThrow('[headless-ui] useListboxContext must be used within a Listbox')

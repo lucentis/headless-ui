@@ -19,7 +19,7 @@ export interface UseFocusTrapOptions {
 
 function getFocusableElements(container: HTMLElement): HTMLElement[] {
     return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-        el => !el.closest('[inert]')
+        (el) => !el.closest('[inert]'),
     )
 }
 
@@ -99,10 +99,14 @@ export function useFocusTrap(options: UseFocusTrapOptions): void {
         previousFocus = null
     }
 
-    watch(active, (isActive) => {
-        if (isActive) activate()
-        else deactivate()
-    }, { immediate: true,  flush: 'post' })
+    watch(
+        active,
+        (isActive) => {
+            if (isActive) activate()
+            else deactivate()
+        },
+        { immediate: true, flush: 'post' },
+    )
 
     onUnmounted(deactivate)
 }
