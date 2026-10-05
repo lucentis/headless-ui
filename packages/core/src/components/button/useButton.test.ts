@@ -47,47 +47,47 @@ describe('useButton', () => {
         })
     })
 
-    describe('bindings.button', () => {
+    describe('bindings.root', () => {
         it('disabled is undefined when not disabled', () => {
             const { bindings } = createHost()
-            expect(bindings.button.disabled).toBeUndefined()
+            expect(bindings.root.disabled).toBeUndefined()
         })
 
         it('disabled is true when disabled', () => {
             const { bindings } = createHost({ disabled: true })
-            expect(bindings.button.disabled).toBe(true)
+            expect(bindings.root.disabled).toBe(true)
         })
 
         it('aria-disabled is undefined when not disabled', () => {
             const { bindings } = createHost()
-            expect(bindings.button['aria-disabled']).toBeUndefined()
+            expect(bindings.root['aria-disabled']).toBeUndefined()
         })
 
         it('aria-disabled is true when disabled', () => {
             const { bindings } = createHost({ disabled: true })
-            expect(bindings.button['aria-disabled']).toBe(true)
+            expect(bindings.root['aria-disabled']).toBe(true)
         })
 
         it('data-disabled is undefined when not disabled', () => {
             const { bindings } = createHost()
-            expect(bindings.button['data-disabled']).toBeUndefined()
+            expect(bindings.root['data-disabled']).toBeUndefined()
         })
 
         it('data-disabled is empty string when disabled', () => {
             const { bindings } = createHost({ disabled: true })
-            expect(bindings.button['data-disabled']).toBe('')
+            expect(bindings.root['data-disabled']).toBe('')
         })
 
         it('all disabled attributes react when a ref changes', async () => {
             const disabled = ref(false)
             const { bindings } = createHost({ disabled })
 
-            expect(bindings.button.disabled).toBeUndefined()
+            expect(bindings.root.disabled).toBeUndefined()
             disabled.value = true
             await nextTick()
-            expect(bindings.button.disabled).toBe(true)
-            expect(bindings.button['aria-disabled']).toBe(true)
-            expect(bindings.button['data-disabled']).toBe('')
+            expect(bindings.root.disabled).toBe(true)
+            expect(bindings.root['aria-disabled']).toBe(true)
+            expect(bindings.root['data-disabled']).toBe('')
         })
     })
 })

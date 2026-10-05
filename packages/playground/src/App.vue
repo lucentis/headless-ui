@@ -87,7 +87,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
 </script>
 
 <template>
-    <button v-bind="bindings.button" @click="console.log('clicked')">Submit</button>
+    <button v-bind="bindings.root" @click="console.log('clicked')">Submit</button>
 
     <!-- alert -->
     <div class="" v-bind="alert.bindings.root" v-if="alert.state.isPresent">

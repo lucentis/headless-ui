@@ -12,7 +12,7 @@ export interface ButtonState {
 export type ButtonActions = Record<never, never>
 
 export interface ButtonBindings {
-    button: {
+    root: {
         disabled: true | undefined
         'aria-disabled': true | undefined
         'data-disabled': '' | undefined
