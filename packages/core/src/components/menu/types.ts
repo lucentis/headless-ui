@@ -59,11 +59,26 @@ export interface MenuBindings {
     }
 }
 
+export interface MenuApi extends ComponentApi<MenuState, MenuActions, MenuBindings> {
+    triggerRef: Ref<HTMLElement | null>
+    contentRef: Ref<HTMLElement | null>
+    readonly [MenuInternalKey]: MenuInternals
+}
+
+// --- menu item ---
+
 export interface UseMenuItemProps {
     value: string
     onClick?: (event: MouseEvent) => void
     disabled?: MaybeRef<boolean>
 }
+
+export interface MenuItemState {
+    isHighlighted: boolean
+    isDisabled: boolean
+}
+
+export type MenuItemActions = Record<never, never>
 
 export interface MenuItemBindings {
     root: {
@@ -77,8 +92,4 @@ export interface MenuItemBindings {
     }
 }
 
-export interface MenuApi extends ComponentApi<MenuState, MenuActions, MenuBindings> {
-    triggerRef: Ref<HTMLElement | null>
-    contentRef: Ref<HTMLElement | null>
-    readonly [MenuInternalKey]: MenuInternals
-}
+export interface MenuItemApi extends ComponentApi<MenuItemState, MenuItemActions, MenuItemBindings> {}

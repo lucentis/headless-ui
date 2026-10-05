@@ -8,5 +8,8 @@ export type {
     MenuBindings,
     MenuApi,
     UseMenuItemProps,
+    MenuItemState,
+    MenuItemActions,
     MenuItemBindings,
+    MenuItemApi,
 } from './types'
