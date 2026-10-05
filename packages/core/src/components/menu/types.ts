@@ -12,7 +12,6 @@ export interface MenuRegistryItem {
 export interface MenuInternals {
     registerItem: (item: MenuRegistryItem) => void
     unregisterItem: (value: string) => void
-    updateItem: (value: string, patch: Partial<Omit<MenuRegistryItem, 'value'>>) => void
 }
 
 export interface UseMenuProps {

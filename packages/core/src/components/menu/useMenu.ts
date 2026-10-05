@@ -39,7 +39,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         { flush: 'post' },
     )
 
-    const { registry, register, unregister, updateItem, getItem } = useRegistry<MenuRegistryItem>()
+    const { registry, register, unregister, getItem } = useRegistry<MenuRegistryItem>()
     const {
         highlightValue,
         highlight,
@@ -134,7 +134,6 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     const internals: MenuInternals = {
         registerItem: register,
         unregisterItem: unregister,
-        updateItem,
     }
 
     return {
