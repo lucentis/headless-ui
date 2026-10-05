@@ -89,6 +89,7 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     const listBindings = computed(() => ({
         id: listId,
         'aria-orientation': orientation.value,
+        'data-orientation': orientation.value,
         role: 'tablist' as const,
         onKeydown: (event: KeyboardEvent) => {
             onArrowKeydown(event)
