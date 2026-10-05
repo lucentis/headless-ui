@@ -59,7 +59,6 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
         isOpen,
         isPresent,
         isDisabled,
-        contentId,
     })
 
     const actions: TooltipActions = {
