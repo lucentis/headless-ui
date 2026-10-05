@@ -90,7 +90,7 @@ export interface ListboxOptionBindings {
         'data-selected': '' | undefined
         onMousedown: (event: MouseEvent) => void
         onClick: (event: MouseEvent) => void
-        onMouseenter: (event: MouseEvent) => void
+        onPointerenter: () => void
     }
 }
 
