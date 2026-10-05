@@ -102,6 +102,7 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'aria-activedescendant': highlightValue.value ? getItem(highlightValue.value)?.id : undefined,
         'aria-orientation': orientation.value === 'horizontal' ? ('horizontal' as const) : undefined,
+        'data-orientation': orientation.value,
         tabindex: 0 as const,
         onKeydown,
     }))
