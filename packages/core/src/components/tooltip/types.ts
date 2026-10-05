@@ -22,6 +22,7 @@ export interface TooltipActions {
 
 export interface TooltipBindings {
     trigger: {
+        'data-state': 'open' | 'closed'
         'aria-describedby': string
         onPointerenter: () => void
         onPointerleave: () => void

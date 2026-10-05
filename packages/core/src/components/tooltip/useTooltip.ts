@@ -81,6 +81,7 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
     onUnmounted(clearTimers)
 
     const triggerBindings = computed(() => ({
+        'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
         'aria-describedby': contentId,
         onPointerenter: openWithDelay,
         onPointerleave: closeWithDelay,
