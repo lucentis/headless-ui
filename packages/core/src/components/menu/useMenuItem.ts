@@ -35,7 +35,7 @@ export function useMenuItem(props: UseMenuItemProps, menu?: MenuApi): MenuItemAp
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-highlighted': menuApi.actions.isHighlighted(props.value) ? ('' as const) : undefined,
         onClick,
-        onMouseenter: () => {
+        onPointerenter: () => {
             menuApi.actions.highlight(props.value)
         },
     }))

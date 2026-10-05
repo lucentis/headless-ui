@@ -189,6 +189,18 @@ describe('useTabs', () => {
             expect(actions.isSelected('tab-1')).toBe(true)
         })
     })
+
+    describe('bindings.list', () => {
+        it('data-orientation defaults to horizontal', () => {
+            const { api } = createTabsHost()
+            expect(api.bindings.list['data-orientation']).toBe('horizontal')
+        })
+
+        it('data-orientation reflects orientation prop', () => {
+            const { api } = createTabsHost({ orientation: 'vertical' })
+            expect(api.bindings.list['data-orientation']).toBe('vertical')
+        })
+    })
 })
 
 describe('useTabsTrigger', () => {

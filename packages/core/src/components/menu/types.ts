@@ -87,7 +87,7 @@ export interface MenuItemBindings {
         'data-disabled': '' | undefined
         'data-highlighted': '' | undefined
         onClick: (event: MouseEvent) => void
-        onMouseenter: (event: MouseEvent) => void
+        onPointerenter: () => void
     }
 }
 

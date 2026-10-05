@@ -47,7 +47,7 @@ export function useListboxOption(props: UseListboxOptionProps, listbox?: Listbox
                 listboxApi.actions.toggle(props.value)
             }
         }),
-        onMouseenter: () => {
+        onPointerenter: () => {
             listboxApi.actions.highlight(props.value)
         },
     }))

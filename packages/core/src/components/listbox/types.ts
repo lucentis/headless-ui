@@ -51,6 +51,8 @@ export interface ListboxBindings {
         'aria-disabled': true | undefined
         'aria-activedescendant': string | undefined
         'aria-orientation': 'horizontal' | undefined
+        'data-orientation': AriaOrientation
+        'data-disabled': '' | undefined
         tabindex: 0
         onKeydown: (event: KeyboardEvent) => void
     }
@@ -88,7 +90,7 @@ export interface ListboxOptionBindings {
         'data-selected': '' | undefined
         onMousedown: (event: MouseEvent) => void
         onClick: (event: MouseEvent) => void
-        onMouseenter: (event: MouseEvent) => void
+        onPointerenter: () => void
     }
 }
 

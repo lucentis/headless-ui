@@ -350,6 +350,21 @@ describe('useListbox', () => {
             await nextTick()
             expect(state.highlightValue).toBe('option-1')
         })
+
+        it('data-orientation is vertical by default', () => {
+            const { bindings } = createListboxHost()
+            expect(bindings.root['data-orientation']).toBe('vertical')
+        })
+
+        it('data-orientation reflects orientation prop', () => {
+            const { bindings } = createListboxHost({ orientation: 'horizontal' })
+            expect(bindings.root['data-orientation']).toBe('horizontal')
+        })
+
+        it('data-disabled is empty string when disabled', () => {
+            const { bindings } = createListboxHost({ disabled: true })
+            expect(bindings.root['data-disabled']).toBe('')
+        })
     })
 
     describe('context', () => {

@@ -50,6 +50,7 @@ export interface TabsBindings {
         id: string
         role: 'tablist'
         'aria-orientation': AriaOrientation
+        'data-orientation': AriaOrientation
         onKeydown: (event: KeyboardEvent) => void
     }
 }

@@ -41,7 +41,7 @@ export function useSelectOption(props: UseSelectOptionProps, select?: SelectApi)
                 selectApi.actions.select(props.value)
             }
         }),
-        onMouseenter: () => {
+        onPointerenter: () => {
             selectApi.actions.highlight(props.value)
         },
     }))

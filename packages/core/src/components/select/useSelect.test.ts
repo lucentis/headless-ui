@@ -439,9 +439,9 @@ describe('useSelectOption', () => {
             expect(select.state.isOpen).toBe(true)
         })
 
-        it('onMouseenter highlights option', async () => {
+        it('onPointerenter highlights option', async () => {
             const { bindings, select } = createOptionHost({}, { value: 'fr', label: 'French' })
-            bindings.root.onMouseenter(new MouseEvent('mouseenter'))
+            bindings.root.onPointerenter()
             await nextTick()
             expect(select.state.highlightValue).toBe('fr')
         })

@@ -10,7 +10,7 @@ export function useButton(props: UseButtonProps = {}): ButtonApi {
     })
 
     const bindings: ButtonBindings = {
-        get button() {
+        get root() {
             return {
                 disabled: isDisabled.value ? (true as const) : undefined,
                 'aria-disabled': isDisabled.value ? (true as const) : undefined,
