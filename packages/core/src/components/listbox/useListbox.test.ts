@@ -360,6 +360,11 @@ describe('useListbox', () => {
             const { bindings } = createListboxHost({ orientation: 'horizontal' })
             expect(bindings.root['data-orientation']).toBe('horizontal')
         })
+
+        it('data-disabled is empty string when disabled', () => {
+            const { bindings } = createListboxHost({ disabled: true })
+            expect(bindings.root['data-disabled']).toBe('')
+        })
     })
 
     describe('context', () => {

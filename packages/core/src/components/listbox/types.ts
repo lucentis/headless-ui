@@ -52,6 +52,7 @@ export interface ListboxBindings {
         'aria-activedescendant': string | undefined
         'aria-orientation': 'horizontal' | undefined
         'data-orientation': AriaOrientation
+        'data-disabled': '' | undefined
         tabindex: 0
         onKeydown: (event: KeyboardEvent) => void
     }
