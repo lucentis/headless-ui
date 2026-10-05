@@ -28,7 +28,7 @@ export interface CollapsibleBindings {
         'aria-disabled': true | undefined
         'data-disabled': '' | undefined
         'data-state': 'open' | 'closed'
-        onClick: (event: MouseEvent) => void
+        onClick: () => void
     }
     content: {
         id: string
