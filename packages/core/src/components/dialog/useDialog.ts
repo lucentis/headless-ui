@@ -9,6 +9,7 @@ import type { UseDialogProps, DialogApi, DialogState, DialogActions, DialogBindi
 
 export function useDialog(props: UseDialogProps = {}): DialogApi {
     const config = useConfig()
+    const contentId = useId('dialog-content')
 
     const { isOpen, isPresent, open, close } = useOpenState({
         open: props.open,
@@ -60,6 +61,7 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
     }))
 
     const contentBindings = computed(() => ({
+        id: contentId,
         role: 'dialog' as const,
         'aria-modal': isModal.value ? (true as const) : undefined,
         'aria-labelledby': titleId,
