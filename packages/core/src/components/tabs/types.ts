@@ -85,6 +85,7 @@ export interface TabsTriggerBindings {
         'data-disabled': '' | undefined
         'data-state': 'active' | 'inactive'
         'data-orientation': AriaOrientation
+        'data-highlighted': '' | undefined
         tabindex: 0 | -1
         onClick: () => void
     }
