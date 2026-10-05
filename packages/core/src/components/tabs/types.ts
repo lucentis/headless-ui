@@ -32,7 +32,6 @@ export interface TabsState {
     orientation: 'horizontal' | 'vertical'
     activation: 'automatic' | 'manual'
     isDisabled: boolean
-    listId: string
 }
 
 export interface TabsActions {
@@ -48,6 +47,7 @@ export interface TabsActions {
 
 export interface TabsBindings {
     list: {
+        id: string
         role: 'tablist'
         'aria-orientation': 'horizontal' | 'vertical'
         onKeydown: (event: KeyboardEvent) => void
