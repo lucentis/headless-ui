@@ -12,8 +12,6 @@ export interface DialogState {
     isOpen: boolean
     isPresent: boolean
     isModal: boolean
-    titleId: string
-    descriptionId: string
 }
 
 export interface DialogActions {

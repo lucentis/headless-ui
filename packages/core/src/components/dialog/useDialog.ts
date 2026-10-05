@@ -47,8 +47,6 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
         isOpen,
         isPresent,
         isModal,
-        titleId,
-        descriptionId,
     })
 
     const actions: DialogActions = { open, close }
