@@ -41,7 +41,7 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
         if (isDisabled.value) return
         clearTimers()
 
-        const delay = props.delayDuration ?? DEFAULT_DELAY
+        const delay = toValue(props.delayDuration) ?? DEFAULT_DELAY
         if (delay === 0) {
             actions.open()
             return

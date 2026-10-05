@@ -5,7 +5,7 @@ export interface UseTooltipProps {
     open?: MaybeRef<boolean>
     defaultOpen?: boolean
     onOpenChange?: (value: boolean) => void
-    delayDuration?: number
+    delayDuration?: MaybeRef<number>
     disabled?: MaybeRef<boolean>
 }
 

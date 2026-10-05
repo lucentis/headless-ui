@@ -2,7 +2,7 @@ import type { MaybeRef } from 'vue'
 import type { ComponentApi } from '../../types'
 
 export interface UseAccordionProps {
-    type?: 'single' | 'multiple'
+    type?: MaybeRef<'single' | 'multiple'>
     defaultValue?: string | string[]
     value?: MaybeRef<string | string[]>
     onValueChange?: (value: string | string[]) => void
