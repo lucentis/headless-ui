@@ -39,7 +39,7 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         { flush: 'post' },
     )
 
-    const { registry, register, unregister, updateItem, getItem } = useRegistry<MenuRegistryItem>()
+    const { registry, register, unregister, getItem } = useRegistry<MenuRegistryItem>()
     const {
         highlightValue,
         highlight,
@@ -92,16 +92,18 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
         onClick: () => actions.toggle(),
     }))
 
+    function activateHighlighted(): void {
+        if (highlightValue.value === null) return
+        getItem(highlightValue.value)?.onClick?.(new MouseEvent('click', { cancelable: true }))
+    }
+
     const { onKeydown: onArrowKeydown } = useArrowNavigation({
         onNext: actions.highlightNext,
         onPrev: actions.highlightPrev,
         onFirst: actions.highlightFirst,
         onLast: actions.highlightLast,
-        onSpace: () => {
-            const item = getItem(highlightValue.value!)
-
-            item?.onClick?.(new MouseEvent('click'))
-        },
+        onSpace: activateHighlighted,
+        onEnter: activateHighlighted,
     })
 
     const contentBindings = computed(() => ({
@@ -132,7 +134,6 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     const internals: MenuInternals = {
         registerItem: register,
         unregisterItem: unregister,
-        updateItem,
     }
 
     return {

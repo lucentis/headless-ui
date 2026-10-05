@@ -58,7 +58,6 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
         orientation,
         activation,
         isDisabled,
-        listId,
     })
 
     const actions: TabsActions = {
@@ -88,7 +87,7 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     })
 
     const listBindings = computed(() => ({
-        //other binding?
+        id: listId,
         'aria-orientation': orientation.value,
         role: 'tablist' as const,
         onKeydown: (event: KeyboardEvent) => {

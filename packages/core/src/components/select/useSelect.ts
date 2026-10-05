@@ -51,7 +51,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         { flush: 'post' },
     )
 
-    const { registry, register, unregister, updateItem, getItem } = useRegistry<SelectRegistryItem>()
+    const { registry, register, unregister, getItem } = useRegistry<SelectRegistryItem>()
     const {
         highlightValue,
         highlight,
@@ -167,7 +167,6 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     const internals: SelectInternals = {
         registerOption: register,
         unregisterOption: unregister,
-        updateOption: updateItem,
     }
 
     return {

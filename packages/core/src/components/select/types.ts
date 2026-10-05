@@ -12,7 +12,6 @@ export interface SelectRegistryItem {
 export interface SelectInternals {
     registerOption: (item: SelectRegistryItem) => void
     unregisterOption: (value: string) => void
-    updateOption: (value: string, patch: Partial<Omit<SelectRegistryItem, 'value'>>) => void
 }
 
 export interface UseSelectProps {

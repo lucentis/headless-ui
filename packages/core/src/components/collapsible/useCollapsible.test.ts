@@ -148,14 +148,14 @@ describe('useCollapsible', () => {
 
         it('onClick toggles when not disabled', async () => {
             const { state, bindings } = createHost()
-            bindings.trigger.onClick(new MouseEvent('click'))
+            bindings.trigger.onClick()
             await nextTick()
             expect(state.isOpen).toBe(true)
         })
 
         it('onClick does nothing when disabled', async () => {
             const { state, bindings } = createHost({ disabled: true })
-            bindings.trigger.onClick(new MouseEvent('click'))
+            bindings.trigger.onClick()
             await nextTick()
             expect(state.isOpen).toBe(false)
         })
