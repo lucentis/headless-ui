@@ -1,5 +1,5 @@
 import type { MaybeRef, Ref, ComputedRef } from 'vue'
-import type { ComponentApi } from '../../types'
+import type { ComponentApi, AriaOrientation } from '../../types'
 import type { ListboxInternalKey } from '../../keys/internal-keys'
 
 export interface ListboxRegistryItem {
@@ -19,7 +19,7 @@ export interface UseListboxProps {
     onValueChange?: (value: string | string[]) => void
     multiple?: MaybeRef<boolean>
     disabled?: MaybeRef<boolean>
-    orientation?: MaybeRef<'horizontal' | 'vertical'>
+    orientation?: MaybeRef<AriaOrientation>
 }
 
 export interface ListboxState {
@@ -27,7 +27,7 @@ export interface ListboxState {
     highlightValue: string | null
     isDisabled: boolean
     multiple: boolean
-    orientation: 'horizontal' | 'vertical'
+    orientation: AriaOrientation
 }
 
 export interface ListboxActions {

@@ -1,13 +1,13 @@
 import type { MaybeRef } from 'vue'
-import type { ComponentApi } from '../../types'
+import type { ComponentApi, AriaOrientation } from '../../types'
 
 export interface UseSeparatorProps {
-    orientation?: MaybeRef<'horizontal' | 'vertical'>
+    orientation?: MaybeRef<AriaOrientation>
     decorative?: MaybeRef<boolean>
 }
 
 export interface SeparatorState {
-    orientation: 'horizontal' | 'vertical'
+    orientation: AriaOrientation
     isDecorative: boolean
 }
 
@@ -17,7 +17,7 @@ export interface SeparatorBindings {
     root: {
         role: 'separator' | 'none'
         'aria-orientation': 'vertical' | undefined
-        'data-orientation': 'horizontal' | 'vertical'
+        'data-orientation': AriaOrientation
     }
 }
 

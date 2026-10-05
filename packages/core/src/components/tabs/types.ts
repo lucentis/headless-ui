@@ -1,5 +1,5 @@
 import type { MaybeRef, Ref, ComputedRef } from 'vue'
-import type { ComponentApi } from '../../types'
+import type { ComponentApi, AriaOrientation } from '../../types'
 import type { TabsInternalKey } from '../../keys/internal-keys'
 
 export interface TabsRegistryItem {
@@ -21,7 +21,7 @@ export interface UseTabsProps {
     defaultValue?: string
     value?: MaybeRef<string>
     onValueChange?: (value: string) => void
-    orientation?: MaybeRef<'horizontal' | 'vertical'>
+    orientation?: MaybeRef<AriaOrientation>
     activation?: MaybeRef<'automatic' | 'manual'>
     disabled?: MaybeRef<boolean>
 }
@@ -29,7 +29,7 @@ export interface UseTabsProps {
 export interface TabsState {
     value: string
     highlightValue: string | null
-    orientation: 'horizontal' | 'vertical'
+    orientation: AriaOrientation
     activation: 'automatic' | 'manual'
     isDisabled: boolean
 }
@@ -49,7 +49,7 @@ export interface TabsBindings {
     list: {
         id: string
         role: 'tablist'
-        'aria-orientation': 'horizontal' | 'vertical'
+        'aria-orientation': AriaOrientation
         onKeydown: (event: KeyboardEvent) => void
     }
 }
@@ -84,7 +84,7 @@ export interface TabsTriggerBindings {
         'aria-disabled': true | undefined
         'data-disabled': '' | undefined
         'data-state': 'active' | 'inactive'
-        'data-orientation': 'horizontal' | 'vertical'
+        'data-orientation': AriaOrientation
         tabindex: 0 | -1
         onClick: () => void
     }
@@ -112,7 +112,7 @@ export interface TabsPanelBindings {
         role: 'tabpanel'
         'aria-labelledby': string
         'data-state': 'active' | 'inactive'
-        'data-orientation': 'horizontal' | 'vertical'
+        'data-orientation': AriaOrientation
         tabindex: 0
     }
 }
