@@ -168,6 +168,15 @@ describe('useTooltip', () => {
     })
 
     describe('bindings.trigger', () => {
+        it('data-state reflects isOpen', async () => {
+            const { bindings, actions, wrapper } = createHost()
+            expect(bindings.trigger['data-state']).toBe('closed')
+            actions.open()
+            await nextTick()
+            expect(bindings.trigger['data-state']).toBe('open')
+            wrapper.unmount()
+        })
+
         it('aria-describedby matches contentId', () => {
             const { bindings, wrapper } = createHost()
 

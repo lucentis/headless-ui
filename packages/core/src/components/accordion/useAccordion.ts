@@ -1,10 +1,10 @@
-import { computed, reactive } from 'vue'
+import { computed, reactive, toValue } from 'vue'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
 import type { UseAccordionProps, AccordionApi, AccordionState, AccordionActions } from './types'
 
 export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
-    const type = computed(() => props.type ?? 'single')
+    const type = computed(() => toValue(props.type) ?? 'single')
     const isDisabled = useDisabled(props.disabled)
 
     const defaultValue = props.defaultValue ?? (type.value === 'multiple' ? [] : '')

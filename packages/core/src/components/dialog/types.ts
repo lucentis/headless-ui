@@ -26,6 +26,7 @@ export interface DialogBindings {
         onClick: () => void
     }
     content: {
+        id: string
         role: 'dialog'
         'aria-modal': true | undefined
         'aria-labelledby': string

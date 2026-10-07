@@ -169,6 +169,12 @@ describe('useDialog', () => {
             expect(bindings.content['data-state']).toBe('open')
             wrapper.unmount()
         })
+
+        it('id is a string', () => {
+            const { bindings, wrapper } = createHost()
+            expect(typeof bindings.content.id).toBe('string')
+            wrapper.unmount()
+        })
     })
 
     describe('escape key', () => {

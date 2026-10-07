@@ -1,4 +1,4 @@
-import { computed, onUnmounted, reactive } from 'vue'
+import { computed, onUnmounted, reactive, toValue } from 'vue'
 import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
 import { useDisabled } from '../../utils/useDisabled'
@@ -41,7 +41,7 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
         if (isDisabled.value) return
         clearTimers()
 
-        const delay = props.delayDuration ?? DEFAULT_DELAY
+        const delay = toValue(props.delayDuration) ?? DEFAULT_DELAY
         if (delay === 0) {
             actions.open()
             return
@@ -81,6 +81,7 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
     onUnmounted(clearTimers)
 
     const triggerBindings = computed(() => ({
+        'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
         'aria-describedby': contentId,
         onPointerenter: openWithDelay,
         onPointerleave: closeWithDelay,
