@@ -52,12 +52,60 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         isHighlighted,
 
         select: (optionValue: string) => {
-            if (isDisabled.value) return
+            if (isDisabled.value) {
+                warnDev('useListbox().actions.select()', 'Cannot select an option because the Listbox is disabled.')
+                return
+            }
+
+            const option = getItem(optionValue)
+
+            if (!option) {
+                warnDev(
+                    'useListbox().actions.select()',
+                    `Cannot select "${optionValue}" because no option with this value is registered.`,
+                )
+                return
+            }
+
+            if (option.disabled.value) {
+                warnDev('useListbox().actions.select()', `Cannot select the disabled option "${optionValue}".`)
+                return
+            }
+
             if (multiple.value) {
                 const current = Array.isArray(value.value) ? value.value : []
-                if (!current.includes(optionValue)) setValue([...current, optionValue])
+
+                if (!current.includes(optionValue)) {
+                    setValue([...current, optionValue])
+                }
             } else {
                 setValue(optionValue)
+            }
+        },
+
+        toggle: (optionValue: string) => {
+            const option = getItem(optionValue)
+
+            if (!option) {
+                warnDev(
+                    'useListbox().actions.toggle()',
+                    `Cannot toggle "${optionValue}" because no option with this value is registered.`,
+                )
+                return
+            }
+
+            if (isDisabled.value || option.disabled.value) {
+                warnDev(
+                    'useListbox().actions.toggle()',
+                    `Cannot toggle the option "${optionValue}" because it or its Listbox is disabled.`,
+                )
+                return
+            }
+
+            if (actions.isSelected(optionValue)) {
+                actions.deselect(optionValue)
+            } else {
+                actions.select(optionValue)
             }
         },
 
@@ -69,11 +117,6 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
             } else {
                 if (value.value === optionValue) setValue('')
             }
-        },
-
-        toggle: (optionValue: string) => {
-            if (actions.isSelected(optionValue)) actions.deselect(optionValue)
-            else actions.select(optionValue)
         },
 
         isSelected: (optionValue: string) => {

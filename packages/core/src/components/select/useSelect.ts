@@ -18,6 +18,7 @@ import type {
     SelectBindings,
 } from './types'
 import { SelectInternalKey } from '../../keys/internal-keys'
+import { warnDev } from '../../utils/warnDev'
 
 export function useSelect(props: UseSelectProps = {}): SelectApi {
     const config = useConfig()
@@ -103,7 +104,26 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         isHighlighted,
 
         select: (optionValue: string) => {
-            if (isDisabled.value) return
+            if (isDisabled.value) {
+                warnDev('useSelect().actions.select()', 'Cannot select an option because the Select is disabled.')
+                return
+            }
+
+            const option = getItem(optionValue)
+
+            if (!option) {
+                warnDev(
+                    'useSelect().actions.select()',
+                    `Cannot select "${optionValue}" because no option with this value is registered.`,
+                )
+                return
+            }
+
+            if (option.disabled.value) {
+                warnDev('useSelect().actions.select()', `Cannot select the disabled option "${optionValue}".`)
+                return
+            }
+
             setValue(optionValue)
             close()
         },
