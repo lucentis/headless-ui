@@ -8,6 +8,7 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useConfig } from '../../config'
+import { warnDev } from '../../utils/warnDev'
 import type {
     UseSelectProps,
     SelectApi,
@@ -18,7 +19,6 @@ import type {
     SelectBindings,
 } from './types'
 import { SelectInternalKey } from '../../keys/internal-keys'
-import { warnDev } from '../../utils/warnDev'
 
 export function useSelect(props: UseSelectProps = {}): SelectApi {
     const config = useConfig()

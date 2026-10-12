@@ -5,6 +5,7 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useId } from '../../utils/useId'
+import { warnDev } from '../../utils/warnDev'
 import type {
     UseListboxProps,
     ListboxApi,
@@ -110,7 +111,17 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         },
 
         deselect: (optionValue: string) => {
-            if (isDisabled.value) return
+            if (isDisabled.value) {
+                warnDev('useListbox().actions.deselect()', 'Cannot deselect an option because the Listbox is disabled.')
+                return
+            }
+
+            // An unknown value is not reported: a selected value whose option was unmounted must stay removable.
+            if (getItem(optionValue)?.disabled.value) {
+                warnDev('useListbox().actions.deselect()', `Cannot deselect the disabled option "${optionValue}".`)
+                return
+            }
+
             if (multiple.value) {
                 const current = Array.isArray(value.value) ? value.value : []
                 setValue(current.filter((v) => v !== optionValue))

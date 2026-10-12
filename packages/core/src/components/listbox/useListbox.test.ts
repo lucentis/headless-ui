@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { defineComponent, nextTick, ref, computed } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useListbox } from './useListbox'
@@ -118,35 +118,40 @@ describe('useListbox', () => {
 
     describe('actions — single mode', () => {
         it('select sets value', async () => {
-            const { state, actions } = createListboxHost()
+            const { state, actions, registerOption } = createListboxHost()
+            registerOption('option-1')
             actions.select('option-1')
             await nextTick()
             expect(state.value).toBe('option-1')
         })
 
         it('select replaces previous value', async () => {
-            const { state, actions } = createListboxHost({ defaultValue: 'option-1' })
+            const { state, actions, registerOption } = createListboxHost({ defaultValue: 'option-1' })
+            registerOption('option-2')
             actions.select('option-2')
             await nextTick()
             expect(state.value).toBe('option-2')
         })
 
         it('deselect clears value', async () => {
-            const { state, actions } = createListboxHost({ defaultValue: 'option-1' })
+            const { state, actions, registerOption } = createListboxHost({ defaultValue: 'option-1' })
+            registerOption('option-1')
             actions.deselect('option-1')
             await nextTick()
             expect(state.value).toBe('')
         })
 
         it('toggle selects unselected option', async () => {
-            const { state, actions } = createListboxHost()
+            const { state, actions, registerOption } = createListboxHost()
+            registerOption('option-1')
             actions.toggle('option-1')
             await nextTick()
             expect(state.value).toBe('option-1')
         })
 
         it('toggle deselects selected option', async () => {
-            const { state, actions } = createListboxHost({ defaultValue: 'option-1' })
+            const { state, actions, registerOption } = createListboxHost({ defaultValue: 'option-1' })
+            registerOption('option-1')
             actions.toggle('option-1')
             await nextTick()
             expect(state.value).toBe('')
@@ -164,7 +169,8 @@ describe('useListbox', () => {
 
         it('calls onValueChange', () => {
             const onValueChange = vi.fn()
-            const { actions } = createListboxHost({ onValueChange })
+            const { actions, registerOption } = createListboxHost({ onValueChange })
+            registerOption('option-1')
             actions.select('option-1')
             expect(onValueChange).toHaveBeenCalledWith('option-1')
         })
@@ -187,7 +193,8 @@ describe('useListbox', () => {
 
     describe('actions — multiple mode', () => {
         it('select adds to array', async () => {
-            const { actions } = createListboxHost({ multiple: true, defaultValue: ['option-1'] })
+            const { actions, registerOption } = createListboxHost({ multiple: true, defaultValue: ['option-1'] })
+            registerOption('option-2')
             actions.select('option-2')
             await nextTick()
             expect(actions.isSelected('option-1')).toBe(true)
@@ -256,6 +263,142 @@ describe('useListbox', () => {
             actions.highlightPrev()
             await nextTick()
             expect(state.highlightValue).toBe('option-1')
+        })
+    })
+
+    describe('warnings', () => {
+        let warnSpy: ReturnType<typeof vi.spyOn>
+
+        beforeEach(() => {
+            warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        })
+
+        afterEach(() => {
+            warnSpy.mockRestore()
+        })
+
+        function registerDisabledOption(api: ReturnType<typeof useListbox>, value: string) {
+            api[ListboxInternalKey].registerOption({
+                value,
+                id: `listbox-option-${value}`,
+                disabled: computed(() => true),
+            })
+        }
+
+        describe('select', () => {
+            it('warns and does not select when the listbox is disabled', async () => {
+                const onValueChange = vi.fn()
+                const { state, actions, registerOption } = createListboxHost({ disabled: true, onValueChange })
+                registerOption('option-1')
+                actions.select('option-1')
+                await nextTick()
+                expect(state.value).toBe('')
+                expect(onValueChange).not.toHaveBeenCalled()
+                expect(warnSpy).toHaveBeenCalledTimes(1)
+                expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('the Listbox is disabled'))
+            })
+
+            it('warns and does not select when no option is registered for the value', async () => {
+                const onValueChange = vi.fn()
+                const { state, actions } = createListboxHost({ onValueChange })
+                actions.select('xx')
+                await nextTick()
+                expect(state.value).toBe('')
+                expect(onValueChange).not.toHaveBeenCalled()
+                expect(warnSpy).toHaveBeenCalledTimes(1)
+                expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"xx"'))
+            })
+
+            it('warns and does not select when the option is disabled', async () => {
+                const onValueChange = vi.fn()
+                const { state, actions, api } = createListboxHost({ onValueChange })
+                registerDisabledOption(api, 'option-1')
+                actions.select('option-1')
+                await nextTick()
+                expect(state.value).toBe('')
+                expect(onValueChange).not.toHaveBeenCalled()
+                expect(warnSpy).toHaveBeenCalledTimes(1)
+                expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('disabled option "option-1"'))
+            })
+
+            it('does not warn when the selection is valid', async () => {
+                const { state, actions, registerOption } = createListboxHost()
+                registerOption('option-1')
+                actions.select('option-1')
+                await nextTick()
+                expect(state.value).toBe('option-1')
+                expect(warnSpy).not.toHaveBeenCalled()
+            })
+        })
+
+        describe('toggle', () => {
+            it('warns once and does nothing when no option is registered for the value', async () => {
+                const { state, actions } = createListboxHost()
+                actions.toggle('xx')
+                await nextTick()
+                expect(state.value).toBe('')
+                expect(warnSpy).toHaveBeenCalledTimes(1)
+                expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useListbox().actions.toggle()'))
+                expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"xx"'))
+            })
+
+            it('warns once and does nothing when the listbox is disabled', async () => {
+                const { state, actions, registerOption } = createListboxHost({ disabled: true })
+                registerOption('option-1')
+                actions.toggle('option-1')
+                await nextTick()
+                expect(state.value).toBe('')
+                expect(warnSpy).toHaveBeenCalledTimes(1)
+                expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useListbox().actions.toggle()'))
+            })
+
+            it('warns once and does nothing when the option is disabled', async () => {
+                const { state, actions, api } = createListboxHost()
+                registerDisabledOption(api, 'option-1')
+                actions.toggle('option-1')
+                await nextTick()
+                expect(state.value).toBe('')
+                expect(warnSpy).toHaveBeenCalledTimes(1)
+                expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"option-1"'))
+            })
+
+            it('does not warn when the toggle is valid', async () => {
+                const { state, actions, registerOption } = createListboxHost()
+                registerOption('option-1')
+                actions.toggle('option-1')
+                await nextTick()
+                expect(state.value).toBe('option-1')
+                expect(warnSpy).not.toHaveBeenCalled()
+            })
+        })
+
+        describe('deselect', () => {
+            it('warns and does not deselect when the listbox is disabled', async () => {
+                const { state, actions } = createListboxHost({ defaultValue: 'option-1', disabled: true })
+                actions.deselect('option-1')
+                await nextTick()
+                expect(state.value).toBe('option-1')
+                expect(warnSpy).toHaveBeenCalledTimes(1)
+                expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('the Listbox is disabled'))
+            })
+
+            it('warns and does not deselect when the option is disabled', async () => {
+                const { state, actions, api } = createListboxHost({ defaultValue: 'option-1' })
+                registerDisabledOption(api, 'option-1')
+                actions.deselect('option-1')
+                await nextTick()
+                expect(state.value).toBe('option-1')
+                expect(warnSpy).toHaveBeenCalledTimes(1)
+                expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('disabled option "option-1"'))
+            })
+
+            it('does not warn for an unknown value', async () => {
+                const { state, actions } = createListboxHost({ defaultValue: 'option-1' })
+                actions.deselect('option-1')
+                await nextTick()
+                expect(state.value).toBe('')
+                expect(warnSpy).not.toHaveBeenCalled()
+            })
         })
     })
 
