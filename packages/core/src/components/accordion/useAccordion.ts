@@ -1,6 +1,7 @@
 import { computed, reactive, toValue } from 'vue'
 import { useControllableState } from '../../utils/useControllableState'
 import { useDisabled } from '../../utils/useDisabled'
+import { warnDev } from '../../utils/warnDev'
 import type { UseAccordionProps, AccordionApi, AccordionState, AccordionActions } from './types'
 
 export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
@@ -28,7 +29,13 @@ export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
         },
 
         expand(itemValue: string): void {
-            if (isDisabled.value) return
+            if (isDisabled.value) {
+                warnDev(
+                    'useAccordion().actions.expand()',
+                    `Cannot expand "${itemValue}" because the Accordion is disabled.`,
+                )
+                return
+            }
             const current = value.value
 
             if (type.value === 'multiple') {
@@ -40,7 +47,13 @@ export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
         },
 
         collapse(itemValue: string): void {
-            if (isDisabled.value) return
+            if (isDisabled.value) {
+                warnDev(
+                    'useAccordion().actions.collapse()',
+                    `Cannot collapse "${itemValue}" because the Accordion is disabled.`,
+                )
+                return
+            }
             const current = value.value
 
             if (type.value === 'multiple') {
@@ -52,8 +65,15 @@ export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
         },
 
         toggle(itemValue: string): void {
-            if (actions.isExpanded(itemValue)) actions.collapse(itemValue)
-            else actions.expand(itemValue)
+            if (isDisabled.value) {
+                warnDev(
+                    'useAccordion().actions.toggle()',
+                    `Cannot toggle "${itemValue}" because the Accordion is disabled.`,
+                )
+                return
+            }
+
+            actions.isExpanded(itemValue) ? actions.collapse(itemValue) : actions.expand(itemValue)
         },
     }
 
