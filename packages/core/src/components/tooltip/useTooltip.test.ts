@@ -319,4 +319,69 @@ describe('useTooltip', () => {
             expect(typeof innerApi!.state.isOpen).toBe('boolean')
         })
     })
+
+    describe('warnings', () => {
+        let warnSpy: ReturnType<typeof vi.spyOn>
+    
+        beforeEach(() => {
+            warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        })
+    
+        afterEach(() => {
+            warnSpy.mockRestore()
+        })
+    
+        it('open warns once and does nothing when the tooltip is disabled', async () => {
+            const onOpenChange = vi.fn()
+            const { state, actions, wrapper } = createHost({ disabled: true, onOpenChange })
+            actions.open()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(onOpenChange).not.toHaveBeenCalled()
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useTooltip().actions.open()'))
+            wrapper.unmount()
+        })
+    
+        it('does not warn when the pointer enters a disabled trigger', async () => {
+            const { state, bindings, wrapper } = createHost({ disabled: true })
+            bindings.trigger.onPointerenter()
+            vi.advanceTimersByTime(700)
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).not.toHaveBeenCalled()
+            wrapper.unmount()
+        })
+    
+        it('does not warn when a disabled trigger receives focus', async () => {
+            const { state, bindings, wrapper } = createHost({ disabled: true })
+            bindings.trigger.onFocus()
+            vi.advanceTimersByTime(700)
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).not.toHaveBeenCalled()
+            wrapper.unmount()
+        })
+    
+        it('does not warn when the tooltip becomes disabled while the delay is pending', async () => {
+            const disabled = ref(false)
+            const { state, bindings, wrapper } = createHost({ disabled })
+            bindings.trigger.onPointerenter()
+            disabled.value = true
+            vi.advanceTimersByTime(700)
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).not.toHaveBeenCalled()
+            wrapper.unmount()
+        })
+    
+        it('does not warn for a valid open', async () => {
+            const { state, actions, wrapper } = createHost()
+            actions.open()
+            await nextTick()
+            expect(state.isOpen).toBe(true)
+            expect(warnSpy).not.toHaveBeenCalled()
+            wrapper.unmount()
+        })
+    })
 })
