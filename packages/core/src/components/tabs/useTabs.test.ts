@@ -1,10 +1,11 @@
-import { describe, it, expect, vi } from 'vitest'
-import { defineComponent, nextTick, ref } from 'vue'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { defineComponent, nextTick, ref, computed } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useTabs } from './useTabs'
 import { useTabsTrigger } from './useTabsTrigger'
 import { useTabsPanel } from './useTabsPanel'
 import { provideTabsContext, useTabsContext } from './TabsContext'
+import { TabsInternalKey } from '../../keys/internal-keys'
 
 function createTabsHost(props: Parameters<typeof useTabs>[0] = {}) {
     let exposed: ReturnType<typeof useTabs>
@@ -91,6 +92,16 @@ function createPanelHost(
     }
 }
 
+function registerTab(api: ReturnType<typeof useTabs>, value: string, disabled = false) {
+    api[TabsInternalKey].linkTrigger({
+        value,
+        triggerId: `tabs-trigger-${value}`,
+        panelId: `tabs-panel-${value}`,
+        disabled: computed(() => disabled),
+        triggerRef: ref<HTMLElement | null>(null),
+    })
+}
+
 describe('useTabs', () => {
     describe('state', () => {
         it('value defaults to empty string', () => {
@@ -130,14 +141,16 @@ describe('useTabs', () => {
 
     describe('actions', () => {
         it('select updates value', async () => {
-            const { state, actions } = createTabsHost()
+            const { state, actions, api } = createTabsHost()
+            registerTab(api, 'tab-1')
             actions.select('tab-1')
             await nextTick()
             expect(state.value).toBe('tab-1')
         })
 
         it('select does nothing when disabled', async () => {
-            const { state, actions } = createTabsHost({ disabled: true })
+            const { state, actions, api } = createTabsHost({ disabled: true })
+            registerTab(api, 'tab-1')
             actions.select('tab-1')
             await nextTick()
             expect(state.value).toBe('')
@@ -145,7 +158,8 @@ describe('useTabs', () => {
 
         it('select calls onValueChange', () => {
             const onValueChange = vi.fn()
-            const { actions } = createTabsHost({ onValueChange })
+            const { actions, api } = createTabsHost({ onValueChange })
+            registerTab(api, 'tab-1')
             actions.select('tab-1')
             expect(onValueChange).toHaveBeenCalledWith('tab-1')
         })
@@ -183,7 +197,8 @@ describe('useTabs', () => {
 
         it('does not mutate state in controlled mode', async () => {
             const value = ref('tab-1')
-            const { actions } = createTabsHost({ value })
+            const { actions, api } = createTabsHost({ value })
+            registerTab(api, 'tab-1')
             actions.select('tab-2')
             await nextTick()
             expect(actions.isSelected('tab-1')).toBe(true)
@@ -283,6 +298,7 @@ describe('useTabsPanel', () => {
     describe('state', () => {
         it('isSelected reflects tabs state', async () => {
             const { state, tabs } = createPanelHost({}, { value: 'tab-1' })
+            registerTab(tabs, 'tab-1')
             expect(state.isSelected).toBe(false)
             tabs.actions.select('tab-1')
             await nextTick()
@@ -350,6 +366,112 @@ describe('useTabsPanel', () => {
             mount(Parent)
             expect(innerApi).toBeDefined()
             expect(typeof innerApi!.state.value).toBe('string')
+        })
+    })
+})
+
+describe('warnings', () => {
+    let warnSpy: ReturnType<typeof vi.spyOn>
+
+    beforeEach(() => {
+        warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    })
+
+    afterEach(() => {
+        warnSpy.mockRestore()
+    })
+
+    describe('useTabs select', () => {
+        it('warns and does not select when the tabs is disabled', async () => {
+            const onValueChange = vi.fn()
+            const { state, actions, api } = createTabsHost({ disabled: true, onValueChange })
+            registerTab(api, 'tab-1')
+            actions.select('tab-1')
+            await nextTick()
+            expect(state.value).toBe('')
+            expect(onValueChange).not.toHaveBeenCalled()
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('the Tabs is disabled'))
+        })
+
+        it('warns and does not select when no tab is registered for the value', async () => {
+            const onValueChange = vi.fn()
+            const { state, actions, api } = createTabsHost({ onValueChange })
+            registerTab(api, 'tab-1')
+            actions.select('xx')
+            await nextTick()
+            expect(state.value).toBe('')
+            expect(onValueChange).not.toHaveBeenCalled()
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"xx"'))
+        })
+
+        it('warns and does not select when the tab is disabled', async () => {
+            const onValueChange = vi.fn()
+            const { state, actions, api } = createTabsHost({ onValueChange })
+            registerTab(api, 'tab-1', true)
+            actions.select('tab-1')
+            await nextTick()
+            expect(state.value).toBe('')
+            expect(onValueChange).not.toHaveBeenCalled()
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('disabled tab "tab-1"'))
+        })
+
+        it('does not warn when the selection is valid', async () => {
+            const { state, actions, api } = createTabsHost()
+            registerTab(api, 'tab-1')
+            actions.select('tab-1')
+            await nextTick()
+            expect(state.value).toBe('tab-1')
+            expect(warnSpy).not.toHaveBeenCalled()
+        })
+    })
+
+    describe('automatic activation', () => {
+        it('does not select nor warn when the highlighted tab is disabled', async () => {
+            const { state, actions, api } = createTabsHost({ activation: 'automatic' })
+            registerTab(api, 'tab-1')
+            registerTab(api, 'tab-2', true)
+            actions.highlight('tab-2')
+            await nextTick()
+            expect(state.value).toBe('')
+            expect(warnSpy).not.toHaveBeenCalled()
+        })
+    })
+
+    describe('useTabsTrigger select', () => {
+        it('warns once and does nothing when the trigger is disabled', async () => {
+            const { state, actions } = createTriggerHost({}, { value: 'tab-1', disabled: true })
+            actions.select()
+            await nextTick()
+            expect(state.isSelected).toBe(false)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useTabsTrigger().actions.select()'))
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"tab-1"'))
+        })
+
+        it('warns once, at the trigger level, when the whole tabs is disabled', async () => {
+            const { actions } = createTriggerHost({ disabled: true }, { value: 'tab-1' })
+            actions.select()
+            await nextTick()
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useTabsTrigger().actions.select()'))
+        })
+
+        it('does not warn when a disabled trigger is clicked', async () => {
+            const { bindings } = createTriggerHost({}, { value: 'tab-1', disabled: true })
+            bindings.trigger.onClick()
+            await nextTick()
+            expect(warnSpy).not.toHaveBeenCalled()
+        })
+
+        it('does not warn for a valid selection', async () => {
+            const { state, actions } = createTriggerHost({}, { value: 'tab-1' })
+            actions.select()
+            await nextTick()
+            expect(state.isSelected).toBe(true)
+            expect(warnSpy).not.toHaveBeenCalled()
         })
     })
 })
