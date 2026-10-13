@@ -1,4 +1,4 @@
-import { shallowRef } from 'vue'
+import { shallowRef, triggerRef } from 'vue'
 import type { ShallowRef } from 'vue'
 
 export interface UseRegistryReturn<T extends { value: string }> {
@@ -15,6 +15,7 @@ export function useRegistry<T extends { value: string }>(): UseRegistryReturn<T>
     function register(item: T): void {
         if (!registry.value.some((i) => i.value === item.value)) {
             registry.value.push(item)
+            triggerRef(registry)
         }
     }
 
@@ -27,6 +28,7 @@ export function useRegistry<T extends { value: string }>(): UseRegistryReturn<T>
         if (index !== -1) {
             registry.value[index] = { ...registry.value[index], ...patch }
         }
+        triggerRef(registry)
     }
 
     function getItem(value: string): T | undefined {
