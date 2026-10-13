@@ -297,6 +297,67 @@ describe('useSelect', () => {
         })
     })
 
+    describe('open and toggle warnings', () => {
+        let warnSpy: ReturnType<typeof vi.spyOn>
+
+        beforeEach(() => {
+            warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        })
+
+        afterEach(() => {
+            warnSpy.mockRestore()
+        })
+
+        it('open warns once and does nothing when disabled', async () => {
+            const { state, actions, wrapper } = createSelectHost({ disabled: true })
+            actions.open()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useSelect().actions.open()'))
+            wrapper.unmount()
+        })
+
+        it('toggle warns once under its own name when disabled', async () => {
+            const { state, actions, wrapper } = createSelectHost({ disabled: true })
+            actions.toggle()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useSelect().actions.toggle()'))
+            wrapper.unmount()
+        })
+
+        it('close still works and does not warn when disabled', async () => {
+            const { state, actions, wrapper } = createSelectHost({ disabled: true, defaultOpen: true })
+            actions.close()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).not.toHaveBeenCalled()
+            wrapper.unmount()
+        })
+
+        it('does not warn when the trigger is clicked while disabled', async () => {
+            const { bindings, wrapper } = createSelectHost({ disabled: true })
+            bindings.trigger.onClick()
+            await nextTick()
+            expect(warnSpy).not.toHaveBeenCalled()
+            wrapper.unmount()
+        })
+
+        it('does not warn for valid open and toggle', async () => {
+            const { state, actions, wrapper } = createSelectHost()
+            actions.open()
+            await nextTick()
+            expect(state.isOpen).toBe(true)
+            actions.toggle()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).not.toHaveBeenCalled()
+            wrapper.unmount()
+        })
+    })
+
     describe('bindings.trigger', () => {
         it('role is combobox', () => {
             const { bindings, wrapper } = createSelectHost()

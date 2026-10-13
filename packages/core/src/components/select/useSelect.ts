@@ -93,16 +93,27 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     })
 
     const actions: SelectActions = {
-        open,
-        close,
-        toggle,
         highlight,
         highlightFirst,
         highlightLast,
         highlightNext,
         highlightPrev,
         isHighlighted,
-
+        open: () => {
+            if (isDisabled.value) {
+                warnDev('useSelect().actions.open()', 'Cannot open the Select because it is disabled.')
+                return
+            }
+            open()
+        },
+        close,
+        toggle: () => {
+            if (isDisabled.value) {
+                warnDev('useSelect().actions.toggle()', 'Cannot toggle the Select because it is disabled.')
+                return
+            }
+            toggle()
+        },
         select: (optionValue: string) => {
             if (isDisabled.value) {
                 warnDev('useSelect().actions.select()', 'Cannot select an option because the Select is disabled.')

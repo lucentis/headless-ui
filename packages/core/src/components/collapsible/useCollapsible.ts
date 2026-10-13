@@ -2,6 +2,7 @@ import { computed, reactive } from 'vue'
 import { useOpenState } from '../../utils/useOpenState'
 import { useDisabled } from '../../utils/useDisabled'
 import { useId } from '../../utils/useId'
+import { warnDev } from '../../utils/warnDev'
 import { useConfig } from '../../config'
 import type {
     UseCollapsibleProps,
@@ -30,7 +31,29 @@ export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi 
         isDisabled,
     })
 
-    const actions: CollapsibleActions = { open, close, toggle }
+    const actions: CollapsibleActions = {
+        open: () => {
+            if (isDisabled.value) {
+                warnDev('useCollapsible().actions.open()', 'Cannot open the Collapsible because it is disabled.')
+                return
+            }
+            open()
+        },
+        close: () => {
+            if (isDisabled.value) {
+                warnDev('useCollapsible().actions.close()', 'Cannot close the Collapsible because it is disabled.')
+                return
+            }
+            close()
+        },
+        toggle: () => {
+            if (isDisabled.value) {
+                warnDev('useCollapsible().actions.toggle()', 'Cannot toggle the Collapsible because it is disabled.')
+                return
+            }
+            toggle()
+        },
+    }
 
     const triggerBindings = computed(() => ({
         id: triggerId,
