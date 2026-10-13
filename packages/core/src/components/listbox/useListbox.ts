@@ -155,18 +155,25 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
         },
     }
 
+    // Keyboard activation is an internal flow: a disabled target is a legitimate no-op, not a usage error.
+    function toggleHighlighted(): void {
+        const current = highlightValue.value
+        if (current === null) return
+
+        const option = getItem(current)
+        if (!option || isDisabled.value || option.disabled.value) return
+
+        actions.toggle(current)
+    }
+
     const { onKeydown } = useArrowNavigation({
         orientation,
         onNext: actions.highlightNext,
         onPrev: actions.highlightPrev,
         onFirst: actions.highlightFirst,
         onLast: actions.highlightLast,
-        onEnter: () => {
-            if (highlightValue.value !== null) actions.toggle(highlightValue.value)
-        },
-        onSpace: () => {
-            if (highlightValue.value !== null) actions.toggle(highlightValue.value)
-        },
+        onEnter: toggleHighlighted,
+        onSpace: toggleHighlighted,
     })
 
     const rootBindings = computed(() => ({

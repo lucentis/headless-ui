@@ -157,17 +157,24 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         },
     }))
 
+    // Keyboard activation is an internal flow: a disabled target is a legitimate no-op, not a usage error.
+    function selectHighlighted(): void {
+        const current = highlightValue.value
+        if (current === null) return
+
+        const option = getItem(current)
+        if (!option || isDisabled.value || option.disabled.value) return
+
+        actions.select(current)
+    }
+
     const { onKeydown: onArrowKeydown } = useArrowNavigation({
         onNext: actions.highlightNext,
         onPrev: actions.highlightPrev,
         onFirst: actions.highlightFirst,
         onLast: actions.highlightLast,
-        onEnter: () => {
-            if (highlightValue.value !== null) actions.select(highlightValue.value)
-        },
-        onSpace: () => {
-            if (highlightValue.value !== null) actions.select(highlightValue.value)
-        },
+        onEnter: selectHighlighted,
+        onSpace: selectHighlighted,
     })
 
     const contentBindings = computed(() => ({
