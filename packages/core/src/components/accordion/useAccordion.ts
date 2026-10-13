@@ -9,7 +9,25 @@ export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
     const isDisabled = useDisabled(props.disabled)
 
     const defaultValue = props.defaultValue ?? (type.value === 'multiple' ? [] : '')
+    const initialValue = toValue(props.value) ?? props.defaultValue
 
+    if (initialValue !== undefined) {
+        const isArray = Array.isArray(initialValue)
+
+        if (type.value === 'single' && isArray) {
+            warnDev(
+                'useAccordion()',
+                'The type is "single" but the value is an array. Use a string, or set the type to "multiple".',
+            )
+        }
+
+        if (type.value === 'multiple' && !isArray) {
+            warnDev(
+                'useAccordion()',
+                'The type is "multiple" but the value is a string. Use an array, or set the type to "single".',
+            )
+        }
+    }
     const { value, setValue } = useControllableState<string | string[]>({
         value: props.value,
         defaultValue,

@@ -23,6 +23,26 @@ export function useListbox(props: UseListboxProps = {}): ListboxApi {
     const isDisabled = useDisabled(props.disabled)
 
     const defaultValue = props.defaultValue ?? (multiple.value ? [] : '')
+    const initialValue = toValue(props.value) ?? props.defaultValue
+
+    if (initialValue !== undefined) {
+        const isArray = Array.isArray(initialValue)
+
+        if (!multiple.value && isArray) {
+            warnDev(
+                'useListbox()',
+                'The Listbox is single-select but the value is an array. Use a string, or set multiple to true.',
+            )
+        }
+
+        if (multiple.value && !isArray) {
+            warnDev(
+                'useListbox()',
+                'The Listbox is multiple-select but the value is a string. Use an array, or set multiple to false.',
+            )
+        }
+    }
+
     const { value, setValue } = useControllableState<string | string[]>({
         value: props.value,
         defaultValue,

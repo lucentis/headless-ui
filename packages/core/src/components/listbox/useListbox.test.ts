@@ -400,6 +400,35 @@ describe('useListbox', () => {
                 expect(warnSpy).not.toHaveBeenCalled()
             })
         })
+
+        describe('multiple and value shape', () => {
+            it('warns when single-select and defaultValue is an array', () => {
+                createListboxHost({ defaultValue: ['option-1'] })
+                expect(warnSpy).toHaveBeenCalledTimes(1)
+                expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('single-select but the value is an array'))
+            })
+
+            it('warns when single-select and the controlled value is an array', () => {
+                createListboxHost({ value: ref(['option-1']) })
+                expect(warnSpy).toHaveBeenCalledTimes(1)
+            })
+
+            it('warns when multiple-select and defaultValue is a string', () => {
+                createListboxHost({ multiple: true, defaultValue: 'option-1' })
+                expect(warnSpy).toHaveBeenCalledTimes(1)
+                expect(warnSpy).toHaveBeenCalledWith(
+                    expect.stringContaining('multiple-select but the value is a string'),
+                )
+            })
+
+            it('does not warn for coherent combinations', () => {
+                createListboxHost()
+                createListboxHost({ defaultValue: 'option-1' })
+                createListboxHost({ multiple: true, defaultValue: ['option-1'] })
+                createListboxHost({ multiple: true })
+                expect(warnSpy).not.toHaveBeenCalled()
+            })
+        })
     })
 
     describe('bindings.root', () => {

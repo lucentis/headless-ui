@@ -235,6 +235,31 @@ describe('useAccordion', () => {
             await nextTick()
             expect(warnSpy).not.toHaveBeenCalled()
         })
+
+        it('warns when the type is single and defaultValue is an array', () => {
+            createAccordionHost({ type: 'single', defaultValue: ['item-1'] })
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"single" but the value is an array'))
+        })
+
+        it('warns when the type is single and the controlled value is an array', () => {
+            createAccordionHost({ type: 'single', value: ref(['item-1']) })
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+        })
+
+        it('warns when the type is multiple and defaultValue is a string', () => {
+            createAccordionHost({ type: 'multiple', defaultValue: 'item-1' })
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"multiple" but the value is a string'))
+        })
+
+        it('does not warn for coherent combinations', () => {
+            createAccordionHost()
+            createAccordionHost({ type: 'single', defaultValue: 'item-1' })
+            createAccordionHost({ type: 'multiple', defaultValue: ['item-1'] })
+            createAccordionHost({ type: 'multiple' })
+            expect(warnSpy).not.toHaveBeenCalled()
+        })
     })
 })
 
