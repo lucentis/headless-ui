@@ -33,10 +33,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     const { isOpen, isPresent, open, close, toggle } = useOpenState({
         open: props.open,
         defaultOpen: props.defaultOpen,
-        onOpenChange: (val) => {
-            if (!val) clearHighlight()
-            props.onOpenChange?.(val)
-        },
+        onOpenChange: props.onOpenChange,
         animationDuration: config.animationDuration,
     })
 
@@ -46,7 +43,10 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     watch(
         isOpen,
         (newOpen) => {
-            if (!newOpen) return
+            if (!newOpen) {
+                clearHighlight()
+                return
+            }
             contentRef.value?.focus()
         },
         { flush: 'post' },

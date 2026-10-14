@@ -1,5 +1,5 @@
 export function warnDev(source: string, message: string): void {
-    if (import.meta.env.DEV) {
+    if (process.env.NODE_ENV !== 'production') {
         console.warn(`[Headless UI] ${source}: ${message}`)
     }
 }

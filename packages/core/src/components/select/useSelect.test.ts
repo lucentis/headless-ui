@@ -174,7 +174,8 @@ describe('useSelect', () => {
         })
 
         it('close resets highlightValue', async () => {
-            const { state, actions, wrapper } = createSelectHost({ defaultOpen: true })
+            const { state, actions, wrapper, registerOption } = createSelectHost({ defaultOpen: true })
+            registerOption('fr', 'French')
             actions.highlight('fr')
             await nextTick()
             actions.close()
