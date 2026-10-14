@@ -1,5 +1,6 @@
 import { shallowRef, triggerRef } from 'vue'
 import type { ShallowRef } from 'vue'
+import { warnDev } from './warnDev'
 
 export interface UseRegistryReturn<T extends { value: string }> {
     registry: ShallowRef<T[]>
@@ -13,10 +14,16 @@ export function useRegistry<T extends { value: string }>(): UseRegistryReturn<T>
     const registry = shallowRef<T[]>([]) as ShallowRef<T[]>
 
     function register(item: T): void {
-        if (!registry.value.some((i) => i.value === item.value)) {
-            registry.value.push(item)
-            triggerRef(registry)
+        if (registry.value.some((i) => i.value === item.value)) {
+            warnDev(
+                'useRegistry()',
+                `An item with the value "${item.value}" is already registered. Values must be unique, the duplicate is ignored.`,
+            )
+            return
         }
+
+        registry.value.push(item)
+        triggerRef(registry)
     }
 
     function unregister(value: string): void {
