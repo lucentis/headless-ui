@@ -77,7 +77,7 @@ const listbox = useListbox({
 const option1 = useListboxOption({ value: 'option-1' }, listbox)
 const option2 = useListboxOption({ value: 'option-2' }, listbox)
 const option3 = useListboxOption({ value: 'option-3' }, listbox)
-const option5 = useListboxOption({ value: 'option-3' }, listbox)
+useListboxOption({ value: 'option-3' }, listbox)
 const option4 = useListboxOption({ value: 'option-4', disabled: true }, listbox)
 
 const language = ref('fr')
