@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { defineComponent, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useControllableState } from './useControllableState'
@@ -94,6 +94,46 @@ describe('useControllableState', () => {
         it('accepts a static value (non-ref)', () => {
             const { value } = createHost({ value: true, defaultValue: false })
             expect(value.value).toBe(true)
+        })
+    })
+
+    describe('warnings', () => {
+        let warnSpy: ReturnType<typeof vi.spyOn>
+
+        beforeEach(() => {
+            warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        })
+
+        afterEach(() => {
+            warnSpy.mockRestore()
+        })
+
+        it('warns when controlled without onChange and the value would change', () => {
+            const controlled = ref('tab-1')
+            const { setValue } = createHost({ value: controlled, defaultValue: '' })
+            setValue('tab-2')
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('no change callback was provided'))
+        })
+
+        it('does not warn when controlled with onChange', () => {
+            const controlled = ref('tab-1')
+            const { setValue } = createHost({ value: controlled, defaultValue: '', onChange: vi.fn() })
+            setValue('tab-2')
+            expect(warnSpy).not.toHaveBeenCalled()
+        })
+
+        it('does not warn when uncontrolled without onChange', () => {
+            const { setValue } = createHost({ defaultValue: '' })
+            setValue('tab-1')
+            expect(warnSpy).not.toHaveBeenCalled()
+        })
+
+        it('does not warn when the value does not change', () => {
+            const controlled = ref('tab-1')
+            const { setValue } = createHost({ value: controlled, defaultValue: '' })
+            setValue('tab-1')
+            expect(warnSpy).not.toHaveBeenCalled()
         })
     })
 })

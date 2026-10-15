@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { defineComponent, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useCollapsible } from './useCollapsible'
@@ -214,6 +214,65 @@ describe('useCollapsible', () => {
             mount(Parent)
             expect(innerApi).toBeDefined()
             expect(typeof innerApi!.state.isOpen).toBe('boolean')
+        })
+    })
+
+    describe('warnings', () => {
+        let warnSpy: ReturnType<typeof vi.spyOn>
+
+        beforeEach(() => {
+            warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        })
+
+        afterEach(() => {
+            warnSpy.mockRestore()
+        })
+
+        it('open warns once and does nothing when disabled', async () => {
+            const onOpenChange = vi.fn()
+            const { state, actions } = createHost({ disabled: true, onOpenChange })
+            actions.open()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(onOpenChange).not.toHaveBeenCalled()
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useCollapsible().actions.open()'))
+        })
+
+        it('close warns once and does nothing when disabled', async () => {
+            const { state, actions } = createHost({ disabled: true, defaultOpen: true })
+            actions.close()
+            await nextTick()
+            expect(state.isOpen).toBe(true)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useCollapsible().actions.close()'))
+        })
+
+        it('toggle warns once under its own name when disabled', async () => {
+            const { state, actions } = createHost({ disabled: true })
+            actions.toggle()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useCollapsible().actions.toggle()'))
+        })
+
+        it('does not warn when the trigger is clicked while disabled', async () => {
+            const { bindings } = createHost({ disabled: true })
+            bindings.trigger.onClick()
+            await nextTick()
+            expect(warnSpy).not.toHaveBeenCalled()
+        })
+
+        it('does not warn for valid actions', async () => {
+            const { state, actions } = createHost()
+            actions.open()
+            await nextTick()
+            expect(state.isOpen).toBe(true)
+            actions.toggle()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).not.toHaveBeenCalled()
         })
     })
 })

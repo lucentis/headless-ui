@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { defineComponent, nextTick, ref, computed } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useSelect } from './useSelect'
@@ -156,7 +156,8 @@ describe('useSelect', () => {
         })
 
         it('select sets value and closes', async () => {
-            const { state, actions, wrapper } = createSelectHost({ defaultOpen: true })
+            const { state, actions, registerOption, wrapper } = createSelectHost({ defaultOpen: true })
+            registerOption('fr', 'French')
             actions.select('fr')
             await nextTick()
             expect(state.value).toBe('fr')
@@ -173,7 +174,8 @@ describe('useSelect', () => {
         })
 
         it('close resets highlightValue', async () => {
-            const { state, actions, wrapper } = createSelectHost({ defaultOpen: true })
+            const { state, actions, wrapper, registerOption } = createSelectHost({ defaultOpen: true })
+            registerOption('fr', 'French')
             actions.highlight('fr')
             await nextTick()
             actions.close()
@@ -184,7 +186,8 @@ describe('useSelect', () => {
 
         it('calls onValueChange on select', () => {
             const onValueChange = vi.fn()
-            const { actions, wrapper } = createSelectHost({ onValueChange })
+            const { actions, wrapper, registerOption } = createSelectHost({ onValueChange })
+            registerOption('fr', 'French')
             actions.select('fr')
             expect(onValueChange).toHaveBeenCalledWith('fr')
             wrapper.unmount()
@@ -223,6 +226,135 @@ describe('useSelect', () => {
             actions.highlightPrev()
             await nextTick()
             expect(state.highlightValue).toBe('fr')
+            wrapper.unmount()
+        })
+    })
+
+    describe('actions.select warnings', () => {
+        let warnSpy: ReturnType<typeof vi.spyOn>
+
+        beforeEach(() => {
+            warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        })
+
+        afterEach(() => {
+            warnSpy.mockRestore()
+        })
+
+        it('warns and does not select when the select is disabled', async () => {
+            const onValueChange = vi.fn()
+            const { state, actions, registerOption, wrapper } = createSelectHost({ disabled: true, onValueChange })
+            registerOption('fr', 'French')
+            actions.select('fr')
+            await nextTick()
+            expect(state.value).toBe('')
+            expect(onValueChange).not.toHaveBeenCalled()
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('the Select is disabled'))
+            wrapper.unmount()
+        })
+
+        it('warns and does not select when no option is registered for the value', async () => {
+            const onValueChange = vi.fn()
+            const { state, actions, registerOption, wrapper } = createSelectHost({ defaultOpen: true, onValueChange })
+            registerOption('fr', 'French')
+            actions.select('xx')
+            await nextTick()
+            expect(state.value).toBe('')
+            expect(state.isOpen).toBe(true)
+            expect(onValueChange).not.toHaveBeenCalled()
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"xx"'))
+            wrapper.unmount()
+        })
+
+        it('warns and does not select when the option is disabled', async () => {
+            const onValueChange = vi.fn()
+            const { state, actions, api, wrapper } = createSelectHost({ defaultOpen: true, onValueChange })
+            api[SelectInternalKey].registerOption({
+                value: 'fr',
+                id: 'select-option-fr',
+                disabled: computed(() => true),
+                label: 'French',
+            })
+            actions.select('fr')
+            await nextTick()
+            expect(state.value).toBe('')
+            expect(state.isOpen).toBe(true)
+            expect(onValueChange).not.toHaveBeenCalled()
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('disabled option "fr"'))
+            wrapper.unmount()
+        })
+
+        it('does not warn when the selection is valid', async () => {
+            const { state, actions, registerOption, wrapper } = createSelectHost()
+            registerOption('fr', 'French')
+            actions.select('fr')
+            await nextTick()
+            expect(state.value).toBe('fr')
+            expect(warnSpy).not.toHaveBeenCalled()
+            wrapper.unmount()
+        })
+    })
+
+    describe('open and toggle warnings', () => {
+        let warnSpy: ReturnType<typeof vi.spyOn>
+
+        beforeEach(() => {
+            warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        })
+
+        afterEach(() => {
+            warnSpy.mockRestore()
+        })
+
+        it('open warns once and does nothing when disabled', async () => {
+            const { state, actions, wrapper } = createSelectHost({ disabled: true })
+            actions.open()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useSelect().actions.open()'))
+            wrapper.unmount()
+        })
+
+        it('toggle warns once under its own name when disabled', async () => {
+            const { state, actions, wrapper } = createSelectHost({ disabled: true })
+            actions.toggle()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useSelect().actions.toggle()'))
+            wrapper.unmount()
+        })
+
+        it('close still works and does not warn when disabled', async () => {
+            const { state, actions, wrapper } = createSelectHost({ disabled: true, defaultOpen: true })
+            actions.close()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).not.toHaveBeenCalled()
+            wrapper.unmount()
+        })
+
+        it('does not warn when the trigger is clicked while disabled', async () => {
+            const { bindings, wrapper } = createSelectHost({ disabled: true })
+            bindings.trigger.onClick()
+            await nextTick()
+            expect(warnSpy).not.toHaveBeenCalled()
+            wrapper.unmount()
+        })
+
+        it('does not warn for valid open and toggle', async () => {
+            const { state, actions, wrapper } = createSelectHost()
+            actions.open()
+            await nextTick()
+            expect(state.isOpen).toBe(true)
+            actions.toggle()
+            await nextTick()
+            expect(state.isOpen).toBe(false)
+            expect(warnSpy).not.toHaveBeenCalled()
             wrapper.unmount()
         })
     })

@@ -31,7 +31,7 @@ const item1 = useAccordionItem({ value: 'item-1' }, accordion)
 const item2 = useAccordionItem({ value: 'item-2' }, accordion)
 const item3 = useAccordionItem({ value: 'item-3' }, accordion)
 
-const tabs = useTabs({ defaultValue: 'tab-1', activation: 'manual' })
+const tabs = useTabs({ defaultValue: 'tab-1', activation: 'automatic' })
 const trigger1 = useTabsTrigger({ value: 'tab-1' }, tabs)
 const trigger2 = useTabsTrigger({ value: 'tab-2' }, tabs)
 const trigger3 = useTabsTrigger({ value: 'tab-3', disabled: true }, tabs)
@@ -77,9 +77,16 @@ const listbox = useListbox({
 const option1 = useListboxOption({ value: 'option-1' }, listbox)
 const option2 = useListboxOption({ value: 'option-2' }, listbox)
 const option3 = useListboxOption({ value: 'option-3' }, listbox)
+useListboxOption({ value: 'option-3' }, listbox)
 const option4 = useListboxOption({ value: 'option-4', disabled: true }, listbox)
 
-const select = useSelect({ placeholder: 'Select a language' })
+const language = ref('fr')
+const open = ref(false)
+const select = useSelect({
+    placeholder: 'Select a language',
+    value: language,
+    open,
+})
 
 const optFr = useSelectOption({ value: 'fr', label: 'French' }, select)
 const optEn = useSelectOption({ value: 'en', label: 'English' }, select)
@@ -87,7 +94,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
 </script>
 
 <template>
-    <button v-bind="bindings.root" @click="console.log('clicked')">Submit</button>
+    <button v-bind="bindings.root" @click="select.actions.select('dfdf')">Submit</button>
 
     <!-- alert -->
     <div class="" v-bind="alert.bindings.root" v-if="alert.state.isPresent">

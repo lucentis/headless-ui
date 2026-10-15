@@ -8,6 +8,7 @@ import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
 import { useConfig } from '../../config'
+import { warnDev } from '../../utils/warnDev'
 import type {
     UseSelectProps,
     SelectApi,
@@ -32,10 +33,7 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     const { isOpen, isPresent, open, close, toggle } = useOpenState({
         open: props.open,
         defaultOpen: props.defaultOpen,
-        onOpenChange: (val) => {
-            if (!val) clearHighlight()
-            props.onOpenChange?.(val)
-        },
+        onOpenChange: props.onOpenChange,
         animationDuration: config.animationDuration,
     })
 
@@ -45,7 +43,10 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     watch(
         isOpen,
         (newOpen) => {
-            if (!newOpen) return
+            if (!newOpen) {
+                clearHighlight()
+                return
+            }
             contentRef.value?.focus()
         },
         { flush: 'post' },
@@ -92,18 +93,48 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
     })
 
     const actions: SelectActions = {
-        open,
-        close,
-        toggle,
         highlight,
         highlightFirst,
         highlightLast,
         highlightNext,
         highlightPrev,
         isHighlighted,
-
+        open: () => {
+            if (isDisabled.value) {
+                warnDev('useSelect().actions.open()', 'Cannot open the Select because it is disabled.')
+                return
+            }
+            open()
+        },
+        close,
+        toggle: () => {
+            if (isDisabled.value) {
+                warnDev('useSelect().actions.toggle()', 'Cannot toggle the Select because it is disabled.')
+                return
+            }
+            toggle()
+        },
         select: (optionValue: string) => {
-            if (isDisabled.value) return
+            if (isDisabled.value) {
+                warnDev('useSelect().actions.select()', 'Cannot select an option because the Select is disabled.')
+                return
+            }
+
+            const option = getItem(optionValue)
+
+            if (!option) {
+                warnDev(
+                    'useSelect().actions.select()',
+                    `Cannot select "${optionValue}" because no option with this value is registered.`,
+                )
+                return
+            }
+
+            if (option.disabled.value) {
+                warnDev('useSelect().actions.select()', `Cannot select the disabled option "${optionValue}".`)
+                return
+            }
+
             setValue(optionValue)
             close()
         },
@@ -126,17 +157,24 @@ export function useSelect(props: UseSelectProps = {}): SelectApi {
         },
     }))
 
+    // Keyboard activation is an internal flow: a disabled target is a legitimate no-op, not a usage error.
+    function selectHighlighted(): void {
+        const current = highlightValue.value
+        if (current === null) return
+
+        const option = getItem(current)
+        if (!option || isDisabled.value || option.disabled.value) return
+
+        actions.select(current)
+    }
+
     const { onKeydown: onArrowKeydown } = useArrowNavigation({
         onNext: actions.highlightNext,
         onPrev: actions.highlightPrev,
         onFirst: actions.highlightFirst,
         onLast: actions.highlightLast,
-        onEnter: () => {
-            if (highlightValue.value !== null) actions.select(highlightValue.value)
-        },
-        onSpace: () => {
-            if (highlightValue.value !== null) actions.select(highlightValue.value)
-        },
+        onEnter: selectHighlighted,
+        onSpace: selectHighlighted,
     })
 
     const contentBindings = computed(() => ({

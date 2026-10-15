@@ -3,6 +3,7 @@ import { useId } from '../../utils/useId'
 import { useOpenState } from '../../utils/useOpenState'
 import { useDisabled } from '../../utils/useDisabled'
 import { useEscape } from '../../utils/useEscape'
+import { warnDev } from '../../utils/warnDev'
 import { useConfig } from '../../config'
 import type { UseTooltipProps, TooltipApi, TooltipState, TooltipActions, TooltipBindings } from './types'
 
@@ -37,17 +38,22 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
         closeTimer = null
     }
 
-    function openWithDelay() {
+    function openIfEnabled() {
         if (isDisabled.value) return
         clearTimers()
+        openState()
+    }
 
-        const delay = toValue(props.delayDuration) ?? DEFAULT_DELAY
+    function openWithDelay() {
+        clearTimers()
+
+        const delay = props.delayDuration ?? DEFAULT_DELAY
         if (delay === 0) {
-            actions.open()
+            openIfEnabled()
             return
         }
 
-        openTimer = setTimeout(actions.open, delay)
+        openTimer = setTimeout(openIfEnabled, toValue(delay))
     }
 
     function closeWithDelay() {
@@ -63,9 +69,11 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
 
     const actions: TooltipActions = {
         open() {
-            if (isDisabled.value) return
-            clearTimers()
-            openState()
+            if (isDisabled.value) {
+                warnDev('useTooltip().actions.open()', 'Cannot open the tooltip because it is disabled.')
+                return
+            }
+            openIfEnabled()
         },
         close() {
             clearTimers()

@@ -1,6 +1,7 @@
 import { computed, onMounted, onUnmounted, ref, reactive } from 'vue'
 import { useId } from '../../utils/useId'
 import { useDisabled } from '../../utils/useDisabled'
+import { warnDev } from '../../utils/warnDev'
 import { useTabsContext } from './TabsContext'
 import type { UseTabsTriggerProps, TabsTriggerApi, TabsApi, TabsTriggerState } from './types'
 import { TabsInternalKey } from '../../keys/internal-keys'
@@ -30,6 +31,13 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
 
     const actions: TabsTriggerApi['actions'] = {
         select: () => {
+            if (isDisabled.value) {
+                warnDev(
+                    'useTabsTrigger().actions.select()',
+                    `Cannot select the tab "${props.value}" because it or its Tabs is disabled.`,
+                )
+                return
+            }
             tabsApi.actions.select(props.value)
             tabsApi.actions.highlight(props.value)
         },

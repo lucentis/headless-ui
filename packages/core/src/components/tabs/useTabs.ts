@@ -5,6 +5,7 @@ import { useDisabled } from '../../utils/useDisabled'
 import { useRegistry } from '../../utils/useRegistry'
 import { useHighlight } from '../../utils/useHighlight'
 import { useArrowNavigation } from '../../utils/useArrowNavigation'
+import { warnDev } from '../../utils/warnDev'
 import type {
     UseTabsProps,
     TabsApi,
@@ -45,7 +46,7 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
                 item.triggerRef.value?.focus()
             }
 
-            if (activation.value === 'automatic') {
+            if (activation.value === 'automatic' && !item?.disabled.value) {
                 actions.select(newHighlight)
             }
         },
@@ -69,7 +70,26 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
         isHighlighted,
 
         select(tabValue: string): void {
-            if (isDisabled.value) return
+            if (isDisabled.value) {
+                warnDev('useTabs().actions.select()', 'Cannot select a tab because the Tabs is disabled.')
+                return
+            }
+
+            const item = getItem(tabValue)
+
+            if (!item) {
+                warnDev(
+                    'useTabs().actions.select()',
+                    `Cannot select "${tabValue}" because no tab with this value is registered.`,
+                )
+                return
+            }
+
+            if (item.disabled.value) {
+                warnDev('useTabs().actions.select()', `Cannot select the disabled tab "${tabValue}".`)
+                return
+            }
+
             setValue(tabValue)
         },
 

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { defineComponent, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useAccordion } from './useAccordion'
@@ -186,6 +186,81 @@ describe('useAccordion', () => {
             expect(actions.isExpanded('item-1')).toBe(false)
         })
     })
+
+    describe('warnings', () => {
+        let warnSpy: ReturnType<typeof vi.spyOn>
+
+        beforeEach(() => {
+            warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        })
+
+        afterEach(() => {
+            warnSpy.mockRestore()
+        })
+
+        it('expand warns and does nothing when the accordion is disabled', async () => {
+            const onValueChange = vi.fn()
+            const { actions } = createAccordionHost({ disabled: true, onValueChange })
+            actions.expand('item-1')
+            await nextTick()
+            expect(actions.isExpanded('item-1')).toBe(false)
+            expect(onValueChange).not.toHaveBeenCalled()
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useAccordion().actions.expand()'))
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"item-1"'))
+        })
+
+        it('collapse warns and does nothing when the accordion is disabled', async () => {
+            const { actions } = createAccordionHost({ disabled: true, defaultValue: 'item-1' })
+            actions.collapse('item-1')
+            await nextTick()
+            expect(actions.isExpanded('item-1')).toBe(true)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useAccordion().actions.collapse()'))
+        })
+
+        it('toggle warns once under its own name when the accordion is disabled', async () => {
+            const { actions } = createAccordionHost({ disabled: true })
+            actions.toggle('item-1')
+            await nextTick()
+            expect(actions.isExpanded('item-1')).toBe(false)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useAccordion().actions.toggle()'))
+        })
+
+        it('does not warn for valid actions', async () => {
+            const { actions } = createAccordionHost()
+            actions.expand('item-1')
+            actions.toggle('item-1')
+            await nextTick()
+            expect(warnSpy).not.toHaveBeenCalled()
+        })
+
+        it('warns when the type is single and defaultValue is an array', () => {
+            createAccordionHost({ type: 'single', defaultValue: ['item-1'] })
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"single" but the value is an array'))
+        })
+
+        it('warns when the type is single and the controlled value is an array', () => {
+            createAccordionHost({ type: 'single', value: ref(['item-1']) })
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+        })
+
+        it('warns when the type is multiple and defaultValue is a string', () => {
+            createAccordionHost({ type: 'multiple', defaultValue: 'item-1' })
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"multiple" but the value is a string'))
+        })
+
+        it('does not warn for coherent combinations', () => {
+            createAccordionHost()
+            createAccordionHost({ type: 'single', defaultValue: 'item-1' })
+            createAccordionHost({ type: 'multiple', defaultValue: ['item-1'] })
+            createAccordionHost({ type: 'multiple' })
+            expect(warnSpy).not.toHaveBeenCalled()
+        })
+    })
 })
 
 describe('useAccordionItem', () => {
@@ -267,6 +342,75 @@ describe('useAccordionItem', () => {
                 template: '<div />',
             })
             expect(() => mount(Host)).toThrow('[headless-ui] useAccordionContext must be used within an Accordion')
+        })
+    })
+
+    describe('warnings', () => {
+        let warnSpy: ReturnType<typeof vi.spyOn>
+
+        beforeEach(() => {
+            warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        })
+
+        afterEach(() => {
+            warnSpy.mockRestore()
+        })
+
+        it('expand warns and does nothing when the item is disabled', async () => {
+            const { accordion, actions } = createItemHost({}, { value: 'item-1', disabled: true })
+            actions.expand()
+            await nextTick()
+            expect(accordion.actions.isExpanded('item-1')).toBe(false)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useAccordionItem().actions.expand()'))
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"item-1"'))
+        })
+
+        it('collapse warns and does nothing when the item is disabled', async () => {
+            const { accordion, actions } = createItemHost(
+                { defaultValue: 'item-1' },
+                { value: 'item-1', disabled: true },
+            )
+            actions.collapse()
+            await nextTick()
+            expect(accordion.actions.isExpanded('item-1')).toBe(true)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useAccordionItem().actions.collapse()'))
+        })
+
+        it('toggle warns once under its own name when the item is disabled', async () => {
+            const { accordion, actions } = createItemHost({}, { value: 'item-1', disabled: true })
+            actions.toggle()
+            await nextTick()
+            expect(accordion.actions.isExpanded('item-1')).toBe(false)
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useAccordionItem().actions.toggle()'))
+        })
+
+        it('warns once, at the item level, when the whole accordion is disabled', async () => {
+            const { actions } = createItemHost({ disabled: true }, { value: 'item-1' })
+            actions.toggle()
+            await nextTick()
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useAccordionItem().actions.toggle()'))
+        })
+
+        it('does not warn when the trigger is clicked on a disabled item', async () => {
+            const { bindings } = createItemHost({}, { value: 'item-1', disabled: true })
+            bindings.trigger.onClick()
+            await nextTick()
+            expect(warnSpy).not.toHaveBeenCalled()
+        })
+
+        it('does not warn for valid actions', async () => {
+            const { state, actions } = createItemHost({}, { value: 'item-1' })
+            actions.expand()
+            await nextTick()
+            expect(state.isExpanded).toBe(true)
+            actions.toggle()
+            await nextTick()
+            expect(state.isExpanded).toBe(false)
+            expect(warnSpy).not.toHaveBeenCalled()
         })
     })
 })

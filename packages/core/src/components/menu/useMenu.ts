@@ -23,17 +23,17 @@ export function useMenu(props: UseMenuProps = {}): MenuApi {
     const { isOpen, isPresent, open, close, toggle } = useOpenState({
         open: props.open,
         defaultOpen: props.defaultOpen,
-        onOpenChange: (value) => {
-            if (!value) clearHighlight()
-            props.onOpenChange?.(value)
-        },
+        onOpenChange: props.onOpenChange,
         animationDuration: config.animationDuration,
     })
 
     watch(
         isOpen,
         (newOpen) => {
-            if (!newOpen) return
+            if (!newOpen) {
+                clearHighlight()
+                return
+            }
             contentRef.value?.focus()
         },
         { flush: 'post' },

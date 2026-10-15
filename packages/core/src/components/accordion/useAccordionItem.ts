@@ -1,6 +1,7 @@
 import { computed, reactive } from 'vue'
 import { useId } from '../../utils/useId'
 import { useDisabled } from '../../utils/useDisabled'
+import { warnDev } from '../../utils/warnDev'
 import { useAccordionContext } from './AccordionContext'
 import type {
     UseAccordionItemProps,
@@ -27,9 +28,36 @@ export function useAccordionItem(props: UseAccordionItemProps, accordion?: Accor
     })
 
     const actions: AccordionItemActions = {
-        expand: () => accordionApi.actions.expand(props.value),
-        collapse: () => accordionApi.actions.collapse(props.value),
-        toggle: () => accordionApi.actions.toggle(props.value),
+        expand: () => {
+            if (isDisabled.value) {
+                warnDev(
+                    'useAccordionItem().actions.expand()',
+                    `Cannot expand the item "${props.value}" because it or its Accordion is disabled.`,
+                )
+                return
+            }
+            accordionApi.actions.expand(props.value)
+        },
+        collapse: () => {
+            if (isDisabled.value) {
+                warnDev(
+                    'useAccordionItem().actions.collapse()',
+                    `Cannot collapse the item "${props.value}" because it or its Accordion is disabled.`,
+                )
+                return
+            }
+            accordionApi.actions.collapse(props.value)
+        },
+        toggle: () => {
+            if (isDisabled.value) {
+                warnDev(
+                    'useAccordionItem().actions.toggle()',
+                    `Cannot toggle the item "${props.value}" because it or its Accordion is disabled.`,
+                )
+                return
+            }
+            accordionApi.actions.toggle(props.value)
+        },
     }
 
     const triggerBindings = computed(() => ({
