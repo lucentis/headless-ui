@@ -91,7 +91,11 @@ export function useAccordion(props: UseAccordionProps = {}): AccordionApi {
                 return
             }
 
-            actions.isExpanded(itemValue) ? actions.collapse(itemValue) : actions.expand(itemValue)
+            if (actions.isExpanded(itemValue)) {
+                actions.collapse(itemValue)
+            } else {
+                actions.expand(itemValue)
+            }
         },
     }
 

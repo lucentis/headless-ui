@@ -42,17 +42,17 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
         if (isDisabled.value) return
         clearTimers()
         openState()
-    }    
+    }
 
     function openWithDelay() {
         clearTimers()
-    
+
         const delay = props.delayDuration ?? DEFAULT_DELAY
         if (delay === 0) {
             openIfEnabled()
             return
         }
-    
+
         openTimer = setTimeout(openIfEnabled, toValue(delay))
     }
 

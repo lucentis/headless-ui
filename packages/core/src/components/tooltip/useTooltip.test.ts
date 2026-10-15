@@ -322,15 +322,15 @@ describe('useTooltip', () => {
 
     describe('warnings', () => {
         let warnSpy: ReturnType<typeof vi.spyOn>
-    
+
         beforeEach(() => {
             warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
         })
-    
+
         afterEach(() => {
             warnSpy.mockRestore()
         })
-    
+
         it('open warns once and does nothing when the tooltip is disabled', async () => {
             const onOpenChange = vi.fn()
             const { state, actions, wrapper } = createHost({ disabled: true, onOpenChange })
@@ -342,7 +342,7 @@ describe('useTooltip', () => {
             expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('useTooltip().actions.open()'))
             wrapper.unmount()
         })
-    
+
         it('does not warn when the pointer enters a disabled trigger', async () => {
             const { state, bindings, wrapper } = createHost({ disabled: true })
             bindings.trigger.onPointerenter()
@@ -352,7 +352,7 @@ describe('useTooltip', () => {
             expect(warnSpy).not.toHaveBeenCalled()
             wrapper.unmount()
         })
-    
+
         it('does not warn when a disabled trigger receives focus', async () => {
             const { state, bindings, wrapper } = createHost({ disabled: true })
             bindings.trigger.onFocus()
@@ -362,7 +362,7 @@ describe('useTooltip', () => {
             expect(warnSpy).not.toHaveBeenCalled()
             wrapper.unmount()
         })
-    
+
         it('does not warn when the tooltip becomes disabled while the delay is pending', async () => {
             const disabled = ref(false)
             const { state, bindings, wrapper } = createHost({ disabled })
@@ -374,7 +374,7 @@ describe('useTooltip', () => {
             expect(warnSpy).not.toHaveBeenCalled()
             wrapper.unmount()
         })
-    
+
         it('does not warn for a valid open', async () => {
             const { state, actions, wrapper } = createHost()
             actions.open()
