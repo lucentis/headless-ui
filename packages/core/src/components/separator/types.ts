@@ -2,7 +2,9 @@ import type { MaybeRef } from 'vue'
 import type { ComponentApi, AriaOrientation } from '../../types'
 
 export interface UseSeparatorProps {
+    /** Defaults to `'horizontal'`. `aria-orientation` is only exposed when vertical and not decorative. */
     orientation?: MaybeRef<AriaOrientation>
+    /** A decorative separator has `role="none"` and is hidden from assistive technologies. Defaults to `false`. */
     decorative?: MaybeRef<boolean>
 }
 

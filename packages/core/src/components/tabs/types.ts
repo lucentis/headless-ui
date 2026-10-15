@@ -18,11 +18,17 @@ export interface TabsInternals {
 }
 
 export interface UseTabsProps {
+    /** Initial selected tab when uncontrolled. */
     defaultValue?: string
+    /** Controlled selected tab. When provided, also provide `onValueChange`, otherwise changes are ignored (a dev warning is logged). */
     value?: MaybeRef<string>
+    /** Called when the selected tab should change. */
     onValueChange?: (value: string) => void
+    /** Sets the arrow keys used to move between tabs. Defaults to `'horizontal'`. */
     orientation?: MaybeRef<AriaOrientation>
+    /** `'automatic'` selects a tab as soon as it is highlighted. `'manual'` only moves the focus, and the tab is selected when its trigger is activated. Defaults to `'automatic'`. */
     activation?: MaybeRef<'automatic' | 'manual'>
+    /** A disabled tabs blocks `select` and disables every trigger. */
     disabled?: MaybeRef<boolean>
 }
 
@@ -35,6 +41,7 @@ export interface TabsState {
 }
 
 export interface TabsActions {
+    /** Selects a tab. Does nothing and logs a dev warning when the tabs or the tab is disabled, or when no tab with this value is registered. */
     select: (value: string) => void
     isSelected: (value: string) => boolean
     highlight: (value: string) => void
@@ -62,7 +69,9 @@ export interface TabsApi extends ComponentApi<TabsState, TabsActions, TabsBindin
 // --- Trigger ---
 
 export interface UseTabsTriggerProps {
+    /** Identifies the tab. Must be unique, and match the `value` of its panel. */
     value: string
+    /** A disabled trigger cannot be selected. The tabs' `disabled` also applies. */
     disabled?: MaybeRef<boolean>
 }
 
@@ -73,6 +82,7 @@ export interface TabsTriggerState {
 }
 
 export interface TabsTriggerActions {
+    /** Selects this tab. Does nothing and logs a dev warning when the trigger or its tabs is disabled. */
     select: () => void
 }
 
@@ -93,12 +103,14 @@ export interface TabsTriggerBindings {
 }
 
 export interface TabsTriggerApi extends ComponentApi<TabsTriggerState, TabsTriggerActions, TabsTriggerBindings> {
+    /** Attach to the trigger element so arrow-key navigation can move the focus to it. */
     triggerRef: Ref<HTMLElement | null>
 }
 
 // --- Panel ---
 
 export interface UseTabsPanelProps {
+    /** The `value` of the tab this panel belongs to. */
     value: string
 }
 
