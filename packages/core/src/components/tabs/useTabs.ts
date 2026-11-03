@@ -111,6 +111,16 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
         onPrev: actions.highlightPrev,
         onFirst: actions.highlightFirst,
         onLast: actions.highlightLast,
+        onEnter: () => {
+            if (activation.value === 'manual' && highlightValue.value) {
+                actions.select(highlightValue.value)
+            }
+        },
+        onSpace: () => {
+            if (activation.value === 'manual' && highlightValue.value) {
+                actions.select(highlightValue.value)
+            }
+        },
     })
 
     const listBindings = computed(() => ({
