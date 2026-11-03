@@ -213,6 +213,48 @@ describe('useTabs', () => {
             const { api } = createTabsHost({ orientation: 'vertical' })
             expect(api.bindings.list['data-orientation']).toBe('vertical')
         })
+
+        it('selects the highlighted tab on Enter in manual mode', async () => {
+            const { state, actions, api } = createTabsHost({ activation: 'manual' })
+            registerTab(api, 'tab-1')
+            actions.highlight('tab-1')
+            await nextTick()
+
+            const event = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true })
+            api.bindings.list.onKeydown(event)
+            await nextTick()
+
+            expect(event.defaultPrevented).toBe(true)
+            expect(state.value).toBe('tab-1')
+        })
+
+        it('selects the highlighted tab on Space in manual mode', async () => {
+            const { state, actions, api } = createTabsHost({ activation: 'manual' })
+            registerTab(api, 'tab-1')
+            actions.highlight('tab-1')
+            await nextTick()
+
+            const event = new KeyboardEvent('keydown', { key: ' ', cancelable: true })
+            api.bindings.list.onKeydown(event)
+            await nextTick()
+
+            expect(event.defaultPrevented).toBe(true)
+            expect(state.value).toBe('tab-1')
+        })
+
+        it('does not select a disabled highlighted tab on Enter in manual mode', async () => {
+            const { state, actions, api } = createTabsHost({ activation: 'manual' })
+            registerTab(api, 'tab-1', true)
+            actions.highlight('tab-1')
+            await nextTick()
+
+            const event = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true })
+            api.bindings.list.onKeydown(event)
+            await nextTick()
+
+            expect(event.defaultPrevented).toBe(true)
+            expect(state.value).toBe('')
+        })
     })
 })
 
