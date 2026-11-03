@@ -1,5 +1,4 @@
 import { computed, onMounted, onUnmounted, ref, reactive } from 'vue'
-import { useId } from '../../utils/useId'
 import { useDisabled } from '../../utils/useDisabled'
 import { warnDev } from '../../utils/warnDev'
 import { useTabsContext } from './TabsContext'
@@ -8,19 +7,16 @@ import { TabsInternalKey } from '../../keys/internal-keys'
 
 export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): TabsTriggerApi {
     const tabsApi = tabs ?? useTabsContext()
-    const { getPanelId, linkTrigger, unlinkTrigger } = tabsApi[TabsInternalKey]
+    const { getTriggerId, getPanelId, linkTrigger, unlinkTrigger } = tabsApi[TabsInternalKey]
 
     const ownDisabled = useDisabled(props.disabled)
     const isDisabled = computed(() => tabsApi.state.isDisabled || ownDisabled.value)
     const isSelected = computed(() => tabsApi.actions.isSelected(props.value))
     const isHighlighted = computed(() => tabsApi.actions.isHighlighted(props.value))
 
-    // trigger owns both IDs — single source of truth
-    const triggerId = useId('tabs-trigger')
-    const panelId = useId('tabs-panel')
     const triggerRef = ref<HTMLElement | null>(null)
 
-    onMounted(() => linkTrigger({ value: props.value, triggerId, panelId, triggerRef, disabled: isDisabled }))
+    onMounted(() => linkTrigger({ value: props.value, triggerRef, disabled: isDisabled }))
     onUnmounted(() => unlinkTrigger(props.value))
 
     const state: TabsTriggerState = reactive({
@@ -44,7 +40,7 @@ export function useTabsTrigger(props: UseTabsTriggerProps, tabs?: TabsApi): Tabs
     }
 
     const triggerBindings = computed(() => ({
-        id: triggerId,
+        id: getTriggerId(props.value),
         role: 'tab' as const,
         'aria-selected': isSelected.value,
         'aria-controls': getPanelId(props.value),

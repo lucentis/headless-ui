@@ -4,8 +4,6 @@ import type { TabsInternalKey } from '../../keys/internal-keys'
 
 export interface TabsRegistryItem {
     value: string
-    triggerId: string
-    panelId: string
     disabled: ComputedRef<boolean>
     triggerRef: Ref<HTMLElement | null>
 }

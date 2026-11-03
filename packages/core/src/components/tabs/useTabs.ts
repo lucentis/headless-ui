@@ -17,6 +17,13 @@ import type {
 } from './types'
 import { TabsInternalKey } from '../../keys/internal-keys'
 
+// Ids are derived from the instance id and the tab value, so they exist before any
+// registration (first render, SSR). Characters that would break aria-controls and
+// aria-labelledby (space-separated id lists) are escaped.
+function toIdSegment(value: string): string {
+    return value.replace(/[^\w-]/g, (char) => `_${char.charCodeAt(0).toString(16)}`)
+}
+
 export function useTabs(props: UseTabsProps = {}): TabsApi {
     const { value, setValue } = useControllableState({
         value: props.value,
@@ -125,8 +132,8 @@ export function useTabs(props: UseTabsProps = {}): TabsApi {
     const internals: TabsInternals = {
         linkTrigger: register,
         unlinkTrigger: unregister,
-        getTriggerId: (tabValue: string) => getItem(tabValue)?.triggerId ?? '',
-        getPanelId: (tabValue: string) => getItem(tabValue)?.panelId ?? '',
+        getTriggerId: (tabValue: string) => `${listId}-trigger-${toIdSegment(tabValue)}`,
+        getPanelId: (tabValue: string) => `${listId}-panel-${toIdSegment(tabValue)}`,
     }
 
     return {
