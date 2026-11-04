@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { defineComponent } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useRegistry } from './useRegistry'
@@ -56,11 +56,19 @@ describe('useRegistry', () => {
             expect(registry.value.map((i) => i.value)).toEqual(['a', 'b', 'c'])
         })
 
-        it('does not add duplicate values', () => {
+        it('warns and does not add duplicate values', () => {
+            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
             const { register, registry } = createHost()
+
             register({ value: 'a', id: 'id-a', disabled: false })
             register({ value: 'a', id: 'id-a-2', disabled: false })
+
             expect(registry.value).toHaveLength(1)
+            expect(registry.value[0].id).toBe('id-a')
+            expect(warnSpy).toHaveBeenCalledTimes(1)
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('already registered'))
+
+            warnSpy.mockRestore()
         })
     })
 
