@@ -94,9 +94,15 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
 </script>
 
 <template>
-    <button v-bind="bindings.root" @click="select.actions.select('dfdf')">Submit</button>
+    <h1>COMPONENT API USE</h1>
+
+    <div class="">
+        <h2>BUTTON API</h2>
+        <button v-bind="bindings.root" @click="select.actions.select('dfdf')">Submit</button>
+    </div>
 
     <!-- alert -->
+    <h2>ALERT API</h2>
     <div class="" v-bind="alert.bindings.root" v-if="alert.state.isPresent">
         <p>alert</p>
 
@@ -104,6 +110,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     </div>
 
     <!-- collapsible -->
+    <h2>COLLAPSIBLE API</h2>
     <div>
         <button v-bind="collapsible.bindings.trigger" @click="() => console.log('collapsible trigger clicked in app')">
             {{ collapsible.state.isOpen ? 'Close' : 'Open' }} section
@@ -115,11 +122,10 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     </div>
 
     <!-- accordion -->
+    <h2>ACCORDION API</h2>
     <div>
         <div>
-            <h3>
-                <button v-bind="item1.bindings.trigger">Item 1</button>
-            </h3>
+            <button v-bind="item1.bindings.trigger">Item 1</button>
 
             <div v-if="item1.state.isExpanded" v-bind="item1.bindings.content">
                 <p>Content for item 1</p>
@@ -127,9 +133,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
         </div>
 
         <div>
-            <h3>
-                <button v-bind="item2.bindings.trigger">Item 2</button>
-            </h3>
+            <button v-bind="item2.bindings.trigger">Item 2</button>
 
             <div v-if="item2.state.isExpanded" v-bind="item2.bindings.content">
                 <p>Content for item 2</p>
@@ -137,9 +141,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
         </div>
 
         <div>
-            <h3>
-                <button v-bind="item3.bindings.trigger">Item 3</button>
-            </h3>
+            <button v-bind="item3.bindings.trigger">Item 3</button>
 
             <div v-if="item3.state.isExpanded" v-bind="item3.bindings.content">
                 <p>Content for item 3</p>
@@ -148,6 +150,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     </div>
 
     <!-- tabs -->
+    <h2>TABS API</h2>
     <div>
         <div v-bind="tabs.bindings.list">
             <button v-bind="trigger1.bindings.trigger" :ref="trigger1.triggerRef">Tab 1</button>
@@ -166,6 +169,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     </div>
 
     <!-- dialog -->
+    <h2>DIALOG API</h2>
     <div class="">
         <button @click="dialog.actions.open">Open Dialog</button>
 
@@ -241,6 +245,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     </div>
 
     <!-- tooltip -->
+    <h2>TOOLTIP API</h2>
     <div style="position: relative; display: inline-block">
         <button v-bind="tooltip.bindings.trigger">Hover me</button>
 
@@ -264,7 +269,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     </div>
 
     <!-- popover -->
-
+    <h2>POPOVER API</h2>
     <div class="relative" style="position: relative">
         <button
             :ref="
@@ -297,6 +302,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     </div>
 
     <!-- menu -->
+    <h2>MENU API</h2>
     <div class="" style="position: relative; display: inline-block">
         <button
             :ref="
@@ -345,6 +351,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     </div>
 
     <!-- listbox -->
+    <h2>LISTBOX API</h2>
     <div
         :ref="
             (el) => {
@@ -385,6 +392,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
     </div>
 
     <!-- select -->
+    <h2>SELECT API</h2>
     <div style="position: relative; display: inline-block">
         <button :ref="select.triggerRef" v-bind="select.bindings.trigger">
             {{ select.state.selectedLabel ?? select.state.placeholder ?? 'Select...' }}
@@ -418,6 +426,7 @@ const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
 <style scoped>
 div {
     padding: 5px 10px;
+    margin-bottom: 20px;
 }
 
 #listbox:focus {
