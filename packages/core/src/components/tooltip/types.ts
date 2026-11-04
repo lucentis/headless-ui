@@ -12,6 +12,8 @@ export interface UseTooltipProps {
     delayDuration?: MaybeRef<number>
     /** A disabled tooltip never opens from hover or focus, and `open` is blocked. */
     disabled?: MaybeRef<boolean>
+    /** Surcharge the global closeOnEscape option */
+    closeOnEscape?: MaybeRef<boolean>
 }
 
 export interface TooltipState {
