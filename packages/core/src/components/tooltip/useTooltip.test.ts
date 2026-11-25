@@ -280,6 +280,30 @@ describe('useTooltip', () => {
 
             wrapper.unmount()
         })
+
+        it('closes on Escape when closeOnEscape is true', async () => {
+            const { state, actions, wrapper } = createHost({ closeOnEscape: true })
+            actions.open()
+            await nextTick()
+
+            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+            await nextTick()
+
+            expect(state.isOpen).toBe(false)
+            wrapper.unmount()
+        })
+
+        it('does not close on Escape when closeOnEscape is false', async () => {
+            const { state, actions, wrapper } = createHost({ closeOnEscape: false })
+            actions.open()
+            await nextTick()
+
+            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+            await nextTick()
+
+            expect(state.isOpen).toBe(true)
+            wrapper.unmount()
+        })
     })
 
     describe('context', () => {

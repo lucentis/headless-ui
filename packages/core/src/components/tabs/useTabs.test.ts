@@ -95,8 +95,6 @@ function createPanelHost(
 function registerTab(api: ReturnType<typeof useTabs>, value: string, disabled = false) {
     api[TabsInternalKey].linkTrigger({
         value,
-        triggerId: `tabs-trigger-${value}`,
-        panelId: `tabs-panel-${value}`,
         disabled: computed(() => disabled),
         triggerRef: ref<HTMLElement | null>(null),
     })
@@ -214,6 +212,48 @@ describe('useTabs', () => {
         it('data-orientation reflects orientation prop', () => {
             const { api } = createTabsHost({ orientation: 'vertical' })
             expect(api.bindings.list['data-orientation']).toBe('vertical')
+        })
+
+        it('selects the highlighted tab on Enter in manual mode', async () => {
+            const { state, actions, api } = createTabsHost({ activation: 'manual' })
+            registerTab(api, 'tab-1')
+            actions.highlight('tab-1')
+            await nextTick()
+
+            const event = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true })
+            api.bindings.list.onKeydown(event)
+            await nextTick()
+
+            expect(event.defaultPrevented).toBe(true)
+            expect(state.value).toBe('tab-1')
+        })
+
+        it('selects the highlighted tab on Space in manual mode', async () => {
+            const { state, actions, api } = createTabsHost({ activation: 'manual' })
+            registerTab(api, 'tab-1')
+            actions.highlight('tab-1')
+            await nextTick()
+
+            const event = new KeyboardEvent('keydown', { key: ' ', cancelable: true })
+            api.bindings.list.onKeydown(event)
+            await nextTick()
+
+            expect(event.defaultPrevented).toBe(true)
+            expect(state.value).toBe('tab-1')
+        })
+
+        it('does not select a disabled highlighted tab on Enter in manual mode', async () => {
+            const { state, actions, api } = createTabsHost({ activation: 'manual' })
+            registerTab(api, 'tab-1', true)
+            actions.highlight('tab-1')
+            await nextTick()
+
+            const event = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true })
+            api.bindings.list.onKeydown(event)
+            await nextTick()
+
+            expect(event.defaultPrevented).toBe(true)
+            expect(state.value).toBe('')
         })
     })
 })
@@ -473,5 +513,53 @@ describe('warnings', () => {
             expect(state.isSelected).toBe(true)
             expect(warnSpy).not.toHaveBeenCalled()
         })
+    })
+})
+
+describe('ids', () => {
+    it('panel ids are available without any registered trigger', () => {
+        const { bindings } = createPanelHost({}, { value: 'tab-1' })
+        expect(bindings.panel.id).not.toBe('')
+        expect(bindings.panel['aria-labelledby']).not.toBe('')
+    })
+
+    it('trigger and panel reference each other', () => {
+        let trigger: ReturnType<typeof useTabsTrigger>
+        let panel: ReturnType<typeof useTabsPanel>
+
+        const Host = defineComponent({
+            setup() {
+                const tabs = useTabs()
+                trigger = useTabsTrigger({ value: 'tab-1' }, tabs)
+                panel = useTabsPanel({ value: 'tab-1' }, tabs)
+            },
+            template: '<div />',
+        })
+
+        mount(Host)
+        expect(trigger!.bindings.trigger['aria-controls']).toBe(panel!.bindings.panel.id)
+        expect(panel!.bindings.panel['aria-labelledby']).toBe(trigger!.bindings.trigger.id)
+    })
+
+    it('escapes characters that would break id lists', () => {
+        const { bindings } = createTriggerHost({}, { value: 'my tab' })
+        expect(bindings.trigger.id).not.toMatch(/\s/)
+        expect(bindings.trigger['aria-controls']).not.toMatch(/\s/)
+    })
+
+    it('ids differ between two instances for the same value', () => {
+        let first: ReturnType<typeof useTabsTrigger>
+        let second: ReturnType<typeof useTabsTrigger>
+
+        const Host = defineComponent({
+            setup() {
+                first = useTabsTrigger({ value: 'tab-1' }, useTabs())
+                second = useTabsTrigger({ value: 'tab-1' }, useTabs())
+            },
+            template: '<div />',
+        })
+
+        mount(Host)
+        expect(first!.bindings.trigger.id).not.toBe(second!.bindings.trigger.id)
     })
 })

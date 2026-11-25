@@ -82,7 +82,7 @@ export function useTooltip(props: UseTooltipProps = {}): TooltipApi {
     }
 
     useEscape({
-        active: isOpen,
+        active: computed(() => isOpen.value && toValue(props.closeOnEscape ?? config.closeOnEscape)),
         onEscape: actions.close,
     })
 
