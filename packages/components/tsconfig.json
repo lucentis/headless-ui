@@ -1,9 +1,11 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "rootDir": "./src",
         "outDir": "./dist",
-        "composite": true
+        "composite": true,
+        "paths": {
+            "@lucentis/headless-ui-core": ["../core/src/index.ts"]
+        }
     },
     "include": ["src/**/*.ts", "src/**/*.vue"],
     "references": [

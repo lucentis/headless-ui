@@ -14,7 +14,7 @@
         "test": "vitest run",
         "test:components": "vitest run packages/components/src",
         "check": "npm run lint && npm run format:check && npm run typecheck",
-        "check:components": "npm run lint -- packages/components && npm run format:check -- packages/components && npm run typecheck:components && npm run test:components && npm run build:components",
+        "check:components": "npm run build --workspace=packages/core npm run lint -- packages/components && npm run format:check -- packages/components && npm run typecheck:components && npm run test:components && npm run build:components",
         "dev": "npm run dev --workspace=packages/playground",
         "lint": "eslint . --max-warnings 0",
         "format": "prettier --write .",

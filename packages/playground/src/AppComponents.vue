@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import ButtonPlayground from './components/button/ButtonPlayground.vue'
 import SeparatorPlayground from './components/separator/SeparatorPlayground.vue'
+import AlertPlayground from './components/alert/AlertPlayground.vue'
 
 const activeComponent = ref('button')
 </script>
@@ -14,12 +15,14 @@ const activeComponent = ref('button')
             <nav>
                 <button type="button" @click="activeComponent = 'button'">Button</button>
                 <button type="button" @click="activeComponent = 'separator'">Separator</button>
+                <button type="button" @click="activeComponent = 'alert'">Alert</button>
             </nav>
         </aside>
 
         <main>
             <ButtonPlayground v-if="activeComponent === 'button'" />
             <SeparatorPlayground v-else-if="activeComponent === 'separator'" />
+            <AlertPlayground v-else-if="activeComponent === 'alert'"></AlertPlayground>
         </main>
     </div>
 </template>

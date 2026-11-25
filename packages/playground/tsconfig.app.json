@@ -4,7 +4,8 @@
         "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
         "types": ["vite/client"],
         "paths": {
-            "@lucentis/headless-ui-core": ["../core/src/index.ts"]
+            "@lucentis/headless-ui-core": ["../core/src/index.ts"],
+            "@lucentis/headless-ui": ["../components/src/index.ts"]
         },
 
         /* Linting */
