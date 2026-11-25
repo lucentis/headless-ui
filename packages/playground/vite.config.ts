@@ -7,6 +7,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@lucentis/headless-ui-core': resolve(__dirname, '../core/src/index.ts'),
+            '@lucentis/headless-ui': resolve(__dirname, '../components/src/index.ts'),
         },
     },
 })

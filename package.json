@@ -8,14 +8,18 @@
     ],
     "scripts": {
         "build": "npm run build --workspace=packages/core && npm run build --workspace=packages/components",
+        "build:components": "npm run build --workspace=packages/components",
         "typecheck": "npm run typecheck --workspaces",
+        "typecheck:components": "npm run typecheck --workspace=packages/components",
         "test": "vitest run",
+        "test:components": "vitest run packages/components/src",
+        "check": "npm run lint && npm run format:check && npm run typecheck",
+        "check:components": "npm run lint -- packages/components && npm run format:check -- packages/components && npm run typecheck:components && npm run test:components && npm run build:components",
         "dev": "npm run dev --workspace=packages/playground",
         "lint": "eslint . --max-warnings 0",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "ci": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build",
-        "check": "npm run lint && npm run format:check && npm run typecheck"
+        "ci": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",

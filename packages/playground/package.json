@@ -9,7 +9,8 @@
         "typecheck": "vue-tsc --build"
     },
     "dependencies": {
-        "@lucentis/headless-ui-core": "*"
+        "@lucentis/headless-ui-core": "*",
+        "@lucentis/headless-ui": "*"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^6.0.6"

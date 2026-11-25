@@ -25,4 +25,10 @@ export default defineConfig([
             '@typescript-eslint/no-empty-object-type': ['error', { allowInterfaces: 'with-single-extends' }],
         },
     },
+    {
+        files: ['packages/components/**/*.vue'],
+        rules: {
+            'vue/multi-word-component-names': 'off',
+        },
+    },
 ])
