@@ -7,7 +7,7 @@
         "packages/*"
     ],
     "scripts": {
-        "build": "npm run build --workspace=packages/core",
+        "build": "npm run build --workspace=packages/core && npm run build --workspace=packages/components",
         "typecheck": "npm run typecheck --workspaces",
         "test": "vitest run",
         "dev": "npm run dev --workspace=packages/playground",

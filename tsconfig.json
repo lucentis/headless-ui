@@ -1,4 +1,14 @@
 {
     "files": [],
-    "references": [{ "path": "./packages/core" }, { "path": "./packages/playground" }]
+    "references": [
+        {
+            "path": "./packages/core"
+        },
+        {
+            "path": "./packages/components"
+        },
+        {
+            "path": "./packages/playground"
+        }
+    ]
 }
