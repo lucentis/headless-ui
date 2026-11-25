@@ -5,6 +5,8 @@ import { Alert } from '@lucentis/headless-ui'
 const isOpen = ref(true)
 
 function handleOpenChange(value: boolean) {
+    console.log('new value:' + value)
+
     isOpen.value = value
 }
 </script>
@@ -26,12 +28,26 @@ function handleOpenChange(value: boolean) {
         </section>
 
         <section>
+            <h2>Uncontrolled state</h2>
+
+            <Alert :on-open-change="handleOpenChange" v-slot="{ state, actions, bindings }">
+                <div v-bind="bindings.root">
+                    <p>Uncontrolled alert.</p>
+                    <p>Open: {{ state.isOpen }}</p>
+
+                    <button type="button" @click="actions.close">Close</button>
+                </div>
+            </Alert>
+        </section>
+
+        <section>
             <h2>Controlled state</h2>
 
             <button type="button" @click="isOpen = true">Reopen alert</button>
 
-            <Alert :open="isOpen" :on-open-change="handleOpenChange" class="custom-alert">
-                <span>Controlled alert message.</span>
+            <Alert :open="isOpen">
+                <span> This is a controlled alert. </span>
+
                 <button type="button" @click="isOpen = false">Close</button>
             </Alert>
 

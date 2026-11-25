@@ -29,10 +29,7 @@ const { state, actions, bindings } = useAlert({
     onOpenChange: props.onOpenChange,
 })
 
-defineExpose({
-    open: actions.open,
-    close: actions.close,
-})
+defineExpose({ state, actions, bindings })
 </script>
 
 <template>
@@ -43,6 +40,6 @@ defineExpose({
             ...$attrs,
         }"
     >
-        <slot :is-open="state.isOpen" :is-present="state.isPresent" :open="actions.open" :close="actions.close" />
+        <slot :state="state" :actions="actions" :bindings="bindings" />
     </div>
 </template>
