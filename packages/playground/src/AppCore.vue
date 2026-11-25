@@ -1,0 +1,439 @@
+<script setup lang="ts">
+import { useSelect, useSelectOption } from '@lucentis/headless-ui-core'
+import {
+    useButton,
+    useAlert,
+    useCollapsible,
+    useAccordion,
+    useAccordionItem,
+    useTabs,
+    useTabsTrigger,
+    useTabsPanel,
+    useDialog,
+    useTooltip,
+    usePopover,
+    useMenu,
+    useMenuItem,
+    useListbox,
+    useListboxOption,
+} from '@lucentis/headless-ui-core'
+import { ref } from 'vue'
+
+const isLoading = ref(false)
+const { bindings } = useButton({ disabled: isLoading })
+
+const alert = useAlert()
+
+const collapsible = useCollapsible({ defaultOpen: false })
+
+const accordion = useAccordion({ type: 'multiple' })
+const item1 = useAccordionItem({ value: 'item-1' }, accordion)
+const item2 = useAccordionItem({ value: 'item-2' }, accordion)
+const item3 = useAccordionItem({ value: 'item-3' }, accordion)
+
+const tabs = useTabs({ defaultValue: 'tab-1', activation: 'automatic' })
+const trigger1 = useTabsTrigger({ value: 'tab-1' }, tabs)
+const trigger2 = useTabsTrigger({ value: 'tab-2' }, tabs)
+const trigger3 = useTabsTrigger({ value: 'tab-3', disabled: true }, tabs)
+const trigger4 = useTabsTrigger({ value: 'tab-4' }, tabs)
+const panel1 = useTabsPanel({ value: 'tab-1' }, tabs)
+const panel2 = useTabsPanel({ value: 'tab-2' }, tabs)
+const panel3 = useTabsPanel({ value: 'tab-3' }, tabs)
+const panel4 = useTabsPanel({ value: 'tab-4' }, tabs)
+
+const dialog = useDialog()
+
+const dialog2 = useDialog()
+
+const tooltip = useTooltip({ delayDuration: 500 })
+
+const popover = usePopover()
+
+const menu = useMenu({
+    onOpenChange(value) {
+        console.log('menu is open:', value)
+    },
+})
+const editItem = useMenuItem({ value: 'edit', onClick: () => console.log('edit') }, menu)
+const deleteItem = useMenuItem({ value: 'delete', onClick: () => console.log('delete') }, menu)
+const disabledItem = useMenuItem(
+    {
+        value: 'share',
+        disabled: true,
+        onClick: (event: MouseEvent) => {
+            console.log('share clicked via props', event)
+        },
+    },
+    menu,
+)
+
+const listbox = useListbox({
+    defaultValue: 'option-1',
+    onValueChange(value) {
+        console.log(value)
+    },
+})
+
+const option1 = useListboxOption({ value: 'option-1' }, listbox)
+const option2 = useListboxOption({ value: 'option-2' }, listbox)
+const option3 = useListboxOption({ value: 'option-3' }, listbox)
+useListboxOption({ value: 'option-3' }, listbox)
+const option4 = useListboxOption({ value: 'option-4', disabled: true }, listbox)
+
+const language = ref('fr')
+const open = ref(false)
+const select = useSelect({
+    placeholder: 'Select a language',
+    value: language,
+    open,
+})
+
+const optFr = useSelectOption({ value: 'fr', label: 'French' }, select)
+const optEn = useSelectOption({ value: 'en', label: 'English' }, select)
+const optEs = useSelectOption({ value: 'es', label: 'Spanish' }, select)
+</script>
+
+<template>
+    <h1>COMPONENT API USE</h1>
+
+    <div class="">
+        <h2>BUTTON API</h2>
+        <button v-bind="bindings.root" @click="select.actions.select('dfdf')">Submit</button>
+    </div>
+
+    <!-- alert -->
+    <h2>ALERT API</h2>
+    <div class="" v-bind="alert.bindings.root" v-if="alert.state.isPresent">
+        <p>alert</p>
+
+        <button @click="alert.actions.close">Close</button>
+    </div>
+
+    <!-- collapsible -->
+    <h2>COLLAPSIBLE API</h2>
+    <div>
+        <button v-bind="collapsible.bindings.trigger" @click="() => console.log('collapsible trigger clicked in app')">
+            {{ collapsible.state.isOpen ? 'Close' : 'Open' }} section
+        </button>
+
+        <div v-if="collapsible.state.isPresent" v-bind="collapsible.bindings.content">
+            <p>This is the collapsible content.</p>
+        </div>
+    </div>
+
+    <!-- accordion -->
+    <h2>ACCORDION API</h2>
+    <div>
+        <div>
+            <button v-bind="item1.bindings.trigger">Item 1</button>
+
+            <div v-if="item1.state.isExpanded" v-bind="item1.bindings.content">
+                <p>Content for item 1</p>
+            </div>
+        </div>
+
+        <div>
+            <button v-bind="item2.bindings.trigger">Item 2</button>
+
+            <div v-if="item2.state.isExpanded" v-bind="item2.bindings.content">
+                <p>Content for item 2</p>
+            </div>
+        </div>
+
+        <div>
+            <button v-bind="item3.bindings.trigger">Item 3</button>
+
+            <div v-if="item3.state.isExpanded" v-bind="item3.bindings.content">
+                <p>Content for item 3</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- tabs -->
+    <h2>TABS API</h2>
+    <div>
+        <div v-bind="tabs.bindings.list">
+            <button v-bind="trigger1.bindings.trigger" :ref="trigger1.triggerRef">Tab 1</button>
+            <button v-bind="trigger2.bindings.trigger" :ref="trigger2.triggerRef">Tab 2</button>
+            <button v-bind="trigger3.bindings.trigger" :ref="trigger3.triggerRef">Tab 3</button>
+            <button v-bind="trigger4.bindings.trigger" :ref="trigger4.triggerRef">Tab 4</button>
+        </div>
+
+        <div v-if="panel1.state.isSelected" v-bind="panel1.bindings.panel">Content 1</div>
+
+        <div v-if="panel2.state.isSelected" v-bind="panel2.bindings.panel">Content 2</div>
+
+        <div v-if="panel3.state.isSelected" v-bind="panel3.bindings.panel">Content 3</div>
+
+        <div v-if="panel4.state.isSelected" v-bind="panel4.bindings.panel">Content 4</div>
+    </div>
+
+    <!-- dialog -->
+    <h2>DIALOG API</h2>
+    <div class="">
+        <button @click="dialog.actions.open">Open Dialog</button>
+
+        <Teleport to="body">
+            <template v-if="dialog.state.isPresent">
+                <!-- overlay -->
+                <div
+                    v-bind="dialog.bindings.overlay"
+                    style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5)"
+                />
+
+                <!-- content -->
+                <div
+                    :ref="
+                        (el) => {
+                            dialog.contentRef.value = el as HTMLElement | null
+                        }
+                    "
+                    v-bind="dialog.bindings.content"
+                    style="
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: white;
+                        padding: 24px;
+                    "
+                >
+                    <h2 v-bind="dialog.bindings.title">Dialog Title</h2>
+                    <p v-bind="dialog.bindings.description">Dialog description for screen readers.</p>
+                    <p>Dialog content goes here.</p>
+                    <button @click="dialog.actions.close">Close</button>
+
+                    <div class="">
+                        <button @click="dialog2.actions.open">Open Dialog2 in dialog</button>
+
+                        <Teleport to="body">
+                            <template v-if="dialog2.state.isPresent">
+                                <!-- overlay -->
+                                <div
+                                    v-bind="dialog2.bindings.overlay"
+                                    style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5)"
+                                />
+
+                                <!-- content -->
+                                <div
+                                    :ref="
+                                        (el) => {
+                                            dialog2.contentRef.value = el as HTMLElement | null
+                                        }
+                                    "
+                                    v-bind="dialog2.bindings.content"
+                                    style="
+                                        position: fixed;
+                                        top: 50%;
+                                        left: 50%;
+                                        transform: translate(-50%, -50%);
+                                        background: white;
+                                        padding: 24px;
+                                    "
+                                >
+                                    <h2 v-bind="dialog2.bindings.title">Dialog Title</h2>
+                                    <p v-bind="dialog2.bindings.description">Dialog description for screen readers.</p>
+                                    <p>Dialog content goes here.</p>
+                                    <button @click="dialog2.actions.close">Close</button>
+                                </div>
+                            </template>
+                        </Teleport>
+                    </div>
+                </div>
+            </template>
+        </Teleport>
+    </div>
+
+    <!-- tooltip -->
+    <h2>TOOLTIP API</h2>
+    <div style="position: relative; display: inline-block">
+        <button v-bind="tooltip.bindings.trigger">Hover me</button>
+
+        <div
+            v-if="tooltip.state.isPresent"
+            v-bind="tooltip.bindings.content"
+            style="
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #333;
+                color: #fff;
+                padding: 4px 8px;
+                border-radius: 4px;
+                white-space: nowrap;
+            "
+        >
+            This is a tooltip
+        </div>
+    </div>
+
+    <!-- popover -->
+    <h2>POPOVER API</h2>
+    <div class="relative" style="position: relative">
+        <button
+            :ref="
+                (el) => {
+                    popover.triggerRef.value = el as HTMLElement
+                }
+            "
+            v-bind="popover.bindings.trigger"
+        >
+            Open Popover
+        </button>
+
+        <div
+            v-if="popover.state.isPresent"
+            ref="contentElPopover"
+            v-bind="popover.bindings.content"
+            style="
+                position: absolute;
+                left: 50%;
+                bottom: 100%;
+                background: white;
+                border: 1px solid #ccc;
+                padding: 16px;
+                border-radius: 8px;
+            "
+        >
+            <p>Popover content</p>
+            <button @click="popover.actions.close">Close</button>
+        </div>
+    </div>
+
+    <!-- menu -->
+    <h2>MENU API</h2>
+    <div class="" style="position: relative; display: inline-block">
+        <button
+            :ref="
+                (el) => {
+                    menu.triggerRef.value = el as HTMLElement
+                }
+            "
+            v-bind="menu.bindings.trigger"
+        >
+            Options
+        </button>
+
+        <div
+            v-if="menu.state.isPresent"
+            :ref="
+                (el) => {
+                    menu.contentRef.value = el as HTMLElement
+                }
+            "
+            v-bind="menu.bindings.content"
+            style="
+                position: fixed;
+                top: 100px;
+                left: 100px;
+                background: white;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            "
+        >
+            <div
+                v-bind="editItem.bindings.root"
+                @click.prevent="console.log('edit clicked')"
+                style="padding: 8px 16px; cursor: pointer"
+            >
+                Edit
+            </div>
+            <div v-bind="deleteItem.bindings.root" style="padding: 8px 16px; cursor: pointer">Delete</div>
+            <div
+                v-bind="disabledItem.bindings.root"
+                @click.prevent="console.log('share clicked')"
+                style="padding: 8px 16px; opacity: 0.5"
+            >
+                Share
+            </div>
+        </div>
+    </div>
+
+    <!-- listbox -->
+    <h2>LISTBOX API</h2>
+    <div
+        :ref="
+            (el) => {
+                listbox.rootRef.value = el as HTMLElement
+            }
+        "
+        v-bind="listbox.bindings.root"
+        style="border: 1px solid #ccc; width: 200px"
+    >
+        <div
+            v-bind="option1.bindings.root"
+            style="padding: 8px 16px; cursor: pointer"
+            :style="listbox.actions.isSelected('option-1') ? { background: '#e0e7ff' } : {}"
+        >
+            Option 1
+        </div>
+        <div
+            v-bind="option2.bindings.root"
+            style="padding: 8px 16px; cursor: pointer"
+            :style="listbox.actions.isSelected('option-2') ? { background: '#e0e7ff' } : {}"
+        >
+            Option 2
+        </div>
+        <div
+            v-bind="option3.bindings.root"
+            style="padding: 8px 16px; cursor: pointer"
+            :style="listbox.actions.isSelected('option-3') ? { background: '#e0e7ff' } : {}"
+        >
+            Option 3
+        </div>
+        <div
+            v-bind="option4.bindings.root"
+            style="padding: 8px 16px; cursor: pointer"
+            :style="listbox.actions.isSelected('option-4') ? { background: '#e0e7ff' } : {}"
+        >
+            Option 4
+        </div>
+    </div>
+
+    <!-- select -->
+    <h2>SELECT API</h2>
+    <div style="position: relative; display: inline-block">
+        <button :ref="select.triggerRef" v-bind="select.bindings.trigger">
+            {{ select.state.selectedLabel ?? select.state.placeholder ?? 'Select...' }}
+        </button>
+
+        <div
+            v-if="select.state.isPresent"
+            :ref="
+                (el) => {
+                    select.contentRef.value = el as HTMLElement
+                }
+            "
+            v-bind="select.bindings.content"
+            style="
+                position: fixed;
+                top: 100px;
+                left: 100px;
+                background: white;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                width: 200px;
+            "
+        >
+            <div v-bind="optFr.bindings.root" style="padding: 8px 16px; cursor: pointer">French</div>
+            <div v-bind="optEn.bindings.root" style="padding: 8px 16px; cursor: pointer">English</div>
+            <div v-bind="optEs.bindings.root" style="padding: 8px 16px; cursor: pointer">Spanish</div>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+div {
+    padding: 5px 10px;
+    margin-bottom: 20px;
+}
+
+#listbox:focus {
+    border: 2px solid red;
+}
+
+[data-highlighted] {
+    border: 1px solid blue;
+}
+</style>
