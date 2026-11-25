@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { h } from 'vue'
+import { h, nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import Alert from './Alert.vue'
 
@@ -59,22 +59,43 @@ describe('Alert', () => {
 
         await wrapper.get('button').trigger('click')
 
-        expect(wrapper.attributes('data-state')).toBe('closed')
+        // a closed alert is unmounted, so there is no element left to carry data-state="closed"
+        expect(wrapper.find('[role="status"]').exists()).toBe(false)
     })
 
-    it('opens through the slot action', async () => {
+    it('does not render its slot when closed', () => {
         const wrapper = mount(Alert, {
             props: {
                 defaultOpen: false,
             },
             slots: {
-                default: ({ open }: { open: () => void }) => h('button', { onClick: open }, 'Open'),
+                default: 'Alert message',
             },
         })
 
-        await wrapper.get('button').trigger('click')
+        expect(wrapper.text()).toBe('')
+    })
+
+    it('opens through the exposed open method', async () => {
+        const wrapper = mount(Alert, {
+            props: {
+                defaultOpen: false,
+            },
+        })
+
+        wrapper.vm.open()
+        await nextTick()
 
         expect(wrapper.attributes('data-state')).toBe('open')
+    })
+
+    it('closes through the exposed close method', async () => {
+        const wrapper = mount(Alert)
+
+        wrapper.vm.close()
+        await nextTick()
+
+        expect(wrapper.find('[role="status"]').exists()).toBe(false)
     })
 
     it('calls onOpenChange when closed', async () => {
@@ -124,7 +145,13 @@ describe('Alert', () => {
             open: false,
         })
 
-        expect(wrapper.attributes('data-state')).toBe('closed')
+        expect(wrapper.find('[role="status"]').exists()).toBe(false)
+
+        await wrapper.setProps({
+            open: true,
+        })
+
+        expect(wrapper.attributes('data-state')).toBe('open')
     })
 
     it('forwards native attributes', () => {

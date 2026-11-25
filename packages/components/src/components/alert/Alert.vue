@@ -14,13 +14,16 @@ const props = withDefaults(
         onOpenChange?: (value: boolean) => void
     }>(),
     {
+        // Vue casts an absent Boolean prop to false, which would force controlled mode
+        open: undefined,
         defaultOpen: true,
         role: 'status',
     },
 )
 
 const { state, actions, bindings } = useAlert({
-    open: props.open === undefined ? undefined : toRef(props, 'open'),
+    // the mode is fixed at setup, so the value is never undefined while controlled
+    open: props.open === undefined ? undefined : toRef(() => props.open as boolean),
     defaultOpen: props.defaultOpen,
     role: toRef(props, 'role'),
     onOpenChange: props.onOpenChange,
