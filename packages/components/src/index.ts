@@ -1,3 +1,6 @@
 export { default as Button } from './components/button/Button.vue'
 export { default as Separator } from './components/separator/Separator.vue'
 export { default as Alert } from './components/alert/Alert.vue'
+export { default as Collapsible } from './components/collapsible/Collapsible.vue'
+export { default as CollapsibleTrigger } from './components/collapsible/CollapsibleTrigger.vue'
+export { default as CollapsibleContent } from './components/collapsible/CollapsibleContent.vue'

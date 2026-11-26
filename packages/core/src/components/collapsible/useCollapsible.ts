@@ -63,9 +63,6 @@ export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi 
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
-        onClick: composeHandlers(props.onClick, () => {
-            if (!isDisabled.value) toggle()
-        }),
     }))
 
     const contentBindings = computed(() => ({

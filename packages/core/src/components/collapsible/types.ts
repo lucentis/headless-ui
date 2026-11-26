@@ -8,8 +8,6 @@ export interface UseCollapsibleProps {
     open?: MaybeRef<boolean>
     /** Called when the open state should change. */
     onOpenChange?: (value: boolean) => void
-    /** Called when the trigger is clicked. Calling event.preventDefault() prevents the toggle. */
-    onClick?: (event: MouseEvent) => void
     /** A disabled collapsible blocks `open`, `close` and `toggle`. Calling them directly logs a dev warning. */
     disabled?: MaybeRef<boolean>
 }
@@ -36,7 +34,6 @@ export interface CollapsibleBindings {
         'aria-disabled': true | undefined
         'data-disabled': '' | undefined
         'data-state': 'open' | 'closed'
-        onClick: (event: MouseEvent) => void
     }
     content: {
         id: string
@@ -47,3 +44,27 @@ export interface CollapsibleBindings {
 }
 
 export interface CollapsibleApi extends ComponentApi<CollapsibleState, CollapsibleActions, CollapsibleBindings> {}
+
+// --- Collapsible trigger ---
+
+export interface UseCollapsibleTriggerProps {
+    /**
+     * Runs on click, even when the collapsible is disabled.
+     * The toggle only runs when enabled, and `event.preventDefault()` prevents it.
+     */
+    onClick?: (event: MouseEvent) => void
+}
+
+export interface CollapsibleTriggerBindings {
+    root: CollapsibleBindings['trigger'] & {
+        onClick: (event: MouseEvent) => void
+    }
+}
+
+export type CollapsibleTriggerActions = Record<never, never>
+
+export interface CollapsibleTriggerApi extends ComponentApi<
+    CollapsibleState,
+    CollapsibleTriggerActions,
+    CollapsibleTriggerBindings
+> {}
