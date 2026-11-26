@@ -8,6 +8,8 @@ export interface UseCollapsibleProps {
     open?: MaybeRef<boolean>
     /** Called when the open state should change. */
     onOpenChange?: (value: boolean) => void
+    /** Called when the trigger is clicked. Calling event.preventDefault() prevents the toggle. */
+    onClick?: (event: MouseEvent) => void
     /** A disabled collapsible blocks `open`, `close` and `toggle`. Calling them directly logs a dev warning. */
     disabled?: MaybeRef<boolean>
 }
@@ -34,7 +36,7 @@ export interface CollapsibleBindings {
         'aria-disabled': true | undefined
         'data-disabled': '' | undefined
         'data-state': 'open' | 'closed'
-        onClick: () => void
+        onClick: (event: MouseEvent) => void
     }
     content: {
         id: string
