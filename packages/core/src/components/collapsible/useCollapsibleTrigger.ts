@@ -1,10 +1,18 @@
 import { computed } from 'vue'
 import { composeHandlers } from '../../utils/eventHandler'
 import { useCollapsibleContext } from './CollapsibleContext'
-import type { UseCollapsibleTriggerProps, CollapsibleTriggerApi, CollapsibleTriggerBindings } from './types'
+import type {
+    UseCollapsibleTriggerProps,
+    CollapsibleTriggerApi,
+    CollapsibleTriggerBindings,
+    CollapsibleApi,
+} from './types'
 
-export function useCollapsibleTrigger(props: UseCollapsibleTriggerProps = {}): CollapsibleTriggerApi {
-    const collapsible = useCollapsibleContext()
+export function useCollapsibleTrigger(
+    props: UseCollapsibleTriggerProps = {},
+    collapsibleApi?: CollapsibleApi,
+): CollapsibleTriggerApi {
+    const collapsible = collapsibleApi ?? useCollapsibleContext()
 
     const triggerBindings = computed(() => ({
         ...collapsible.bindings.trigger,

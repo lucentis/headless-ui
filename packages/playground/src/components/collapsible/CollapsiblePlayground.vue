@@ -8,9 +8,13 @@ function handleUncontrolledOpenChange(value: boolean) {
     console.log('Uncontrolled open change:', value)
 }
 
+function handleBlockingClick(event: MouseEvent) {
+    console.log('Trigger clicked, toggle blocked:', event)
+    event.preventDefault()
+}
+
 function handleTriggerClick(event: MouseEvent) {
     console.log('Trigger clicked:', event)
-    event.preventDefault()
 }
 </script>
 
@@ -54,10 +58,18 @@ function handleTriggerClick(event: MouseEvent) {
             <h2>User click handler</h2>
 
             <Collapsible>
-                <CollapsibleTrigger @click="handleTriggerClick"> Click me </CollapsibleTrigger>
+                <CollapsibleTrigger @click="handleBlockingClick"> Click me (preventDefault) </CollapsibleTrigger>
 
                 <CollapsibleContent>
-                    <p>The internal toggle still works.</p>
+                    <p>Never shown: preventDefault blocks the toggle.</p>
+                </CollapsibleContent>
+            </Collapsible>
+
+            <Collapsible>
+                <CollapsibleTrigger @click="handleTriggerClick"> Click me (no preventDefault) </CollapsibleTrigger>
+
+                <CollapsibleContent>
+                    <p>The handler runs first, then the toggle.</p>
                 </CollapsibleContent>
             </Collapsible>
         </section>

@@ -34,6 +34,7 @@ export interface CollapsibleBindings {
         'aria-disabled': true | undefined
         'data-disabled': '' | undefined
         'data-state': 'open' | 'closed'
+        onClick: () => void
     }
     content: {
         id: string
@@ -51,12 +52,13 @@ export interface UseCollapsibleTriggerProps {
     /**
      * Runs on click, even when the collapsible is disabled.
      * The toggle only runs when enabled, and `event.preventDefault()` prevents it.
+     * A click handler bound directly on `bindings.trigger` cannot prevent the toggle, use this prop instead.
      */
     onClick?: (event: MouseEvent) => void
 }
 
 export interface CollapsibleTriggerBindings {
-    root: CollapsibleBindings['trigger'] & {
+    root: Omit<CollapsibleBindings['trigger'], 'onClick'> & {
         onClick: (event: MouseEvent) => void
     }
 }

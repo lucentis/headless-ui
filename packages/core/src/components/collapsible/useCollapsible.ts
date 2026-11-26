@@ -3,7 +3,6 @@ import { useOpenState } from '../../utils/useOpenState'
 import { useDisabled } from '../../utils/useDisabled'
 import { useId } from '../../utils/useId'
 import { warnDev } from '../../utils/warnDev'
-import { composeHandlers } from '../../utils/eventHandler'
 import { useConfig } from '../../config'
 import type {
     UseCollapsibleProps,
@@ -63,6 +62,9 @@ export function useCollapsible(props: UseCollapsibleProps = {}): CollapsibleApi 
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
+        onClick: () => {
+            if (!isDisabled.value) toggle()
+        },
     }))
 
     const contentBindings = computed(() => ({
