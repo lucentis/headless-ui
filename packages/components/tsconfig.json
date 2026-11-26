@@ -1,16 +1,12 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "./dist",
-        "composite": true,
+        // core is type-checked from source through paths, so it must sit under rootDir
+        "rootDir": "..",
+        "noEmit": true,
         "paths": {
             "@lucentis/headless-ui-core": ["../core/src/index.ts"]
         }
     },
-    "include": ["src/**/*.ts", "src/**/*.vue"],
-    "references": [
-        {
-            "path": "../core"
-        }
-    ]
+    "include": ["src/**/*.ts", "src/**/*.vue"]
 }

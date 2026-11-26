@@ -4,7 +4,7 @@
     "type": "module",
     "private": false,
     "scripts": {
-        "build": "vue-tsc -b && vite build",
+        "build": "vue-tsc --noEmit && vite build",
         "typecheck": "vue-tsc --noEmit"
     },
     "exports": {
