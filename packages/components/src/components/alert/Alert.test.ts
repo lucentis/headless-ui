@@ -53,13 +53,14 @@ describe('Alert', () => {
     it('closes through the slot action', async () => {
         const wrapper = mount(Alert, {
             slots: {
-                default: ({ close }: { close: () => void }) => h('button', { onClick: close }, 'Close'),
+                default: ({ actions }: { state: unknown; actions: { close: () => void }; bindings: unknown }) =>
+                    h('button', { onClick: actions.close }, 'Close'),
             },
         })
 
         await wrapper.get('button').trigger('click')
 
-        // a closed alert is unmounted, so there is no element left to carry data-state="closed"
+        // A closed alert is unmounted, so there is no element left to carry data-state="closed".
         expect(wrapper.find('[role="status"]').exists()).toBe(false)
     })
 
@@ -76,23 +77,23 @@ describe('Alert', () => {
         expect(wrapper.text()).toBe('')
     })
 
-    it('opens through the exposed open method', async () => {
+    it('opens through the exposed open action', async () => {
         const wrapper = mount(Alert, {
             props: {
                 defaultOpen: false,
             },
         })
 
-        wrapper.vm.open()
+        wrapper.vm.actions.open()
         await nextTick()
 
         expect(wrapper.attributes('data-state')).toBe('open')
     })
 
-    it('closes through the exposed close method', async () => {
+    it('closes through the exposed close action', async () => {
         const wrapper = mount(Alert)
 
-        wrapper.vm.close()
+        wrapper.vm.actions.close()
         await nextTick()
 
         expect(wrapper.find('[role="status"]').exists()).toBe(false)
@@ -106,7 +107,8 @@ describe('Alert', () => {
                 onOpenChange,
             },
             slots: {
-                default: ({ close }: { close: () => void }) => h('button', { onClick: close }, 'Close'),
+                default: ({ actions }: { state: unknown; actions: { close: () => void }; bindings: unknown }) =>
+                    h('button', { onClick: actions.close }, 'Close'),
             },
         })
 
@@ -124,7 +126,8 @@ describe('Alert', () => {
                 onOpenChange,
             },
             slots: {
-                default: ({ close }: { close: () => void }) => h('button', { onClick: close }, 'Close'),
+                default: ({ actions }: { state: unknown; actions: { close: () => void }; bindings: unknown }) =>
+                    h('button', { onClick: actions.close }, 'Close'),
             },
         })
 

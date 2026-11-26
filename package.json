@@ -14,12 +14,13 @@
         "test": "vitest run",
         "test:components": "vitest run packages/components/src",
         "check": "npm run lint && npm run format:check && npm run typecheck",
-        "check:components": "eslint packages/components --max-warnings 0 && prettier --check packages/components && npm run typecheck:components && npm run test:components && npm run build:components",
+        "check:components": "eslint packages/components --max-warnings 0 && prettier --check packages/components && npm run typecheck:components",
         "dev": "npm run dev --workspace=packages/playground",
         "lint": "eslint . --max-warnings 0",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "ci": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build"
+        "ci": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build",
+        "ci:components": "npm run check:components && npm run test:components && npm run build:components"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",

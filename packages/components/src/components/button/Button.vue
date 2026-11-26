@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef } from 'vue'
+import { mergeProps, toRef } from 'vue'
 import { useButton } from '@lucentis/headless-ui-core'
 
 defineOptions({
@@ -25,13 +25,7 @@ const { bindings } = useButton({
 </script>
 
 <template>
-    <button
-        v-bind="{
-            ...bindings.root,
-            ...$attrs,
-        }"
-        :type="type"
-    >
+    <button v-bind="mergeProps(bindings.root, $attrs)" :type="type">
         <slot />
     </button>
 </template>
