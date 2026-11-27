@@ -5,6 +5,7 @@ import SeparatorPlayground from './components/separator/SeparatorPlayground.vue'
 import AlertPlayground from './components/alert/AlertPlayground.vue'
 import CollapsiblePlayground from './components/collapsible/CollapsiblePlayground.vue'
 import AccordionPlayground from './components/accordion/AccordionPlayground.vue'
+import DialogPlayground from './components/dialog/DialogPlayground.vue'
 
 const activeComponent = ref('button')
 </script>
@@ -20,6 +21,7 @@ const activeComponent = ref('button')
                 <button type="button" @click="activeComponent = 'alert'">Alert</button>
                 <button type="button" @click="activeComponent = 'collapsible'">Collapsible</button>
                 <button type="button" @click="activeComponent = 'accordion'">Accordion</button>
+                <button type="button" @click="activeComponent = 'dialog'">Dialog</button>
             </nav>
         </aside>
 
@@ -29,6 +31,7 @@ const activeComponent = ref('button')
             <AlertPlayground v-else-if="activeComponent === 'alert'"></AlertPlayground>
             <CollapsiblePlayground v-else-if="activeComponent === 'collapsible'" />
             <AccordionPlayground v-else-if="activeComponent === 'accordion'" />
+            <DialogPlayground v-else-if="activeComponent === 'dialog'" />
         </main>
     </div>
 </template>
