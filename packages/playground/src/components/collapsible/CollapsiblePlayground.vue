@@ -58,7 +58,9 @@ function handleTriggerClick(event: MouseEvent) {
             <h2>User click handler</h2>
 
             <Collapsible>
-                <CollapsibleTrigger @click="handleBlockingClick"> Click me (preventDefault) </CollapsibleTrigger>
+                <CollapsibleTrigger @click="handleBlockingClick" @click.prevent="console.log('other click prevent')">
+                    Click me (preventDefault)
+                </CollapsibleTrigger>
 
                 <CollapsibleContent>
                     <p>Never shown: preventDefault blocks the toggle.</p>

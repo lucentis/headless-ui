@@ -7,7 +7,7 @@ defineOptions({
 })
 
 const props = defineProps<{
-    onClick?: (event: MouseEvent) => void
+    onClick?: (event: MouseEvent) => void | ((event: MouseEvent) => void)[]
 }>()
 
 const attrs = useAttrs()
@@ -16,7 +16,9 @@ const { bindings } = useCollapsibleContext()
 const triggerBindings = computed(() => ({
     ...bindings.trigger,
     onClick: (event: MouseEvent) => {
-        props.onClick?.(event)
+        for (const handler of [props.onClick].flat()) {
+            handler?.(event)
+        }
 
         if (!event.defaultPrevented) {
             bindings.trigger.onClick(event)
