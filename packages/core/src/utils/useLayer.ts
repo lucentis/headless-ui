@@ -1,5 +1,6 @@
 import { computed, onUnmounted, shallowRef, toValue, watch } from 'vue'
 import type { MaybeRef, Ref } from 'vue'
+import { isClient } from './isClient'
 
 export interface UseLayerOptions {
     /** The layer is on the stack while this is true. */
@@ -22,7 +23,6 @@ interface LayerEntry {
     isModal: () => boolean
 }
 
-// Shared by every layer instance, in opening order.
 const layerStack = shallowRef<LayerEntry[]>([])
 
 export function useLayer(options: UseLayerOptions): Layer {
@@ -41,15 +41,12 @@ export function useLayer(options: UseLayerOptions): Layer {
 
     function getLayersAbove(): LayerEntry[] {
         const index = layerStack.value.indexOf(entry)
-
         return index === -1 ? [] : layerStack.value.slice(index + 1)
     }
 
-    const isTopLayer = computed(() => {
-        return layerStack.value.at(-1) === entry
-    })
+    const isTopLayer = computed(() => layerStack.value.at(-1) === entry)
 
-    if (typeof document !== 'undefined') {
+    if (isClient) {
         watch(
             () => toValue(options.active),
             (isActive) => {
@@ -68,9 +65,7 @@ export function useLayer(options: UseLayerOptions): Layer {
         acceptsOutsideClick(target) {
             const above = getLayersAbove()
 
-            if (above.some((layer) => layer.isModal())) {
-                return false
-            }
+            if (above.some((layer) => layer.isModal())) return false
 
             return !above.some((layer) => layer.targets.some((ref) => ref.value?.contains(target)))
         },

@@ -2,7 +2,7 @@ import { computed, ref, toValue, watch, reactive } from 'vue'
 import { useOpenState } from '../../utils/useOpenState'
 import { useScrollLock } from '../../utils/useScrollLock'
 import { useFocusTrap } from '../../utils/useFocusTrap'
-import { useEscape } from '../../utils/useEscape'
+import { useDismiss } from '../../utils/useDismiss'
 import { useId } from '../../utils/useId'
 import { useConfig } from '../../config'
 import type { UseDialogProps, DialogApi, DialogState, DialogActions, DialogBindings } from './types'
@@ -22,6 +22,8 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
 
     const titleId = useId('dialog-title')
     const descriptionId = useId('dialog-description')
+
+    const triggerRef = ref<HTMLElement | null>(null)
     const contentRef = ref<HTMLElement | null>(null)
 
     const { lock, unlock } = useScrollLock(config.scrollLock)
@@ -37,11 +39,13 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
         active: computed(() => isOpen.value && isModal.value),
     })
 
-    useEscape({
+    useDismiss({
         active: isOpen,
-        onEscape: () => {
-            if (config.closeOnEscape) actions.close()
-        },
+        targets: [triggerRef, contentRef],
+        modal: isModal,
+        onDismiss: close,
+        escape: config.closeOnEscape,
+        outsideClick: config.closeOnOutsideClick,
     })
 
     const state: DialogState = reactive({
@@ -55,9 +59,6 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
     const overlayBindings = computed(() => ({
         'aria-hidden': true as const,
         'data-state': isOpen.value ? ('open' as const) : ('closed' as const),
-        onClick: () => {
-            if (config.closeOnOutsideClick) actions.close()
-        },
     }))
 
     const contentBindings = computed(() => ({
@@ -84,5 +85,5 @@ export function useDialog(props: UseDialogProps = {}): DialogApi {
         },
     }
 
-    return { state, actions, bindings, contentRef }
+    return { state, actions, bindings, triggerRef, contentRef }
 }
