@@ -24,7 +24,7 @@ const { bindings } = useButton({ disabled: isLoading })
 
 const alert = useAlert()
 
-const collapsible = useCollapsible({ defaultOpen: false })
+const collapsible = useCollapsible({ defaultOpen: false, onTriggerClick: (e) => e.preventDefault() })
 
 const accordion = useAccordion({ type: 'multiple' })
 const item1 = useAccordionItem({ value: 'item-1' }, accordion)

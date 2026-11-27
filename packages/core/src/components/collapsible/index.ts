@@ -1,5 +1,4 @@
 export { useCollapsible } from './useCollapsible'
-export { useCollapsibleTrigger } from './useCollapsibleTrigger'
 export { provideCollapsibleContext, useCollapsibleContext } from './CollapsibleContext'
 export type {
     UseCollapsibleProps,
@@ -7,8 +6,4 @@ export type {
     CollapsibleActions,
     CollapsibleBindings,
     CollapsibleApi,
-    UseCollapsibleTriggerProps,
-    CollapsibleTriggerBindings,
-    CollapsibleTriggerActions,
-    CollapsibleTriggerApi,
 } from './types'
