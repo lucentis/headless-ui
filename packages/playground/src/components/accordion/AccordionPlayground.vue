@@ -90,7 +90,15 @@ function handleMultipleChange(value: string | string[]) {
 
             <Accordion type="single" :value="controlledSingle" :on-value-change="handleSingleChange">
                 <AccordionItem value="item-1">
-                    <AccordionItemTrigger>First item</AccordionItemTrigger>
+                    <AccordionItemTrigger
+                        @click="
+                            (e: MouseEvent) => {
+                                e.preventDefault()
+                                console.log('prevent default')
+                            }
+                        "
+                        >First item</AccordionItemTrigger
+                    >
                     <AccordionItemContent>
                         <p>First item content.</p>
                     </AccordionItemContent>

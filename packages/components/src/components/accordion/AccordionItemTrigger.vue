@@ -1,17 +1,36 @@
 <script setup lang="ts">
-import { mergeProps } from 'vue'
+import { computed, mergeProps, useAttrs } from 'vue'
 import { useAccordionItemContext } from '@lucentis/headless-ui-core'
-import Button from '../button/Button.vue'
 
 defineOptions({
     inheritAttrs: false,
 })
 
+type ClickHandler = (event: MouseEvent) => void
+
+const props = defineProps<{
+    onClick?: ClickHandler | ClickHandler[]
+}>()
+
+const attrs = useAttrs()
 const { bindings } = useAccordionItemContext()
+
+const triggerBindings = computed(() => ({
+    ...bindings.trigger,
+    onClick: (event: MouseEvent) => {
+        for (const handler of [props.onClick].flat()) {
+            handler?.(event)
+        }
+
+        if (!event.defaultPrevented) {
+            bindings.trigger.onClick(event)
+        }
+    },
+}))
 </script>
 
 <template>
-    <Button v-bind="mergeProps(bindings.trigger, $attrs)">
+    <button v-bind="mergeProps(triggerBindings, attrs)" type="button">
         <slot />
-    </Button>
+    </button>
 </template>

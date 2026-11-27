@@ -39,6 +39,8 @@ export interface UseAccordionItemProps {
     value: string
     /** A disabled item blocks its own `expand`, `collapse` and `toggle`. The accordion's `disabled` also applies. */
     disabled?: MaybeRef<boolean>
+    /** Called before the trigger toggles the item. Calling preventDefault() cancels the toggle. */
+    onTriggerClick?: (event: MouseEvent) => void
 }
 
 export interface AccordionItemState {
@@ -62,7 +64,7 @@ export interface AccordionItemBindings {
         'aria-disabled': true | undefined
         'data-disabled': '' | undefined
         'data-state': 'open' | 'closed'
-        onClick: () => void
+        onClick: (event: MouseEvent) => void
     }
     content: {
         id: string

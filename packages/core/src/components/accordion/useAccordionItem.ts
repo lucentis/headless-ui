@@ -68,8 +68,12 @@ export function useAccordionItem(props: UseAccordionItemProps, accordion?: Accor
         'aria-disabled': isDisabled.value ? (true as const) : undefined,
         'data-disabled': isDisabled.value ? ('' as const) : undefined,
         'data-state': isExpanded.value ? ('open' as const) : ('closed' as const),
-        onClick: () => {
-            if (!isDisabled.value) actions.toggle()
+        onClick: (event: MouseEvent) => {
+            props.onTriggerClick?.(event)
+
+            if (!event.defaultPrevented && !isDisabled.value) {
+                actions.toggle()
+            }
         },
     }))
 

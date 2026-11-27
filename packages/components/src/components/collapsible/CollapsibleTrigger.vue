@@ -6,8 +6,10 @@ defineOptions({
     inheritAttrs: false,
 })
 
+type ClickHandler = (event: MouseEvent) => void
+
 const props = defineProps<{
-    onClick?: (event: MouseEvent) => void | ((event: MouseEvent) => void)[]
+    onClick?: ClickHandler | ClickHandler[]
 }>()
 
 const attrs = useAttrs()

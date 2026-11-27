@@ -310,14 +310,14 @@ describe('useAccordionItem', () => {
 
         it('trigger onClick toggles item', async () => {
             const { state, bindings } = createItemHost({}, { value: 'item-1' })
-            bindings.trigger.onClick()
+            bindings.trigger.onClick(new MouseEvent('click', { cancelable: true }))
             await nextTick()
             expect(state.isExpanded).toBe(true)
         })
 
         it('trigger onClick does nothing when disabled', async () => {
             const { state, bindings } = createItemHost({}, { value: 'item-1', disabled: true })
-            bindings.trigger.onClick()
+            bindings.trigger.onClick(new MouseEvent('click', { cancelable: true }))
             await nextTick()
             expect(state.isExpanded).toBe(false)
         })
@@ -397,7 +397,7 @@ describe('useAccordionItem', () => {
 
         it('does not warn when the trigger is clicked on a disabled item', async () => {
             const { bindings } = createItemHost({}, { value: 'item-1', disabled: true })
-            bindings.trigger.onClick()
+            bindings.trigger.onClick(new MouseEvent('click', { cancelable: true }))
             await nextTick()
             expect(warnSpy).not.toHaveBeenCalled()
         })

@@ -10,6 +10,7 @@ export interface UseCollapsibleProps {
     onOpenChange?: (value: boolean) => void
     /** A disabled collapsible blocks `open`, `close` and `toggle`. Calling them directly logs a dev warning. */
     disabled?: MaybeRef<boolean>
+    /** Called before the trigger toggles the item. Calling preventDefault() cancels the toggle. */
     onTriggerClick?: (event: MouseEvent) => void
 }
 

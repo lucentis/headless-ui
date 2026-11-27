@@ -148,14 +148,14 @@ describe('useCollapsible', () => {
 
         it('onClick toggles when not disabled', async () => {
             const { state, bindings } = createHost()
-            bindings.trigger.onClick()
+            bindings.trigger.onClick(new MouseEvent('click', { cancelable: true }))
             await nextTick()
             expect(state.isOpen).toBe(true)
         })
 
         it('onClick does nothing when disabled', async () => {
             const { state, bindings } = createHost({ disabled: true })
-            bindings.trigger.onClick()
+            bindings.trigger.onClick(new MouseEvent('click', { cancelable: true }))
             await nextTick()
             expect(state.isOpen).toBe(false)
         })
@@ -259,7 +259,7 @@ describe('useCollapsible', () => {
 
         it('does not warn when the trigger is clicked while disabled', async () => {
             const { bindings } = createHost({ disabled: true })
-            bindings.trigger.onClick()
+            bindings.trigger.onClick(new MouseEvent('click', { cancelable: true }))
             await nextTick()
             expect(warnSpy).not.toHaveBeenCalled()
         })
