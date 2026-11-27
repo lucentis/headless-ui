@@ -10,7 +10,15 @@ const dialog = useDialogContext()
 </script>
 
 <template>
-    <div v-if="dialog.state.isPresent" ref="dialog.contentRef" v-bind="mergeProps(dialog.bindings.content, $attrs)">
+    <div
+        v-if="dialog.state.isPresent"
+        :ref="
+            (el) => {
+                dialog.contentRef.value = el as HTMLElement | null
+            }
+        "
+        v-bind="mergeProps(dialog.bindings.content, $attrs)"
+    >
         <slot />
     </div>
 </template>
